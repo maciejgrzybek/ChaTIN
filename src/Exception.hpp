@@ -42,6 +42,7 @@ class WrongPortException : public SocketException,
 {
 public:
     WrongPortException(const int);
+    ~WrongPortException() throw();
     virtual const char* what() const throw();
 protected:
     const int port;
@@ -53,6 +54,7 @@ class WrongAddressException : public SocketException,
 {
 public:
     WrongAddressException(const std::string&, const int);
+    ~WrongAddressException() throw();
     const char* what() const throw();
 protected:
     const std::string address;

@@ -37,10 +37,14 @@ namespace Socket
         message += port;
     }
 
+    WrongPortException::~WrongPortException() throw() {}
+
     const char* WrongPortException::what() const throw()
     {
         return message.c_str();
     }
+
+    WrongAddressException::~WrongAddressException() throw() {}
 
     WrongAddressException::WrongAddressException(const std::string &address, const int errorNumber) : address(address), errorNumber(errorNumber)
     {
