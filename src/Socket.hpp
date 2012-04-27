@@ -99,7 +99,7 @@ public:
      * @param enum BlockingType type of I/O socket methods to be used (blocking or nonblocking)
      * @throw ResolveException Exception is thrown when given IP address cannot be resolved by DNS. Details are stored in thrown exception class.
      */
-    ServerSocket(const std::string&, const unsigned int, const unsigned int, enum BlockingType) throw(ResolveException, WrongPortException);
+    ServerSocket(const std::string& = "::", const unsigned int = 0, const unsigned int = 1024, enum BlockingType = SocketNonBlocking) throw(ResolveException, WrongPortException);
     virtual ~ServerSocket();
 
     /**
@@ -171,7 +171,7 @@ public:
      * @param enum BlockingType type of I/O socket methods to be used (blocking or nonblocking)
      * @throw WrongAddressException Exception is thrown when given IP address cannot be parsed.
      */
-    ClientSocket(const std::string&, const unsigned int, enum BlockingType) throw(WrongAddressException, WrongPortException);
+    ClientSocket(const std::string& = "::", const unsigned int = 0, enum BlockingType = SocketNonBlocking) throw(WrongAddressException, WrongPortException);
     virtual ~ClientSocket();
 
     /**

@@ -21,14 +21,16 @@ namespace Socket
 
 class SocketException : public Exception
 {
-    public:
+public:
     virtual ~SocketException() throw();
     virtual const char* what() const throw();
 };
 
 class ServerSocketException : public SocketException
 {
-//FIXME: implement this
+public:
+    virtual ~ServerSocketException() throw();
+    virtual const char* what() const throw();
 };
 
 class ClientSocketException : public SocketException
