@@ -118,6 +118,13 @@ protected:
      * Ads all widgets to window and show them
      */
     void createInterface();
+    
+    /**
+     * Creates model for friendList (must be used before addFriend(Glib::ustring)
+     */
+    void buildTreeModel();
+
+    protected:
      
     FriendData friends;
     Gtk::Button sendButton;

@@ -9,16 +9,13 @@
  *      - First focus on chatField
  */
 
-
 ChatWindow::ChatWindow() : sendButton("Send")
 {
     set_title("ChatTIN");
     set_default_size(600,400);
     set_border_width(10);
 
-    friendListModel = Gtk::TreeStore::create(friends);
-    friendList.set_model(friendListModel);
-    friendList.append_column("Znajomi", friends.alias);
+    buildTreeModel();    
 
     chatTabs.set_scrollable();
     chatTabs.insert_page(chatBox, "LOG", 0);
@@ -161,4 +158,11 @@ void ChatWindow::createInterface()
     bottomBox.pack_start(sendButton, Gtk::PACK_SHRINK);
     add(mainBox);        
     show_all_children();
+}
+
+void ChatWindow::buildTreeModel()
+{
+    friendListModel = Gtk::TreeStore::create(friends);
+    friendList.set_model(friendListModel);
+    friendList.append_column("Znajomi", friends.alias);
 }
