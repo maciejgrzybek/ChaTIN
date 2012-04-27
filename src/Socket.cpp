@@ -8,6 +8,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cerrno>
+#include <unistd.h>
 
 namespace Socket
 {
@@ -18,7 +19,7 @@ namespace Socket
 
     Socket::~Socket()
     {
-        close(sockfd);
+        ::close(sockfd);
     }
 
     addrinfo* getResolvedAddrinfo(const std::string& address, const unsigned int port)
