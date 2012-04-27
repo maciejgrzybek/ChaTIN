@@ -6,14 +6,16 @@
 
 class Exception : public std::exception
 {
-    public:
+public:
     virtual ~Exception() throw();
     virtual const char* what() const throw();
 };
 
 class DataParsingException : public Exception
 {
-//FIXME: implement this
+public:
+    virtual ~DataParsingException() throw();
+    virtual const char* what() const throw();
 };
 
 namespace Socket
@@ -35,7 +37,9 @@ public:
 
 class ClientSocketException : public SocketException
 {
-//FIXME: implement this
+public:
+    virtual ~ClientSocketException() throw();
+    virtual const char* what() const throw();
 };
 
 class WrongPortException : public SocketException,
@@ -43,72 +47,92 @@ class WrongPortException : public SocketException,
 {
 public:
     WrongPortException(const int);
-//FIXME: implement this
+    virtual ~WrongPortException() throw();
+    virtual const char* what() const throw();
+protected:
+    const int port;
+    std::string message;
 };
 
 class WrongAddressException : public SocketException,
                               public DataParsingException
 {
 public:
-    WrongAddressException(int);
+    WrongAddressException(const std::string&);
     virtual ~WrongAddressException() throw();
-    virtual const char* what() const throw();
-private:
-    std::string address;
+    const char* what() const throw();
+protected:
+    const std::string address;
+    std::string message;
 };
 
 class ConnectionFailureException : public ClientSocketException
 {
-//FIXME: implement this like above
 public:
     ConnectionFailureException(int);
+    const char* what() const throw();
+protected:
+    int errorNumber;
 };
 
 class NotConnectedException : public ClientSocketException 
 {
-//FIXME: implement this like above
+public:
+    const char* what() const throw();
 };
 
 class ListenFailureException : public ServerSocketException
 {
-//FIXME: implement this like above
 public:
     ListenFailureException(int);
+    const char* what() const throw();
+protected:
+    int errorNumber;
 };
 
 class ResolveException : public SocketException
 {
 public:
     ResolveException(int);
-//FIXME: implement this like above
+    const char* what() const throw();
+protected:
+    int errorNumber;
 };
 
 class SelectFailureException : public SocketException
 {
 public:
     SelectFailureException(int);
-//FIXME: implement this like above
+    const char* what() const throw();
+protected:
+    int errorNumber;
 };
 
 class AcceptFailureException : public ServerSocketException
 {
 public:
     AcceptFailureException(int);
-//FIXME: implement this like above
+    const char* what() const throw();
+protected:
+    int errorNumber;
 };
 
 class ReceiveFailureException : public SocketException
 {
-//FIXME: implement this like above
 public:
     ReceiveFailureException(int);
+    const char* what() const throw();
+protected:
+    int errorNumber;
 };
 
 class SendFailureException : public SocketException
 {
-//FIXME: implement this like above
 public:
     SendFailureException(int);
+    const char* what() const throw();
+protected:
+    int errorNumber;
 };
 
 }; // namespace Socket
