@@ -14,27 +14,20 @@ ChatWindow::ChatWindow() : sendButton("Send")
 {
     set_title("ChatTIN");
     set_default_size(600,400);
-    selName = "LOG";
     set_border_width(10);
-    sendButton.signal_clicked().connect(sigc::mem_fun(*this, &ChatWindow::textInHandle));
-    friendList.signal_row_activated().connect(sigc::mem_fun(*this, &ChatWindow::friendPickHandle));
-    chatTabs.signal_switch_page().connect(sigc::mem_fun(*this, &ChatWindow::switchTabHandle));
+
     friendListModel = Gtk::TreeStore::create(friends);
     friendList.set_model(friendListModel);
-    initializeFriends();
-    friendList.set_border_width(10);
-    chatBoxBuffer = chatBox.get_buffer();
     friendList.append_column("Znajomi", friends.alias);
+
     chatTabs.set_scrollable();
     chatTabs.insert_page(chatBox, "LOG", 0);
-    mainBox.pack_start(friendList, Gtk::PACK_SHRINK);
-    mainBox.pack_start(rightBox);
-    rightBox.pack_start(chatTabs);
-    rightBox.pack_start(bottomBox, Gtk::PACK_SHRINK);
-    bottomBox.pack_start(chatField);
-    bottomBox.pack_start(sendButton, Gtk::PACK_SHRINK);
-    add(mainBox);        
-    show_all_children();
+    selName = "LOG"; //fist seleceted tab
+    chatBoxBuffer = chatBox.get_buffer(); //select LOG TextView as default text buffer
+
+    initializeFriends();
+    registerSignals();
+    createInterface();
 }
 ChatWindow::~ChatWindow()
 {
@@ -151,3 +144,21 @@ void ChatWindow::initializeFriends()
     addFriend("SuperKolega");
 }
 
+void ChatWindow::registerSignals()
+{
+    sendButton.signal_clicked().connect(sigc::mem_fun(*this, &ChatWindow::textInHandle));
+    friendList.signal_row_activated().connect(sigc::mem_fun(*this, &ChatWindow::friendPickHandle));
+    chatTabs.signal_switch_page().connect(sigc::mem_fun(*this, &ChatWindow::switchTabHandle));
+}
+
+void ChatWindow::createInterface()
+{
+    mainBox.pack_start(friendList, Gtk::PACK_SHRINK);
+    mainBox.pack_start(rightBox);                      
+    rightBox.pack_start(chatTabs);
+    rightBox.pack_start(bottomBox, Gtk::PACK_SHRINK);
+    bottomBox.pack_start(chatField);
+    bottomBox.pack_start(sendButton, Gtk::PACK_SHRINK);
+    add(mainBox);        
+    show_all_children();
+}

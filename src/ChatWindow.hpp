@@ -48,6 +48,9 @@ protected:
         Gtk::TreeModelColumn<Glib::ustring> alias; 
     };
 
+
+    /* SIGNAL HANDLERS */
+
     /**
      * Handler for send button (called when button is pressed)
      * It cheks the command in chatField and it parse it
@@ -74,6 +77,8 @@ protected:
      *          (meaning in can be used to communicate with controller)     
      */
     bool validateAlias( Glib::ustring );
+
+    /* GUI Actions */
     
     /**
      * Method opening dialog tab or swiching to existing one
@@ -88,17 +93,32 @@ protected:
     void addFriend( Glib::ustring name );
 
     /**
-     * Method witch will close current tab and destroy it TextView (meaning you can no loger read what was on this tab,
-     * even if you open new tab with the same name
+     * Method witch will close current tab and destroy it TextView 
+     * (meaning you can no loger read what was on this tab,
+
+     * even if you open new tab with the same name it had before)
      */
     void closeCurrentTab();
+
+
+    private:
+    /* INITIALIZATION */
 
     /**
      * Loads friends list (adds friends to the list by calling addFriend)
      */
     void initializeFriends();
-
     
+    /**
+     * register signals functions in gtk
+     */
+    void registerSignals();
+
+    /**
+     * Ads all widgets to window and show them
+     */
+    void createInterface();
+     
     FriendData friends;
     Gtk::Button sendButton;
     Gtk::Entry chatField;
