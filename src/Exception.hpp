@@ -25,6 +25,15 @@ public:
     virtual const char* what() const throw();
 };
 
+class SocketCreationFailureException : public SocketException
+{
+public:
+    SocketCreationFailureException(int);
+    virtual const char* what() const throw();
+protected:
+    int errorNumber;
+};
+
 class ServerSocketException : public SocketException
 {
 public:

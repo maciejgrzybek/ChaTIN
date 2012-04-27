@@ -25,8 +25,8 @@ namespace Socket
     {
         if(sockfd != 0)
             ::close(sockfd);
-        if(hostAddress != NULL)
-            free(hostAddress); // TODO: check this! Is it correct way to free this?
+        //if(hostAddress != NULL)
+        //    free(hostAddress); // TODO: check this! Is it correct way to free this?
     }
 
     addrinfo* Socket::getResolvedAddrinfo(const std::string& address, const unsigned int port)
@@ -64,7 +64,7 @@ namespace Socket
         return resultStruct;
     }
 
-    void Socket::getBindedSocket(const std::string& address = "::", const unsigned int port = 0)
+    void Socket::getBindedSocket(const std::string& address = "::", const unsigned int port = 0) throw(SocketCreationFailureException)
     {
         addrinfo *result, *rp;
         result = getResolvedAddrinfo(address,port);
@@ -84,26 +84,29 @@ namespace Socket
             close(sockfd);
         }
         //TODO: possible place of weird behavior - copying between structures of different type. In bytes, PROBABLY ok
-        memcpy(hostAddress,rp->ai_addr,sizeof(rp->ai_addr));
+        if(sockfd == -1)
+            throw SocketCreationFailureException(errno);
+
+        memcpy(&hostAddress,rp->ai_addr,sizeof(rp->ai_addr));
         freeaddrinfo(result); 
     }
 
     int Socket::getHostPort() const
     {
-        return static_cast<int>(hostAddress->sin6_port);
+        return static_cast<int>(hostAddress.sin6_port);
     }
 
     void Socket::setHostPort(const unsigned int port) throw(WrongPortException)
     {
         if(port>65535)
             throw WrongPortException(port);
-        hostAddress->sin6_port = htons(port);
+        hostAddress.sin6_port = htons(port);
     }
 
     std::string Socket::getHostAddress() const
     {
         char humanReadableAddress[INET6_ADDRSTRLEN]; // 15 dots + 32 chars describes IPv6 as string
-        inet_ntop(AF_INET6,&hostAddress->sin6_addr,humanReadableAddress,sizeof(humanReadableAddress));
+        inet_ntop(AF_INET6,&hostAddress.sin6_addr,humanReadableAddress,sizeof(humanReadableAddress));
         return std::string(humanReadableAddress);
     }
 
@@ -112,7 +115,7 @@ namespace Socket
         in6_addr byteAddress;
         if(inet_pton(AF_INET6,address.c_str(),&byteAddress) != 1)
             throw WrongAddressException(address,errno);
-        hostAddress->sin6_addr = byteAddress;
+        hostAddress.sin6_addr = byteAddress;
     }
     
     ServerSocket::ServerSocket(const std::string& address, const unsigned int port, const unsigned int backlog, enum BlockingType blockingType) throw(ResolveException, WrongPortException) : backlog(backlog)

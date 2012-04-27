@@ -21,6 +21,15 @@ namespace Socket
         return "Undefined socket exception";
     }
 
+    SocketCreationFailureException::SocketCreationFailureException(int errorNumber) : errorNumber(errorNumber)
+    {
+    }
+
+    const char* SocketCreationFailureException::what() const throw()
+    {
+        return strerror(errorNumber);
+    }
+
     const char* ServerSocketException::what() const throw()
     {
         return "Undefined server socket exception";
