@@ -10,7 +10,6 @@
  *      - Scrolling friendList and chatBox
  *      - Accept by [ENTER]
  *      - Cut View from "Model" in friendList (name of tab cannot be information)
- *      - First focus on chatField
  */
 
 

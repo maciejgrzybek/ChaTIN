@@ -11,6 +11,8 @@ ChatWindow::ChatWindow() : sendButton("Send")
     initializeFriends();
     registerSignals();
     createInterface();
+
+    set_focus(chatField);
 }
 ChatWindow::~ChatWindow()
 {
@@ -94,6 +96,8 @@ void ChatWindow::switchTabHandle( GtkNotebookPage* page, guint page_num )
         selName = "LOG";
         chatBoxBuffer = chatBox.get_buffer();
     }
+//    set_focus(chatField); //always set focus to chat field
+    chatField.grab_focus();
 }
 
 void ChatWindow::addFriend( Glib::ustring name )
@@ -133,9 +137,9 @@ void ChatWindow::initializeFriends()
 
 void ChatWindow::registerSignals()
 {
-    sendButton.signal_clicked().connect(sigc::mem_fun(*this, &ChatWindow::textInHandle));
+    sendButton.signal_clicked().connect(sigc::mem_fun(*this, &ChatWindow::textInHandle));    
     friendList.signal_row_activated().connect(sigc::mem_fun(*this, &ChatWindow::friendPickHandle));
-    chatTabs.signal_switch_page().connect(sigc::mem_fun(*this, &ChatWindow::switchTabHandle));
+    chatTabs.signal_switch_page().connect(sigc::mem_fun(*this, &ChatWindow::switchTabHandle));    
 }
 
 void ChatWindow::createInterface()
@@ -152,6 +156,7 @@ void ChatWindow::createInterface()
 
 void ChatWindow::buildTreeModel()
 {
+    friendList.set_can_focus(false);
     friendListModel = Gtk::TreeStore::create(friends);
     friendList.set_model(friendListModel);
     friendList.append_column("Znajomi", friends.alias);
