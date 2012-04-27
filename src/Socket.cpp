@@ -29,7 +29,7 @@ namespace Socket
             free(hostAddress); // TODO: check this! Is it correct way to free this?
     }
 
-    addrinfo* getResolvedAddrinfo(const std::string& address, const unsigned int port)
+    addrinfo* Socket::getResolvedAddrinfo(const std::string& address, const unsigned int port)
     {
         addrinfo hints;
         addrinfo *result;
@@ -55,7 +55,7 @@ namespace Socket
         return result;
     }
 
-    sockaddr_in6 getAddressStructure(const std::string& address = "::", const unsigned int port = 0)
+    sockaddr_in6 Socket::getAddressStructure(const std::string& address = "::", const unsigned int port = 0)
     {
         addrinfo *result = getResolvedAddrinfo(address,port);
         sockaddr_in6 resultStruct;
