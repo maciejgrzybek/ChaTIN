@@ -41,7 +41,7 @@ namespace Socket
 
         memset(&hints, 0, sizeof(struct addrinfo));
         hints.ai_family = AF_INET6;     /* Allow only IPv6 */
-        hints.ai_socktype = SOCK_DGRAM; /* Datagram socket */
+        hints.ai_socktype = SOCK_STREAM;
         hints.ai_flags = 0;
         hints.ai_protocol = 0;          /* Any protocol */
 
@@ -179,10 +179,11 @@ namespace Socket
 
     std::string ServerSocket::ClientIncomeSocket::receive() const throw(ReceiveFailureException)
     {
-        char buffer[ServerSocket::ClientIncomeSocket::buffer_size];
+        char buffer[ServerSocket::ClientIncomeSocket::buffer_size + 1];
         int nread = recv(sockfd,buffer,sizeof(buffer),0);
         if(nread == -1)
             throw ReceiveFailureException(sockfd);
+        buffer[nread] = '\0';
         return std::string(buffer);
     }
 
