@@ -58,11 +58,12 @@ class WrongAddressException : public SocketException,
                               public DataParsingException
 {
 public:
-    WrongAddressException(const std::string&);
+    WrongAddressException(const std::string&, const int);
     virtual ~WrongAddressException() throw();
     const char* what() const throw();
 protected:
     const std::string address;
+    const int errorNumber;
     std::string message;
 };
 

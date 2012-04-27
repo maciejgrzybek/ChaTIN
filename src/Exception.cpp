@@ -42,10 +42,11 @@ namespace Socket
         return message.c_str();
     }
 
-    WrongAddressException::WrongAddressException(const std::string &address) : address(address)
+    WrongAddressException::WrongAddressException(const std::string &address, const int errorNumber) : address(address), errorNumber(errorNumber)
     {
         message = "Wrong address. Should be in proper IPv6 format. You typed: ";
         message += address;
+        message += strerror(errorNumber);
     }
 
     const char* WrongAddressException::what() const throw()
