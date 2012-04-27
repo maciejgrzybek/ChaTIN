@@ -13,13 +13,20 @@
 namespace Socket
 {
 
+    Socket::Socket()
+    {
+    }
+
     Socket::Socket(int sock) : sockfd(sock)
     {
     }
 
     Socket::~Socket()
     {
-        ::close(sockfd);
+        if(sockfd != 0)
+            ::close(sockfd);
+        if(hostAddress != NULL)
+            free(hostAddress); // TODO: check this! Is it correct way to free this?
     }
 
     addrinfo* getResolvedAddrinfo(const std::string& address, const unsigned int port)
@@ -104,7 +111,7 @@ namespace Socket
     {
         in6_addr byteAddress;
         if(inet_pton(AF_INET6,address.c_str(),&byteAddress) != 1)
-            throw WrongAddressException(errno);
+            throw WrongAddressException(address,errno);
         hostAddress->sin6_addr = byteAddress;
     }
     
@@ -116,10 +123,6 @@ namespace Socket
 
     ServerSocket::~ServerSocket()
     {
-        if(sockfd != 0)
-            close(sockfd);
-        if(hostAddress != NULL)
-            free(hostAddress); // TODO: check this!!!
     }
 
     void ServerSocket::listen() const throw(ListenFailureException)
@@ -184,6 +187,10 @@ namespace Socket
     ClientSocket::ClientSocket(const std::string& address, const unsigned int port, enum BlockingType blockingType) throw(WrongAddressException, WrongPortException)
     {
         getBindedSocket(address, port);
+    }
+
+    ClientSocket::~ClientSocket()
+    {
     }
     
     void ClientSocket::connect(const std::string& address, const unsigned int port) throw(ConnectionFailureException)
