@@ -8,7 +8,6 @@
 /*
  * TODO: 
  *      - Scrolling friendList and chatBox
- *      - Accept by [ENTER]
  *      - Cut View from "Model" in friendList (name of tab cannot be information)
  */
 
@@ -68,6 +67,8 @@ protected:
      * It shouldnt be called manualy
      */
     void switchTabHandle( GtkNotebookPage* page, guint page_num );
+
+    /* COMMUNICATION WITH CONTROLER */   
 
     /**
      * @params Glib::ustring - string to validate

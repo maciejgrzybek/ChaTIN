@@ -96,9 +96,9 @@ void ChatWindow::switchTabHandle( GtkNotebookPage* page, guint page_num )
         selName = "LOG";
         chatBoxBuffer = chatBox.get_buffer();
     }
-//    set_focus(chatField); //always set focus to chat field
-    chatField.grab_focus();
+    chatField.grab_focus(); //Always set focus to chatField
 }
+
 
 void ChatWindow::addFriend( Glib::ustring name )
 {
@@ -140,6 +140,7 @@ void ChatWindow::registerSignals()
     sendButton.signal_clicked().connect(sigc::mem_fun(*this, &ChatWindow::textInHandle));    
     friendList.signal_row_activated().connect(sigc::mem_fun(*this, &ChatWindow::friendPickHandle));
     chatTabs.signal_switch_page().connect(sigc::mem_fun(*this, &ChatWindow::switchTabHandle));    
+    chatField.signal_activate().connect(sigc::mem_fun(*this, &ChatWindow::textInHandle));
 }
 
 void ChatWindow::createInterface()
