@@ -1,14 +1,5 @@
 #include "ChatWindow.hpp"
 
-/*
- * TODO: 
- *      - Scrolling friendList and chatBox
- *      - Accept by [ENTER]
- *      - Cut View from "Model" in friendList (name of tab cannot be information)
- *      - Lock chatBox from user changes
- *      - First focus on chatField
- */
-
 ChatWindow::ChatWindow() : sendButton("Send")
 {
     set_title("ChatTIN");
@@ -37,7 +28,7 @@ void ChatWindow::textInHandle()
     {
         if( chatField.get_text()[0] != '/' )
         {
-            chatBoxBuffer->insert_at_cursor("Wyslano: "+chatField.get_text()+"\n");
+            appendTextToCurrentTab("Wyslano: "+chatField.get_text()+"\n");
             chatField.set_text("");
         }
         else
@@ -95,7 +86,8 @@ void ChatWindow::switchTabHandle( GtkNotebookPage* page, guint page_num )
     {
         selName = chatTabs.get_tab_label_text(*chatTabs.get_nth_page(page_num));
         chatBoxBuffer = dialogBoxes[selName]->get_buffer();
-        chatBoxBuffer->insert_at_cursor("Teraz piszesz do: "+selName+"\n");
+        appendTextToCurrentTab("Teraz piszesz do: "+selName+"\n");
+        dialogBoxes[selName]->set_editable(false);
     }
     else
     {
@@ -126,14 +118,17 @@ void ChatWindow::closeCurrentTab()
     }
 }
 
+void ChatWindow::appendTextToCurrentTab( Glib::ustring text )
+{
+    chatBoxBuffer->insert(chatBoxBuffer->end(), text);
+}
+
 void ChatWindow::initializeFriends()
 {
-    addFriend("Franek");
-    addFriend("Janek");
-    addFriend("Ganek");
-    addFriend("Sranek");
-    addFriend("Stanek");
-    addFriend("SuperKolega");
+    //TODO: const size names
+    addFriend("Janek       ");
+    addFriend("Maciej      ");
+    addFriend("Andrzej     ");
 }
 
 void ChatWindow::registerSignals()
@@ -168,4 +163,5 @@ void ChatWindow::initializeTabs()
     chatTabs.insert_page(chatBox, "LOG", 0);
     selName = "LOG"; //fist seleceted tab
     chatBoxBuffer = chatBox.get_buffer(); //select LOG TextView as default text buffer
+    chatBox.set_editable(false);
 }

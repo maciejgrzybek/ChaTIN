@@ -10,7 +10,6 @@
  *      - Scrolling friendList and chatBox
  *      - Accept by [ENTER]
  *      - Cut View from "Model" in friendList (name of tab cannot be information)
- *      - Lock chatBox from user changes
  *      - First focus on chatField
  */
 
@@ -95,10 +94,16 @@ protected:
     /**
      * Method witch will close current tab and destroy it TextView 
      * (meaning you can no loger read what was on this tab,
-
      * even if you open new tab with the same name it had before)
      */
     void closeCurrentTab();
+
+
+    /**
+     * Appends text to chatBox in current tab
+     * @param - Glib::ustring - text to append
+     */
+    void appendTextToCurrentTab( Glib::ustring text );
 
 
     private:
