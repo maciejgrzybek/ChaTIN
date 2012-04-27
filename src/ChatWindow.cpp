@@ -16,12 +16,7 @@ ChatWindow::ChatWindow() : sendButton("Send")
     set_border_width(10);
 
     buildTreeModel();    
-
-    chatTabs.set_scrollable();
-    chatTabs.insert_page(chatBox, "LOG", 0);
-    selName = "LOG"; //fist seleceted tab
-    chatBoxBuffer = chatBox.get_buffer(); //select LOG TextView as default text buffer
-
+    initializeTabs();
     initializeFriends();
     registerSignals();
     createInterface();
@@ -165,4 +160,12 @@ void ChatWindow::buildTreeModel()
     friendListModel = Gtk::TreeStore::create(friends);
     friendList.set_model(friendListModel);
     friendList.append_column("Znajomi", friends.alias);
+}
+
+void ChatWindow::initializeTabs()
+{
+    chatTabs.set_scrollable();
+    chatTabs.insert_page(chatBox, "LOG", 0);
+    selName = "LOG"; //fist seleceted tab
+    chatBoxBuffer = chatBox.get_buffer(); //select LOG TextView as default text buffer
 }

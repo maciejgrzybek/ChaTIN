@@ -124,6 +124,11 @@ protected:
      */
     void buildTreeModel();
 
+    /**
+     * Creates LOG tab, initialize tabs managment, set LOG as default tab
+     */
+    void initializeTabs(); 
+
     protected:
      
     FriendData friends;
