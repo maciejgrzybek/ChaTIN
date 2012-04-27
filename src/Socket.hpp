@@ -47,8 +47,17 @@ public:
      */
     virtual void setHostAddress(const std::string&) throw(WrongAddressException);
 protected:
+    /**
+     * Constructor for already not created socket.
+     */
     Socket();
+    
+    /**
+     * Constructor for already created sockect file descriptor.
+     * @param int Socket file descriptor, which is already created.
+     */
     Socket(int);
+
     /**
      * Method creates and binds correct socket, resolved with DNS resolver by given address and port.
      * @param const std::string& Reference to address to be resolved and binded to
@@ -84,13 +93,13 @@ class ServerSocket : public Socket
 public:
     /**
      * Constructor of ServerSocket. Creates socket, ready to listen. It binds on given IP address.
-     * @param enum BlockingType type of I/O socket methods to be used (blocking or nonblocking)
      * @param std::string& Reference to string of local address to bind (example format: 2001:500:88:200::8). Most common case: you want use :: (bind on all net interfaces) )
      * @param const unsigned int Port to bind on. When no port given we assume system gives us ephemeral one.
      * @param const unsigned int Size of backlog.
+     * @param enum BlockingType type of I/O socket methods to be used (blocking or nonblocking)
      * @throw ResolveException Exception is thrown when given IP address cannot be resolved by DNS. Details are stored in thrown exception class.
      */
-    ServerSocket(enum BlockingType, const std::string&, const unsigned int, const unsigned int) throw(ResolveException, WrongPortException);
+    ServerSocket(const std::string&, const unsigned int, const unsigned int, enum BlockingType) throw(ResolveException, WrongPortException);
     virtual ~ServerSocket();
 
     /**
@@ -99,6 +108,7 @@ public:
      * @throw ListenFailureException Exception is thrown when socket cannot be turned into listen state. Details about problem is stored in thrown class.
      */
     void listen() const throw(ListenFailureException);
+
     /**
      * Checks whether there is any client in queue to pick
      * @return bool true when there is an client to pick, false otherwise.
@@ -108,7 +118,12 @@ public:
     class ClientIncomeSocket : public Socket
     {
     public:
+        /**
+         * Size of buffer to receive message to.
+         * If message would be larger than this amount, this won't be lost. It will 
+         */
         static const unsigned int buffer_size = 1024;
+
         /**
          * Constructor.
          * @param int Descriptor of socket handled by main server socket.
@@ -120,6 +135,7 @@ public:
          * @param const std::string& Reference to string containing data to send.
          */
         void send(const std::string&) const;
+
         /**
          * Receive data from socket.
          * @return const std::string String containing received data.
@@ -141,13 +157,21 @@ protected:
 class ClientSocket : public Socket
 {
 public:
+
+    /**
+     * Size of buffer to receive message to.
+     * If message would be larger than this amount, this won't be lost. It will 
+     */
+    static const unsigned int buffer_size = 1024;
+
     /**
      * Constructor of ClientSocket. Creates client socket, ready to connect to remote host. It binds on given IP address.
-     * @param enum BlockingType type of I/O socket methods to be used (blocking or nonblocking)
      * @param std::string& Reference to string of local address to bind (example format: 2001:500:88:200::8). Most common case: you want use :: (let system guess network interface we need).
+     * @param const unsigned int Port to assign on (local port).
+     * @param enum BlockingType type of I/O socket methods to be used (blocking or nonblocking)
      * @throw WrongAddressException Exception is thrown when given IP address cannot be parsed.
      */
-    ClientSocket(enum BlockingType, const std::string&, const unsigned int) throw(WrongAddressException, WrongPortException);
+    ClientSocket(const std::string&, const unsigned int, enum BlockingType) throw(WrongAddressException, WrongPortException);
     virtual ~ClientSocket();
 
     /**
@@ -163,13 +187,13 @@ public:
      * @param const std::string& Reference to string containing data to send.
      * @throw NotConnectedException Exception is thrown when send is invoked without earlier connection being established.
      */
-    void send(const std::string&) const throw(NotConnectedException);
+    void send(const std::string&) const throw(SendFailureException);
     /**
      * Receive data from server.
      * @return const std::string String containing received data.
      * @throw NotConnectedException Exception is thrown when receive is invoked without earlier connection being established.
      */
-    std::string receive() const throw(NotConnectedException);
+    std::string receive() const throw(ReceiveFailureException);
 };
 
 }; // namespace Socket
