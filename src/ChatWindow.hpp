@@ -79,7 +79,7 @@ protected:
     /* COMMUNICATION WITH CONTROLER */   
 
     /**
-     * @params Glib::ustring - string to validate
+     * @param Glib::ustring string to validate
      * @return true if given string is valid alias or IPv6 adress
      *          (meaning in can be used to communicate with controller)     
      */
@@ -87,8 +87,8 @@ protected:
 
     /**
      * Cuts full alias to short form ready to present for user.
-     * @params Glib::ustring - alias to cut
-     * @return Glib::ustring - cutted alias
+     * @param Glib::ustring alias to cut
+     * @return Glib::ustring cutted alias
      */
     Glib::ustring cutAlias( Glib::ustring alias );
 
@@ -96,13 +96,13 @@ protected:
     
     /**
      * Method opening dialog tab or swiching to existing one
-     * @params Glib::ustring - name of tab
+     * @param Glib::ustring name of tab
      */
     void openDialogTab( Glib::ustring alias );
 
     /**
      * Adds position to friend list which will have given name
-     * @param - Glib::ustring - name of friend
+     * @param Glib::ustring name of friend
      */
     void addFriend( Glib::ustring name );
 
@@ -116,7 +116,7 @@ protected:
 
     /**
      * Appends text to chatBox in current tab
-     * @param - Glib::ustring - text to append
+     * @param Glib::ustring text to append
      */
     void appendTextToCurrentTab( Glib::ustring text );
 
