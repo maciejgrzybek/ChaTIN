@@ -17,8 +17,9 @@ public:
     /**
      * Send data to socket.
      * @param const std::string& Reference to string containing data to send.
+     * @throw SendFailureException Exception thrown when send was not successful. Details about it's reason is stored in exception object.
      */
-     virtual void send(const std::string&) const = 0;
+     virtual void send(const std::string&) const throw(SendFailureException) = 0;
 
     /**
      * Receive data from socket.
@@ -157,7 +158,7 @@ public:
          * Send data to socket.
          * @param const std::string& Reference to string containing data to send.
          */
-        void send(const std::string&) const;
+        void send(const std::string&) const throw(SendFailureException);
 
         /**
          * Receive data from socket.
