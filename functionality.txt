@@ -1,0 +1,60 @@
+What View can send to Controller:
+    Sending massage to person or group of persons
+        Glib::ustring alias, Glib::ustring wiadomosc
+    Adding subscription:
+        Glib::ustring adres, Glib::ustring alias
+    Creating Conference:
+        Glib::ustring alias, std::list<Glib::ustring> aliases
+
+What Controller can send to View:
+    Massage income from person / group
+        Glib::ustring alias, Glib::ustring wiadomosc
+    Subscription incoming
+        Glib::ustring adres
+    Someone going online/offline
+        Glib::alias, bool (on/off)
+    List of subscription
+        std::vector< std::pair<Glib::ustring, enumStatus> > listaLudzi;
+
+===================================
+=========== CLASS LIST ============
+===================================
+    
+DialogManager:
+    - has std::map< ipv6, Dialog >
+    + listen()
+    + sendTo( ipv6, Glib::ustring massage )
+    It call view method if some packge comes
+
+Dialog:
+    - has ConversableSocket
+    + void send( Glib::ustring )
+    + Glib::ustring receive()
+    It is class which will have socket to communicate with someone in net.
+    It can send and receive from this socket.
+
+Controller:
+    + has FromViewParser
+    + has ToViewParser
+
+FromViewParser:
+    + doCommand( Glib::ustring alias, Glib::ustring input )
+    Called by view with selName as first argument
+        and chatField.get_text() as second.
+
+ToViewParser:
+    + doCommand( Glib::ustring alias, Glib::ustring msg )
+    Called by DialogManager/Dialog with 
+        alias and incoming massage as parameters;
+
+AliasManager:
+    - has vector<pair<alias,ipv6>> //better structure
+    + Glib::ustring getIP( std::ustring alias )
+    + Glib::ustring getAlias( ipv6 )    
+    + void AddFriend( Glib::ustring adress, Glib::ustring alias )
+    + enumStatus getStatus( Glib::ustring alias );
+
+ConferenceManager:
+    - has map<Glib::ustring alias, vector<Glib::ustring> confList>
+    + vector<Glib::ustring>& getList( Glib::ustring alias )
+    + void addConference( Glib::ustring alias, vector<Glib::ustring> )

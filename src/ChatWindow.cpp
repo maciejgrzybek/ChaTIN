@@ -58,8 +58,7 @@ void ChatWindow::textInHandle()
 
 Glib::ustring ChatWindow::cutAlias( Glib::ustring alias )
 {
-    //TODO: Implement this
-   return alias; 
+    return alias; 
 }
 
 bool ChatWindow::validateAlias( Glib::ustring )
