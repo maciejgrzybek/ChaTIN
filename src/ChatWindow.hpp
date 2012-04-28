@@ -5,13 +5,6 @@
 #include <map>
 #include <memory>
 
-/*
- * TODO: 
- *      - Scrolling friendList and chatBox
- */
-
-
-
 /**
  * Class holding whole GUI in it
  * It uses gtkmm to create simple window for chating
@@ -46,7 +39,11 @@ protected:
             Gtk::TreeModelColumn<Glib::ustring> fullAlias;
     };
 
-
+    /**
+     * Class for holding separation between view-controll and view
+     * It contains  fullAlias of tab as well as it is Widget
+     * @author: Andrzej Fiedukowicz
+     */
     class ChatTab : public Gtk::TextView
     {
         public:
@@ -157,12 +154,13 @@ protected:
     FriendData friends;
     Gtk::Button sendButton;
     Gtk::Entry chatField;
-    Gtk::TextView chatBox;
+    std::shared_ptr<ChatTab> logBox;
     Gtk::TreeView friendList;
     Gtk::HBox mainBox;
     Gtk::VBox rightBox;    
     Gtk::HBox bottomBox;    
     Gtk::Notebook chatTabs;
+    Gtk::ScrolledWindow friendListScroll;
     Glib::RefPtr<Gtk::TextBuffer> chatBoxBuffer;
     Glib::RefPtr<Gtk::TreeStore>  friendListModel;
     Glib::ustring selName;

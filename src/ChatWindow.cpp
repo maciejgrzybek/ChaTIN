@@ -102,12 +102,11 @@ void ChatWindow::switchTabHandle( GtkNotebookPage* page, guint page_num )
         chatBoxBuffer = selectedTab->get_buffer();
         appendTextToCurrentTab("Teraz piszesz do: "+selName+"\n");
         selectedTab->set_editable(false);
-        selectedTab->set_can_focus(false);
     }
     else
     {
-        selName = "LOG";
-        chatBoxBuffer = chatBox.get_buffer();
+        selName = logBox->getFullAlias();
+        chatBoxBuffer = logBox->get_buffer();
     }
     chatField.grab_focus(); //Always set focus to chatField
 }
@@ -140,6 +139,8 @@ void ChatWindow::closeCurrentTab()
 void ChatWindow::appendTextToCurrentTab( Glib::ustring text )
 {
     chatBoxBuffer->insert(chatBoxBuffer->end(), text);
+    Gtk::TextIter iter = chatBoxBuffer->end();
+    selectedTab->scroll_to_iter(iter,0.0);
 }
 
 void ChatWindow::initializeFriends()
@@ -160,12 +161,14 @@ void ChatWindow::registerSignals()
 
 void ChatWindow::createInterface()
 {
-    mainBox.pack_start(friendList, Gtk::PACK_SHRINK);
+    friendListScroll.add(friendList);
+    friendListScroll.set_policy(Gtk::POLICY_NEVER, Gtk::POLICY_AUTOMATIC);
+    mainBox.pack_start(friendListScroll, Gtk::PACK_SHRINK);
     mainBox.pack_start(rightBox);                      
     rightBox.pack_start(chatTabs);
     rightBox.pack_start(bottomBox, Gtk::PACK_SHRINK);
     bottomBox.pack_start(chatField);
-    bottomBox.pack_start(sendButton, Gtk::PACK_SHRINK);
+    bottomBox.pack_start(sendButton, Gtk::PACK_SHRINK);    
     add(mainBox);        
     show_all_children();
 }
@@ -180,13 +183,14 @@ void ChatWindow::buildTreeModel()
 
 void ChatWindow::initializeTabs()
 {
+    logBox = std::shared_ptr<ChatTab>( new ChatTab("LOG") );
     chatTabs.set_scrollable();
-    chatTabs.insert_page(chatBox, "LOG", 0);
-    selName = "LOG"; //fist seleceted tab
-    selectedTab = NULL;
-    chatBoxBuffer = chatBox.get_buffer(); //select LOG TextView as default text buffer
-    chatBox.set_editable(false);
-    chatBox.set_can_focus(false);
+    selName = logBox->getFullAlias(); //fist seleceted tab
+    chatTabs.insert_page(*logBox, cutAlias(selName), 0);
+    selectedTab = logBox;
+    chatBoxBuffer = logBox->get_buffer(); //select LOG TextView as default text buffer
+    logBox->set_editable(false);
+    logBox->set_can_focus(false);
     chatTabs.set_can_focus(false);
 }
 
