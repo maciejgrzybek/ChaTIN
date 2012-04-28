@@ -171,3 +171,21 @@ void ChatWindow::initializeTabs()
     chatBoxBuffer = chatBox.get_buffer(); //select LOG TextView as default text buffer
     chatBox.set_editable(false);
 }
+
+ChatWindow::ChatTab::ChatTab( 
+        Glib::ustring fullAlias )
+    : fullAlias(fullAlias)
+{
+    chatBox = std::shared_ptr<Gtk::TextView>( new Gtk::TextView() );
+}
+
+
+Glib::ustring ChatWindow::ChatTab::getAlias()
+{
+    return fullAlias;
+}
+std::shared_ptr<Gtk::TextView> ChatWindow::ChatTab::getChatBox()
+{
+    return chatBox;
+}
+

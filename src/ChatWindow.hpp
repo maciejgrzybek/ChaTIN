@@ -12,6 +12,7 @@
  */
 
 
+
 /**
  * Class holding whole GUI in it
  * It uses gtkmm to create simple window for chating
@@ -41,10 +42,22 @@ protected:
     class FriendData : public Gtk::TreeModel::ColumnRecord
     {
         public:
-        FriendData();
-        Gtk::TreeModelColumn<Glib::ustring> alias; 
+            FriendData();
+            Gtk::TreeModelColumn<Glib::ustring> alias; 
     };
 
+
+    class ChatTab
+    {
+        public:
+            ChatTab(Glib::ustring fullAlias);
+            Glib::ustring getAlias();   
+            std::shared_ptr<Gtk::TextView> getChatBox();
+
+        private:
+            Glib::ustring fullAlias;
+            std::shared_ptr<Gtk::TextView> chatBox;
+    };
 
     /* SIGNAL HANDLERS */
 
