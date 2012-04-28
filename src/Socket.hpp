@@ -11,6 +11,26 @@
 namespace Socket
 {
 
+class Conversable
+{
+public:
+    /**
+     * Send data to socket.
+     * @param const std::string& Reference to string containing data to send.
+     */
+     virtual void send(const std::string&) const = 0;
+
+    /**
+     * Receive data from socket.
+     * @return const std::string String containing received data.
+     */
+     virtual std::string receive() const throw(ReceiveFailureException) = 0;
+
+     virtual ~Conversable();
+protected:
+    Conversable();
+};
+
 /**
  * Class gives abstraction of socket connections.
  */
@@ -118,7 +138,7 @@ public:
      */
     bool isClientEnqueued() const throw(SelectFailureException);
     
-    class ClientIncomeSocket : public Socket
+    class ClientIncomeSocket : public Socket, public Conversable
     {
     public:
         /**
@@ -157,7 +177,7 @@ protected:
     unsigned int backlog;
 };
 
-class ClientSocket : public Socket
+class ClientSocket : public Socket, public Conversable
 {
 public:
 
