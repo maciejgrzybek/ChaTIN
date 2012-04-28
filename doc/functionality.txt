@@ -58,3 +58,6 @@ ConferenceManager:
     - has map<Glib::ustring alias, vector<Glib::ustring> confList>
     + vector<Glib::ustring>& getList( Glib::ustring alias )
     + void addConference( Glib::ustring alias, vector<Glib::ustring> )
+
+ChatWindow:
+Socket:
