@@ -1,6 +1,5 @@
 #include "ChatWindow.hpp"
 #include <cassert>
-#define cutAlias(x) x
 
 ChatWindow::ChatWindow() : sendButton("Send")
 {
@@ -55,6 +54,12 @@ void ChatWindow::textInHandle()
             }
         }
     }
+}
+
+Glib::ustring ChatWindow::cutAlias( Glib::ustring alias )
+{
+    //TODO: Implement this
+   return alias; 
 }
 
 bool ChatWindow::validateAlias( Glib::ustring )
@@ -140,9 +145,9 @@ void ChatWindow::appendTextToCurrentTab( Glib::ustring text )
 void ChatWindow::initializeFriends()
 {
     //TODO: const size names
-    addFriend("Janek       ");
-    addFriend("Maciej      ");
-    addFriend("Andrzej     ");
+    addFriend("Janek");
+    addFriend("Maciej");
+    addFriend("Andrzej");
 }
 
 void ChatWindow::registerSignals()

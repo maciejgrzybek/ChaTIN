@@ -86,7 +86,14 @@ protected:
      * @return true if given string is valid alias or IPv6 adress
      *          (meaning in can be used to communicate with controller)     
      */
-    bool validateAlias( Glib::ustring );
+    bool validateAlias( Glib::ustring alias );
+
+    /**
+     * Cuts full alias to short form ready to present for user.
+     * @params Glib::ustring - alias to cut
+     * @return Glib::ustring - cutted alias
+     */
+    Glib::ustring cutAlias( Glib::ustring alias );
 
     /* GUI Actions */
     
