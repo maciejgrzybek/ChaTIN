@@ -227,6 +227,7 @@ namespace Socket
     std::string ClientSocket::receive() const throw(ReceiveFailureException)
     {
         char buffer[ClientSocket::buffer_size];
+        memset(buffer,'\0',ClientSocket::buffer_size);
         int nread = recv(sockfd,buffer,sizeof(buffer),0);
         if(nread == -1)
             throw ReceiveFailureException(sockfd);
