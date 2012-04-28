@@ -83,9 +83,10 @@ namespace Socket
             }
             close(sockfd);
         }
-        //TODO: possible place of weird behavior - copying between structures of different type. In bytes, PROBABLY ok
-        if(sockfd == -1)
+        if((sockfd == -1) || (rp == NULL))
             throw SocketCreationFailureException(errno);
+            
+        //TODO: possible place of weird behavior - copying between structures of different type. In bytes, PROBABLY ok
         memcpy(&hostAddress,rp->ai_addr,sizeof(rp->ai_addr));
         freeaddrinfo(result); 
     }
