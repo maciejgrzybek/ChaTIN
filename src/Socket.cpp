@@ -180,10 +180,10 @@ namespace Socket
     std::string ServerSocket::ClientIncomeSocket::receive() const throw(ReceiveFailureException)
     {
         char buffer[ServerSocket::ClientIncomeSocket::buffer_size + 1];
+        memset(buffer,'\0',ServerSocket::ClientIncomeSocket::buffer_size + 1); // initialization of incomming messages buffer.
         int nread = recv(sockfd,buffer,sizeof(buffer),0);
         if(nread == -1)
             throw ReceiveFailureException(sockfd);
-        buffer[nread] = '\0';
         return std::string(buffer);
     }
 
