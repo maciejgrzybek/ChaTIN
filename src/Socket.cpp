@@ -48,20 +48,20 @@ namespace Socket
         sprintf(portString,"%d",port);
 
         resolveResult = getaddrinfo(address.c_str(), portString, &hints, &result); // resolve address and port from DNS and put it in proper place in inet_addr structure
-        if(resolveResult!=0)
+        if(resolveResult != 0)
         {
            throw ResolveException(resolveResult); 
         }
         return result;
     }
 
-    sockaddr_in6 Socket::getAddressStructure(const std::string& address, const unsigned int port)
+    //TODO: fix this method. Looks fine, but ::connect() can't use it's products to connect.
+    std::pair<const sockaddr,size_t> Socket::getAddressStructure(const std::string& address, const unsigned int port)
     {
         addrinfo *result = getResolvedAddrinfo(address,port);
-        sockaddr_in6 resultStruct;
-        memcpy(&resultStruct,result->ai_addr,sizeof(result->ai_addr));
-        freeaddrinfo(result);
-        return resultStruct;
+        std::pair<const sockaddr,size_t> resultPair(*(result->ai_addr),result->ai_addrlen);
+        freeaddrinfo(result); // free addrinfo linked list, which is no more needed
+        return resultPair;
     }
 
     void Socket::getBindedSocket(const std::string& address, const unsigned int port) throw(SocketCreationFailureException)
@@ -197,12 +197,23 @@ namespace Socket
     {
     }
     
+    /**
+     * TODO: correct this method to use getAddressStructure instead of getResolvedAddrinfo. If so, move getResolvedAddrinfo to private section.
+     * Should be changed, because of memory allocation management.
+     * Library should pack requested data and return safely. Pointers that should be free'd should NOT be returned.
+     */
     void ClientSocket::connect(const std::string& address, const unsigned int port) throw(ConnectionFailureException)
     {
-        sockaddr_in6 remoteAddress;
-        remoteAddress = getAddressStructure(address,port);
-        if (::connect(sockfd, (struct sockaddr*)(&remoteAddress), sizeof(remoteAddress)) == -1)
+    //    std::pair<sockaddr,unsigned int> remoteAddress = getAddressStructure(address,port);
+
+        addrinfo* rp = getResolvedAddrinfo(address,port);
+
+//        if (::connect(sockfd, &(remoteAddress.first), remoteAddress.second) == -1)
+        int result = ::connect(sockfd, rp->ai_addr, rp->ai_addrlen);
+        freeaddrinfo(rp); // can be deleted when getAddressStructure is used.
+        if (result == -1)
         {
+            
             throw ConnectionFailureException(errno); 
         }
     }

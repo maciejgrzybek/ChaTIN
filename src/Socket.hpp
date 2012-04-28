@@ -67,17 +67,18 @@ protected:
     void getBindedSocket(const std::string& = "::", const unsigned int = 0) throw(SocketCreationFailureException);
 
     /**
-     * Method resolves with DNS resolver address and port and returns it as inetaddr_in6 structure.
+     * Method resolves with DNS resolver address and port and returns it as inetaddr structure.
      * @param const std::string& Reference to address.
      * @param const unsigned int Port.
-     * @return inetaddr_in6 Structure containing resolved address and port.
+     * @return std::pair<sockaddr,size_t> Pair of structure containing resolved address and port and size_t address length.
      */
-    sockaddr_in6 getAddressStructure(const std::string& = "::", const unsigned int = 0);
+    std::pair<const sockaddr,size_t> getAddressStructure(const std::string& = "::", const unsigned int = 0);
     
     int sockfd;
     sockaddr_in6 hostAddress;
 
 private:
+protected://@TODO Implement properly getAddressStructure (should copy right structure and size and return them), than getResolvedAddrinfo should become private!
     /**
      * Method resolves with DNS resolver address and port and returns it as linked list of addrinfo.
      * You have to manage this structure. After using, be sure it's free'd with freeaddrinfo(addrinfo*).
