@@ -1,4 +1,6 @@
 #include "ChatWindow.hpp"
+#include <cassert>
+#define cutAlias(x) x
 
 ChatWindow::ChatWindow() : sendButton("Send")
 {
@@ -22,6 +24,7 @@ ChatWindow::~ChatWindow()
 ChatWindow::FriendData::FriendData()
 {
     add(alias);
+    add(fullAlias);
 }       
 
 void ChatWindow::textInHandle()
@@ -65,7 +68,7 @@ void ChatWindow::friendPickHandle(const Gtk::TreeModel::Path& path, Gtk::TreeVie
     Gtk::TreeModel::iterator iter = friendListModel->get_iter(path);
     if(iter)
     {
-        openDialogTab((*iter)[friends.alias]);
+        openDialogTab((*iter)[friends.fullAlias]);
     } 
 }
 
@@ -75,21 +78,26 @@ void ChatWindow::openDialogTab( Glib::ustring alias )
     if( dialogBoxes.find(alias) == dialogBoxes.end() )
     {
         /*create page if it is necessary*/            
-        dialogBoxes[alias] = std::shared_ptr<Gtk::TextView>(new Gtk::TextView());        
-        chatTabs.insert_page(*dialogBoxes[alias], alias, 1);
+        dialogBoxes[alias] = std::shared_ptr<ChatTab>(new ChatTab(alias));    
+        chatTabs.insert_page(*dialogBoxes[alias], cutAlias(alias), 1);
         show_all_children();
     }
-    chatTabs.set_current_page( chatTabs.page_num( *dialogBoxes[alias] ) );
+    chatTabs.set_current_page(chatTabs.page_num(*dialogBoxes[alias]));
 }
 
 void ChatWindow::switchTabHandle( GtkNotebookPage* page, guint page_num )
 {
     if(page_num!=0)
     {
-        selName = chatTabs.get_tab_label_text(*chatTabs.get_nth_page(page_num));
-        chatBoxBuffer = dialogBoxes[selName]->get_buffer();
+        selectedTab = dialogBoxes[
+                static_cast<ChatTab*>(chatTabs.get_nth_page(page_num))->getFullAlias()
+        ];    
+        selName = selectedTab->getFullAlias();
+
+        chatBoxBuffer = selectedTab->get_buffer();
         appendTextToCurrentTab("Teraz piszesz do: "+selName+"\n");
-        dialogBoxes[selName]->set_editable(false);
+        selectedTab->set_editable(false);
+        selectedTab->set_can_focus(false);
     }
     else
     {
@@ -103,16 +111,18 @@ void ChatWindow::switchTabHandle( GtkNotebookPage* page, guint page_num )
 void ChatWindow::addFriend( Glib::ustring name )
 {
     Gtk::TreeModel::Row row = *(friendListModel->append());
-    row[friends.alias] = name;
+    row[friends.alias] = cutAlias(name);
+    row[friends.fullAlias] = name;
 }
 
 void ChatWindow::closeCurrentTab()
 {
     if( selName != "LOG" )
     {
-        int currentPage = chatTabs.page_num(*dialogBoxes[selName]);
-        chatTabs.remove_page(currentPage);
-        dialogBoxes.erase(selName);
+        Glib::ustring toRemove = selName;
+        chatTabs.remove_page(*selectedTab);
+        dialogBoxes.erase(toRemove);
+        selectedTab = NULL;
         selName = "LOG";
         chatTabs.set_current_page(0);
     }
@@ -168,24 +178,22 @@ void ChatWindow::initializeTabs()
     chatTabs.set_scrollable();
     chatTabs.insert_page(chatBox, "LOG", 0);
     selName = "LOG"; //fist seleceted tab
+    selectedTab = NULL;
     chatBoxBuffer = chatBox.get_buffer(); //select LOG TextView as default text buffer
     chatBox.set_editable(false);
+    chatBox.set_can_focus(false);
+    chatTabs.set_can_focus(false);
 }
 
 ChatWindow::ChatTab::ChatTab( 
         Glib::ustring fullAlias )
     : fullAlias(fullAlias)
 {
-    chatBox = std::shared_ptr<Gtk::TextView>( new Gtk::TextView() );
 }
 
 
-Glib::ustring ChatWindow::ChatTab::getAlias()
+Glib::ustring ChatWindow::ChatTab::getFullAlias()
 {
     return fullAlias;
-}
-std::shared_ptr<Gtk::TextView> ChatWindow::ChatTab::getChatBox()
-{
-    return chatBox;
 }
 

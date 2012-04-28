@@ -8,7 +8,6 @@
 /*
  * TODO: 
  *      - Scrolling friendList and chatBox
- *      - Cut View from "Model" in friendList (name of tab cannot be information)
  */
 
 
@@ -44,19 +43,18 @@ protected:
         public:
             FriendData();
             Gtk::TreeModelColumn<Glib::ustring> alias; 
+            Gtk::TreeModelColumn<Glib::ustring> fullAlias;
     };
 
 
-    class ChatTab
+    class ChatTab : public Gtk::TextView
     {
         public:
             ChatTab(Glib::ustring fullAlias);
-            Glib::ustring getAlias();   
-            std::shared_ptr<Gtk::TextView> getChatBox();
+            Glib::ustring getFullAlias();   
 
         private:
             Glib::ustring fullAlias;
-            std::shared_ptr<Gtk::TextView> chatBox;
     };
 
     /* SIGNAL HANDLERS */
@@ -161,6 +159,7 @@ protected:
     Glib::RefPtr<Gtk::TextBuffer> chatBoxBuffer;
     Glib::RefPtr<Gtk::TreeStore>  friendListModel;
     Glib::ustring selName;
-    std::map<Glib::ustring, std::shared_ptr<Gtk::TextView> > dialogBoxes;   //Glib::RefPtr cannot be used here
+    std::shared_ptr<ChatTab> selectedTab;
+    std::map<Glib::ustring, std::shared_ptr<ChatTab> > dialogBoxes;   //Glib::RefPtr cannot be used here
                                                                             //becouse it hasnt operator*
 };
