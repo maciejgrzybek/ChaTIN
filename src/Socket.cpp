@@ -220,7 +220,7 @@ namespace Socket
 
     void ClientSocket::send(const std::string& message) const throw(SendFailureException)
     {
-        if(::send(sockfd,message.c_str(),sizeof(message.c_str()),0) == -1)
+        if(::send(sockfd,message.c_str(),message.length(),0) == -1)
             throw SendFailureException(errno);
     }
 
