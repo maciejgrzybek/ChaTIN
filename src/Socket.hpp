@@ -64,7 +64,7 @@ protected:
      * @param const unsigned int Port to be binded on.
      * @throw SocketCreationFailureException Exception thrown when socket can't be created. More details are in thrown class.
      */
-    void getBindedSocket(const std::string&, const unsigned int) throw(SocketCreationFailureException);
+    void getBindedSocket(const std::string& = "::", const unsigned int = 0) throw(SocketCreationFailureException);
 
     /**
      * Method resolves with DNS resolver address and port and returns it as inetaddr_in6 structure.
@@ -72,7 +72,7 @@ protected:
      * @param const unsigned int Port.
      * @return inetaddr_in6 Structure containing resolved address and port.
      */
-    sockaddr_in6 getAddressStructure(const std::string&, const unsigned int);
+    sockaddr_in6 getAddressStructure(const std::string& = "::", const unsigned int = 0);
     
     int sockfd;
     sockaddr_in6 hostAddress;

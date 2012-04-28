@@ -55,7 +55,7 @@ namespace Socket
         return result;
     }
 
-    sockaddr_in6 Socket::getAddressStructure(const std::string& address = "::", const unsigned int port = 0)
+    sockaddr_in6 Socket::getAddressStructure(const std::string& address, const unsigned int port)
     {
         addrinfo *result = getResolvedAddrinfo(address,port);
         sockaddr_in6 resultStruct;
@@ -64,7 +64,7 @@ namespace Socket
         return resultStruct;
     }
 
-    void Socket::getBindedSocket(const std::string& address = "::", const unsigned int port = 0) throw(SocketCreationFailureException)
+    void Socket::getBindedSocket(const std::string& address, const unsigned int port) throw(SocketCreationFailureException)
     {
         addrinfo *result, *rp;
         result = getResolvedAddrinfo(address,port);
@@ -86,7 +86,6 @@ namespace Socket
         //TODO: possible place of weird behavior - copying between structures of different type. In bytes, PROBABLY ok
         if(sockfd == -1)
             throw SocketCreationFailureException(errno);
-
         memcpy(&hostAddress,rp->ai_addr,sizeof(rp->ai_addr));
         freeaddrinfo(result); 
     }
