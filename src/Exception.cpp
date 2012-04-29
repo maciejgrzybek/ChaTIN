@@ -13,6 +13,20 @@ const char* DataParsingException::what() const throw()
     return "Data parsing exception";
 }
 
+FileOpenException::FileOpenException(const std::string& fileName)
+{
+    message = "File cannot be opened ("+fileName+")";
+}
+
+const char* FileOpenException::what() const throw()
+{
+    return message.c_str();
+}
+
+FileOpenException::~FileOpenException() throw()
+{
+}
+
 namespace Socket
 {
 

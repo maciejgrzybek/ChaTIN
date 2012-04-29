@@ -16,6 +16,16 @@ public:
     virtual const char* what() const throw();
 };
 
+class FileOpenException : public Exception
+{
+public:
+    FileOpenException(const std::string&);
+    virtual const char* what() const throw();
+    virtual ~FileOpenException() throw();
+protected:
+    std::string message;
+};
+
 namespace Socket
 {
 
