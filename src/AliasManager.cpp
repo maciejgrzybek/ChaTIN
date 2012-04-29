@@ -1,7 +1,7 @@
 #include "AliasManager.hpp"
 #include "Socket.hpp"
 
-AliasManager::AliasManager( const DBDriver& db, const DialogManager& sender ) : db(db), sender(sender) 
+AliasManager::AliasManager( const DBDriver& db, DialogManager& sender ) : db(db), sender(sender) 
 {
     loadSubscriptionsFromDB();
 }
