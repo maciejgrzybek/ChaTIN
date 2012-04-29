@@ -6,22 +6,22 @@ AliasManager::AliasManager( const DBDriver& db, const DialogManager& sender ) : 
     loadSubscriptionsFromDB();
 }
 
-Glib::ustring AliasManager::getAlias( const Glib::ustring& ip )
+ChaTIN::Alias AliasManager::getAlias( const ChaTIN::IPv6& ip ) const
 {
-    BiStringMap::right_iterator iter = dictionary.right.find( ip );
+    /*BiStringMap::right_iterator*/auto iter = dictionary.right.find( ip );
     if(iter!=dictionary.right.end())
     {
         return iter->second;
     }
     else
     {
-        return ip;
+        return ChaTIN::Alias(ip);
     }
 }
 
-Glib::ustring AliasManager::getIP( const Glib::ustring& alias )
+ChaTIN::IPv6 AliasManager::getIP( const ChaTIN::Alias& alias ) const
 {
-    BiStringMap::left_iterator iter = dictionary.left.find( alias );
+    /*BiStringMap::left_iterator*/auto iter = dictionary.left.find( alias );
     if( iter!=dictionary.left.end() )
     {
         return iter->second; 
@@ -30,18 +30,19 @@ Glib::ustring AliasManager::getIP( const Glib::ustring& alias )
     {
         if( Socket::Socket::isValidIP( alias ) )
         {
-            return alias;
+            //FIXME change to smart cast in ChaTIN::Alias friended with ChaTIN::IPv6.
+            return reinterpret_cast<const ChaTIN::IPv6&>(alias);
         }
         else
         {
             //FIXME 
-            //THROW AliasDoesNotExistsExeption
+            //THROW AliasDoesNotExistExeption
         }    
     }
 }
 
 void AliasManager::registerAlias( 
-    const Glib::ustring& alias, const Glib::ustring ip, bool trySubscribe )
+    const ChaTIN::Alias& alias, const ChaTIN::IPv6& ip, bool trySubscribe )
 {
     dictionary.insert( BiStringMap::value_type( alias, ip ) );
     if( trySubscribe )
@@ -50,7 +51,7 @@ void AliasManager::registerAlias(
     }
 }
 
-void AliasManager::deleteAliasByIp( const Glib::ustring& ip )
+void AliasManager::deleteAliasByIP( const ChaTIN::IPv6& ip )
 {
     BiStringMap::right_iterator iter = dictionary.right.find( ip );
     if(iter!=dictionary.right.end())
@@ -64,7 +65,7 @@ void AliasManager::deleteAliasByIp( const Glib::ustring& ip )
     }        
 }
 
-void AliasManager::deleteAliasByAlias( const Glib::ustring& alias )
+void AliasManager::deleteAliasByAlias( const ChaTIN::Alias& alias )
 {    
     BiStringMap::left_iterator iter = dictionary.left.find( alias );
     if(iter!=dictionary.left.end())
@@ -78,7 +79,7 @@ void AliasManager::deleteAliasByAlias( const Glib::ustring& alias )
     }        
 }
 
-void AliasManager::requestSub( const Glib::ustring& alias )
+void AliasManager::requestSub( const ChaTIN::Alias& alias )
 {
     if( subscriptions[alias] == REQUESTED )
     {
@@ -92,7 +93,7 @@ void AliasManager::requestSub( const Glib::ustring& alias )
     }
 }
 
-void AliasManager::acceptSub( const Glib::ustring& alias )
+void AliasManager::acceptSub( const ChaTIN::Alias& alias )
 {
     if( subscriptions[alias] == REQUESTED )
     {
