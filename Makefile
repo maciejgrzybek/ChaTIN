@@ -5,7 +5,7 @@ GTKI=`pkg-config gtkmm-2.4 --cflags`
 GTKL=`pkg-config gtkmm-2.4 --libs`
 DEBUG=-g
 
-all: obj/ChatWindow.o obj/main.o obj/Socket.o
+all: obj/ChatWindow.o obj/main.o obj/Socket.o obj/Exception.o
 	g++ $^ $(GEN) $(GTKL) -o bin/ChaTIN
 obj/main.o: src/main.cpp src/ChatWindow.hpp
 	g++ src/main.cpp -c $(GEN) $(GTKI) -o $@
