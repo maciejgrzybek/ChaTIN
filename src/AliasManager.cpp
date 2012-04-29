@@ -1,4 +1,5 @@
 #include "AliasManager.hpp"
+#include "Socket.hpp"
 
 AliasManager::AliasManager( const DBDriver& db ) : db(db) //FIXME
 { 
@@ -20,7 +21,23 @@ Glib::ustring AliasManager::getAlias( const Glib::ustring& ip )
 
 Glib::ustring AliasManager::getIP( const Glib::ustring& alias )
 {
-
+    BiStringMap::left_iterator iter = dictionary.left.find( alias );
+    if( iter!=dictionary.left.end() )
+    {
+        return iter->second; 
+    }
+    else
+    {
+        if( Socket::Socket::isValidIp( alias ) )
+        {
+            return alias;
+        }
+        else
+        {
+            //FIXME 
+            //THROW AliasDoesNotExistsExeption
+        }    
+    }
 }
 
 void AliasManager::registerAlias( 
