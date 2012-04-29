@@ -80,12 +80,20 @@ void AliasManager::deleteAliasByAlias( const Glib::ustring& alias )
 
 void AliasManager::requestSub( const Glib::ustring& alias )
 {
-      
+    if( subscriptions[alias] == REQUESTED )
+    {
+        acceptSub(alias);
+    }
+    else
+    {
+        sender.sendTo( alias , "IKY" );
+        subscriptions[alias] = ONE_SIDED;
+    }
 }
 
 void AliasManager::acceptSub( const Glib::ustring& alias )
 {
-
+    
 }
 
 void AliasManager::rejectSub( const Glib::ustring& alias )

@@ -70,8 +70,8 @@ public:
     void deleteAliasByAlias( const Glib::ustring& alias );
 
     /**
-     * Send information to adress that you want to subscribe him
-     *  if you are in REQUESTED then just call acceptSub
+     * Send information to adress that you want to subscribe 
+     * If you are in REQUESTED then just call acceptSub
      * @param const Glib::ustring& alias to request
      * @throw AliasNotConnected - if alias client ist connected right now
      * @throw AliasAlreadyFullSubscribed - if alias is on FULL phase with you
