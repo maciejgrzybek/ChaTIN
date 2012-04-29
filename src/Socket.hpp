@@ -67,6 +67,12 @@ public:
      * @throw WrongAddressException Exception is thrown when given IP address cannot be parsed.
      */
     virtual void setHostAddress(const std::string&) throw(WrongAddressException);
+
+    /**
+     * Static function checks whether given string represents valid IPv6 address or not.
+     * @return bool Boolean value. True when given string represents valid IPv6 address, false otherwise.
+     */
+    static bool isValidIp(const std::string&);
 protected:
     /**
      * Constructor for already not created socket.
