@@ -16,9 +16,10 @@ public:
      * Constructor creates Dialog with given IPv6 address.
      * It creates ClientSocket as ConversableSocket and becomes ready to conversate after sucesfull connection.
      * @param const Glib::ustring& Reference for unicode string with IPv6 address.
+     * @param const unsigned int Port to send to (in most cases read from Config).
      * @throw Socket::ConnectionFailureException Exception thrown when socket cannot establish connection to given ipv6 address.
      */
-    Dialog(const Glib::ustring&) throw(Socket::ConnectionFailureException);
+    Dialog(const Glib::ustring&, const unsigned int) throw(Socket::ConnectionFailureException);
 
     /**
      * Constructor creates Dialog with given ConversableSocket (i.e. received from DialogManager (it's ServerSocket) ).

@@ -6,6 +6,7 @@
 
 #include <glibmm/ustring.h>
 #include <unordered_map>
+#include <string>
 
 /**
  * Singleton class stores dialogs and provides functionality of dispatching incomming connections.
@@ -21,9 +22,10 @@ public:
     DialogManager(const ToViewParser&);
     /**
      * Send message to given IPv6 address or alias.
-     * @param const Glib::ustring& Reference to IPv6 or alias as unicode string.
+     * @param const const Glib::ustring& Reference to IPv6 or alias as unicode string.
+     * @param const const Glib::ustring& Reference to message to send as unicode string.
      */
-    void sendTo(const Glib::ustring&) const;
+    void sendTo(const Glib::ustring&,const Glib::ustring&) const;
 
     /**
      * Starts server, which handles incomming connections and dispatches it.
