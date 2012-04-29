@@ -16,7 +16,7 @@ enum SubPhase { REQUESTED, ONE_SIDED, REJECTED, FULL };
  */
 class AliasManager
 {
-    typedef boost::bimap<Glib::ustring, Glib::ustring> BiStringMap;        
+    typedef boost::bimap<Glib::ustring/*alias*/, Glib::ustring /*ipv6*/> BiStringMap;
 
     /* aliases bimap (1) */
     BiStringMap dictionary;
@@ -56,7 +56,7 @@ public:
     /**
      * Removes alias given by ip adress
      * @param const Glib::ustring& IPv6 adress to delete from alias list
-     * @throw AliasdoesNotExistsException - when alias wansnt find
+     * @throw AliasDoesNotExistsException - when alias wansnt find
      */
     void deleteAliasByIp( const Glib::ustring& ip );
     
