@@ -55,7 +55,7 @@ void AliasManager::deleteAliasByIp( const Glib::ustring& ip )
     BiStringMap::right_iterator iter = dictionary.right.find( ip );
     if(iter!=dictionary.right.end())
     {
-        dictionary.right.remove(iter);
+        dictionary.right.erase(iter);
     }
     else
     {
@@ -69,7 +69,7 @@ void AliasManager::deleteAliasByAlias( const Glib::ustring& alias )
     BiStringMap::left_iterator iter = dictionary.left.find( alias );
     if(iter!=dictionary.left.end())
     {
-        dictionary.left.remove(iter);
+        dictionary.left.erase(iter);
     }
     else
     {
