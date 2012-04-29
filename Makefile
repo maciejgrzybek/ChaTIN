@@ -1,4 +1,4 @@
-GEN=-std=c++0x -Wall -Wextra
+GEN=-std=c++0x
 GLIBI=`pkg-config glibmm-2.4 --cflags`
 GLIBL=`pkg-config glibmm-2.4 --libs`
 GTKI=`pkg-config gtkmm-2.4 --cflags`

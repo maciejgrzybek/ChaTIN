@@ -5,11 +5,20 @@ AliasManager::AliasManager( const DBDriver& db ) : db(db) //FIXME
     //FIXME: There is no known DBDriver interface
 }
 
-Glib::ustring AliasManager::getAlias( const Glib::ustring& )
+Glib::ustring AliasManager::getAlias( const Glib::ustring& ip )
 {
+    BiStringMap::right_iterator iter = dictionary.right.find( ip );
+    if(iter!=dictionary.right.end())
+    {
+        return iter->second;
+    }
+    else
+    {
+        return ip;
+    }
 }
 
-Glib::ustring AliasManager::getIP( const Glib::ustring& )
+Glib::ustring AliasManager::getIP( const Glib::ustring& alias )
 {
 
 }
