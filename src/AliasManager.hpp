@@ -30,13 +30,13 @@ class AliasManager
     /* subscriptions data (2) */
     std::map<ChaTIN::Alias, SubPhase> subscriptions;
     const DBDriver& db;
-    const DialogManager& sender;
+    DialogManager& sender;
 
 public:
     /**
      * Default construtctor reading existing aliases from given DBDriver
      */
-    AliasManager( const DBDriver&, const DialogManager& );
+    AliasManager( const DBDriver&, DialogManager& );
 
     /**
      * Gets alias from given ip
