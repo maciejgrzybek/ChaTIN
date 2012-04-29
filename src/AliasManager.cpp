@@ -133,6 +133,10 @@ void AliasManager::wasRejected( const ChaTIN::Alias& alias )
 
 void AliasManager::wasAccepted( const ChaTIN::Alias& alias )
 {
+    if( subscriptions[alias] == ONE_SIDED )
+    {
+        subscriptions[alias] = FULL;
+    }
 }
 
 void AliasManager::loadSubscriptionsFromDB()
