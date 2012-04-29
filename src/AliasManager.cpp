@@ -43,7 +43,11 @@ Glib::ustring AliasManager::getIP( const Glib::ustring& alias )
 void AliasManager::registerAlias( 
     const Glib::ustring& alias, const Glib::ustring ip, bool trySubscribe )
 {
-
+    dictionary.insert( BiStringMap::value_type( alias, ip ) );
+    if( trySubscribe )
+    {
+        requestSub( alias );
+    }
 }
 
 void AliasManager::deleteAliasByIp( const Glib::ustring& ip )
