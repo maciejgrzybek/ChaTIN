@@ -3,9 +3,9 @@
 Config::Config(const std::string& fileName) throw(FileOpenException)
 {
     // Initialization of fromStringToTypeVariableMap (lambda functions).
-    fromStringToTypeVariableMap["int"] = [](const std::string& input){ return boost::lexical_cast<int>(input);};
-    fromStringToTypeVariableMap["char"] = [](const std::string& input){ return boost::lexical_cast<char>(input);};
-    fromStringToTypeVariableMap["string"] = [](const std::string& input){ return boost::lexical_cast<std::string>(input);};
+    fromStringToTypeVariableMap["int"] = [](const std::string& input){ return SupportedTypesVariant(boost::lexical_cast<int>(input));};
+    fromStringToTypeVariableMap["char"] = [](const std::string& input){ return SupportedTypesVariant(boost::lexical_cast<char>(input));};
+    fromStringToTypeVariableMap["string"] = [](const std::string& input){ return SupportedTypesVariant(boost::lexical_cast<std::string>(input));};
 
     loadFile(fileName);
 }
