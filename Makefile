@@ -6,7 +6,7 @@ GTKI=`pkg-config gtkmm-2.4 --cflags`
 GTKL=`pkg-config gtkmm-2.4 --libs`
 LFLAGS=-ltinyxml
 
-all: obj/ChatWindow.o obj/main.o obj/Socket.o obj/Exception.o obj/Dialog.o obj/DialogManager.o obj/AliasManager.o obj/Config.o
+all: obj/ChatWindow.o obj/main.o obj/Socket.o obj/Exception.o obj/Dialog.o obj/DialogManager.o obj/AliasManager.o obj/Config.o obj/types.o
 	g++ $^ $(GEN) $(GTKL) $(LFLAGS) -o bin/ChaTIN
 obj/main.o: src/main.cpp src/ChatWindow.hpp
 	g++ src/main.cpp -c $(GEN) $(GTKI) -o $@
@@ -24,6 +24,8 @@ obj/DialogManager.o: src/DialogManager.cpp src/DialogManager.hpp
 	g++ src/DialogManager.cpp -c $(GEN) $(GLIBI) -o $@
 obj/Config.o: src/Config.cpp src/Config.hpp
 	g++ src/Config.cpp -c $(GEN) -o $@
+obj/types.o: src/types.cpp src/types.hpp
+	g++ src/types.cpp -c $(GEN) $(GLIBI) -o $@
 clean:
 	rm obj/*.o
 debug: GEN += -DDEBUG -Wall -Wextra -g3
