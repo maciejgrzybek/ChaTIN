@@ -1,6 +1,7 @@
 #ifndef _DIALOG_MANAGER_HPP_
 #define _DIALOG_MANAGER_HPP_
 
+#include "Dialog.hpp"
 #include "ToViewParser.hpp"
 
 #include <glibmm/ustring.h>
@@ -42,12 +43,12 @@ protected:
      * Runs new thread and enters infinity loop handling client's requests.
      * @param const Socket::Server::ClientIncomeSocket& Reference to incame socket.
      */
-    void dispatchIncomingSocket(const Socket::Server::ClientIncomeSockete&);
+    void dispatchIncomingSocket(const Socket::ServerSocket::ClientIncomeSocket&);
 
     /**
      * Unordered map to store association IPv6 address -> Dialog.
      */
-    std::unordered_map<Glib::ustring&,const Dialog*> dialogMap;
+    std::unordered_map<const Glib::ustring,const Dialog*> dialogMap;
     /**
      * Reference to incoming network packets grammar parser.
      */
