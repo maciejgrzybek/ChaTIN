@@ -1,7 +1,7 @@
 #include "ConferenceManager.hpp"
 
 void ConferenceManager::addConference( 
-        const ConferenceId& id, const std::vector< Glib::ustring >& members )
+        const ChaTIN::ConferenceId& id, const std::vector< ChaTIN::IPv6 >& members )
 {
     std::map::iterator iter = conferences.find( id ); 
     if( iter!=conferences.end() )
@@ -15,7 +15,7 @@ void ConferenceManager::addConference(
     }
 }
 
-const std::vector<Glib::ustring>& ConferenceManager::getList( const ConferenceId& id )
+const std::vector<ChaTIN::IPv6>& ConferenceManager::getList( const ChaTIN::ConferenceId& id )
 {
     std::map::iterator iter = conferences.find( id ); 
     if( iter!=conferences.end() )
@@ -29,7 +29,7 @@ const std::vector<Glib::ustring>& ConferenceManager::getList( const ConferenceId
     }
 }
 
- void ConferenceManager::removeConfrence( const ConferenceId& id )
+ void ConferenceManager::removeConfrence( const ChaTIN::ConferenceId& id )
  {
     std::map::iterator iter = conferences.find( id );
     if( iter!=conferences.end() )
@@ -44,7 +44,7 @@ const std::vector<Glib::ustring>& ConferenceManager::getList( const ConferenceId
 }
 
 void ConferenceManager::registerIncomingConference( 
-            const ConferenceId& id, const std::vector< Glib::ustring >& members )
+            const ChaTIN::ConferenceId& id, const std::vector< ChaTIN::IPv6 >& members )
 {
     std::map::iterator iter = conferences.find( id ); 
     if( iter!=conferences.end() )

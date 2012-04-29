@@ -17,7 +17,7 @@ public:
      * @throw NameAlreadyInUse if name was already usede
      */
     void addConference( 
-        const ChaTIN::ConferenceId& id, const std::vector< Glib::ustring >& members );
+        const ChaTIN::ConferenceId& id, const std::vector< ChaTIN::IPv6 >& members );
 
     /**
      * Method that can be used to find list of ipv6 in conference given by name
@@ -25,7 +25,7 @@ public:
      * @throw ConferenceNotFoundException when there is no conference with given name
      * @return reference to list of ipv6 in conference given by name in argument
      */
-    const std::vector<Glib::ustring>& getList( const ChaTIN::ConferenceId& id );
+    const std::vector< ChaTIN::IPv6 >& getList( const ChaTIN::ConferenceId& id );
 
     /**
      * Remove conference with given name from list
@@ -43,7 +43,7 @@ public:
      *  if it is do nothing, otherwise find new name (~1,~2,~3...) for new one and add it
      */
     void registerIncomingConference( 
-            const ChaTIN::ConferenceId& id, const std::vector<ChaTIN::IPv6>& members );
+            const ChaTIN::ConferenceId& id, const std::vector< ChaTIN::IPv6 >& members );
     
 private:
     std::map< ChaTIN::ConferenceId, std::vector< ChaTIN::IPv6 > > conferences;
