@@ -1,3 +1,6 @@
+#ifndef _TYPES_HPP_
+#define _TYPES_HPP_
+
 #include <glibmm/ustring.h>
 namespace ChaTIN
 {
@@ -43,3 +46,5 @@ struct ConferenceId
 };
 
 }/*namespace ChaTIN*/
+
+#endif
