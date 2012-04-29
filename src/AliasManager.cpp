@@ -28,7 +28,7 @@ Glib::ustring AliasManager::getIP( const Glib::ustring& alias )
     }
     else
     {
-        if( Socket::Socket::isValidIp( alias ) )
+        if( Socket::Socket::isValidIP( alias ) )
         {
             return alias;
         }
