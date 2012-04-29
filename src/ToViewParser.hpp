@@ -14,5 +14,4 @@ class ToViewParser
      * @throw CannotParseMassageException if parser cannot understand that
      */
     void doCommand( const Glib::ustring& alias, const Glib::ustring& msg );
-
 };
