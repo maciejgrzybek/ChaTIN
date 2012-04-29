@@ -80,7 +80,7 @@ void AliasManager::deleteAliasByAlias( const Glib::ustring& alias )
 
 void AliasManager::requestSub( const Glib::ustring& alias )
 {
-
+    
 }
 
 void AliasManager::acceptSub( const Glib::ustring& alias )

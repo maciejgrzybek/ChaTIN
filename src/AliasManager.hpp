@@ -106,4 +106,15 @@ public:
      * @param const Glib::ustring& alias which send accept to you 
      */
     void wasAccepted( const Glib::ustring& alias );
+
+    private:
+    /**
+     * loads subscriptios vector from DB using DBDriver
+     */
+    void loadSubscriptionsFromDB();
+
+    /**
+     * save subscriptions vector to DB using DBDriver
+     */
+    void saveSubscriptionsToDB();
 };
