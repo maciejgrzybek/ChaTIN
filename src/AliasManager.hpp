@@ -8,6 +8,7 @@
 #include <map>
 #include "DBDriver.hpp"
 #include "DialogManager.hpp"
+#include "types.hpp"
 
 enum SubPhase { REQUESTED, ONE_SIDED, REJECTED, FULL };
 
