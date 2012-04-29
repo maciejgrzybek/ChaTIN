@@ -96,26 +96,26 @@ public:
 
     /**
      * If you are in REQUESTED then send Reject and go to REJECTED
-     * @param const Glib::ustring& alias to reject
+     * @param const ChaTIN::Alias& alias to reject
      * @throw YouAreNotRequested - when alias client didnt send you request
      * @throw AliasNotConnected - if alias client ist connected right now
      */
-    void rejectSub( const Glib::ustring& alias );
+    void rejectSub( const ChaTIN::Alias& alias );
 
     /**
      * Call if reject package came from alias
      * goes to REJECTED phase
-     * @param const Glib::ustring& alias which rejected you
+     * @param const ChaTIN::Alias& alias which rejected you
      */
-    void wasRejected( const Glib::ustring& alias );
+    void wasRejected( const ChaTIN::Alias& alias );
 
     /**
      * Call if accept package came from alias
      * if you was in ONE_SIDED go to FULL
      * otherwise dont do anything
-     * @param const Glib::ustring& alias which send accept to you 
+     * @param const ChaTIN::Alias& alias which send accept to you 
      */
-    void wasAccepted( const Glib::ustring& alias );
+    void wasAccepted( const ChaTIN::Alias& alias );
 
     private:
     /**
