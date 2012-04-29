@@ -1,7 +1,9 @@
 #pragma once
 #include <glibmm/ustring.h>
+#include <boost/bimap.hpp>
 #include <iostream>
 #include <map>
+#include "DBDriver.hpp"
 
 enum SubPhase { REQUESTED, ONE_SIDED, REJECTED, FULL };
 
@@ -12,15 +14,15 @@ enum SubPhase { REQUESTED, ONE_SIDED, REJECTED, FULL };
  *    especially state of subscription request and
  *    provide those information for view
  */
-class AliasMaganer
+class AliasManager
 {
     typedef boost::bimap<Glib::ustring, Glib::ustring> BiStringMap;        
 
     /* aliases bimap (1) */
     BiStringMap dictionary;
     /* subscriptions data (2) */
-    std::unordered_map< Glib::ustring /*alias*/, SubPhase>;
-    DBDriver& db;
+    std::map< Glib::ustring /*alias*/, SubPhase> subscriptions;
+    const DBDriver& db;
 
 public:
     /**
