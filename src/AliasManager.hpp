@@ -63,7 +63,7 @@ public:
     /**
      * Removes alias given by its name
      * @param const Glib::ustring& alias to find
-     * @throw AliasdoesNotExistsException - when alias wansnt find
+     * @throw AliasDoesNotExistsException - when alias wansnt find
      */
     void deleteAliasByAlias( const Glib::ustring& alias );
 

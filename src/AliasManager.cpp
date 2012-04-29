@@ -65,7 +65,17 @@ void AliasManager::deleteAliasByIp( const Glib::ustring& ip )
 }
 
 void AliasManager::deleteAliasByAlias( const Glib::ustring& alias )
-{
+{    
+    BiStringMap::left_iterator iter = dictionary.left.find( alias );
+    if(iter!=dictionary.left.end())
+    {
+        dictionary.left.remove(iter);
+    }
+    else
+    {
+        //FIXME
+        //THROW AliasDoesNotExistsException
+    }        
 }
 
 void AliasManager::requestSub( const Glib::ustring& alias )
