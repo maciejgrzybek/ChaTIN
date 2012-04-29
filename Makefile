@@ -15,5 +15,7 @@ obj/Socket.o: src/Socket.cpp src/Socket.hpp
 	g++ src/Socket.cpp -c $(GEN) -o $@
 obj/Exception.o: src/Exception.cpp src/Exception.hpp
 	g++ src/Exception.cpp -c $(GEN) -o $@
+obj/AliasManager.o: src/AliasManager.cpp src/AliasManager.hpp
+	g++ src/AliasManager.cpp -c $(GEN) -o $@
 clean:
 	rm obj/*.o
