@@ -1,9 +1,8 @@
 #include "Dialog.hpp"
-#include "Config.hpp"
 #include <string>
 #include <glibmm/ustring.h>
 
-Dialog::Dialog(const Glib::ustring& ipAddress, const unsigned int port) throw(Socket::ConnectionFailureException) : conversationSocket(new Socket::ClientSocket())
+Dialog::Dialog(const ChaTIN::IPv6& ipAddress, const unsigned int port) throw(Socket::ConnectionFailureException) : conversationSocket(new Socket::ClientSocket())
 {
     ((Socket::ClientSocket*)(conversationSocket))->connect(std::string(ipAddress.c_str()),port);
 }
@@ -12,7 +11,7 @@ Dialog::Dialog(const Socket::Conversable* conversationSocket) : conversationSock
 {
 }
 
-void Dialog::send(const Glib::ustring& message) const
+void Dialog::send(const Glib::ustring& message) const throw(Socket::SendFailureException)
 {
     conversationSocket->send(std::string(message.c_str()));
 }
