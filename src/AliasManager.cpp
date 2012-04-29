@@ -108,17 +108,17 @@ void AliasManager::acceptSub( const ChaTIN::Alias& alias )
     }    
 }
 
-void AliasManager::rejectSub( const Glib::ustring& alias )
+void AliasManager::rejectSub( const ChaTIN::Alias& alias )
 {
 
 }
 
-void AliasManager::wasRejected( const Glib::ustring& alias )
+void AliasManager::wasRejected( const ChaTIN::Alias& alias )
 {
 
 }
 
-void AliasManager::wasAccepted( const Glib::ustring& alias )
+void AliasManager::wasAccepted( const ChaTIN::Alias& alias )
 {
 
 }
