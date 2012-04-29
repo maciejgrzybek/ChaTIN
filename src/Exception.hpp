@@ -26,11 +26,25 @@ protected:
     std::string message;
 };
 
-class WrongTypeOfValueException : public DataParsingException
+class XMLParsingException : public DataParsingException
+{
+public:
+    XMLParsingException();
+    XMLParsingException(const std::string&);
+    ~XMLParsingException() throw();
+    virtual const char* what() const throw();
+protected:
+    std::string message;
+};
+
+class WrongTypeOfValueException : public XMLParsingException
 {
 public:
     WrongTypeOfValueException(const std::string&, const std::string&);
+    ~WrongTypeOfValueException() throw();
     virtual const char* what() const throw();
+protected:
+    std::string message;
 };
 
 namespace Socket

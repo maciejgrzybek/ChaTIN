@@ -10,10 +10,10 @@ Config::Config(const std::string& fileName) throw(FileOpenException)
     loadFile(fileName);
 }
 
-void Config::loadFile(const std::string& fileName) throw(FileOpenException)
+void Config::loadFile(const std::string& fileName) throw(FileOpenException,DataParsingException)
 {
 // code mostly basis on TinyXML example
-/*    TiXmlDocument doc(fileName.c_str());
+    TiXmlDocument doc(fileName.c_str());
     if (!doc.LoadFile())
         throw FileOpenException(fileName);
 
@@ -26,20 +26,22 @@ void Config::loadFile(const std::string& fileName) throw(FileOpenException)
 	// block: name
 	{
 		pElem=hDoc.FirstChildElement().Element();
-		// should always have a valid root but handle gracefully if it does
-		if (!pElem) return;
+		// should always have a valid root. If does not - throw exception.
+		if (!pElem)
+            throw XMLParsingException(fileName);
+
 		m_name=pElem->Value();
 
 		// save this for later
 		hRoot=TiXmlHandle(pElem);
 	}
 
-    // block: string table
+    // <configuration>
 	{
 		m_messages.clear(); // trash existing table
 
 		pElem=hRoot.FirstChild().Element();
-		for( pElem; pElem; pElem=pElem->NextSiblingElement())
+		for(; pElem; pElem=pElem->NextSiblingElement())
 		{
 			std::string pKey = pElem->Value();
 			std::string pText = pElem->GetText();
@@ -59,35 +61,5 @@ void Config::loadFile(const std::string& fileName) throw(FileOpenException)
 			}
 		}
 	}
-
-	// block: windows
-	{
-		m_windows.clear(); // trash existing list
-
-		TiXmlElement* pWindowNode=hRoot.FirstChild( "Windows" ).FirstChild().Element();
-		for( pWindowNode; pWindowNode; pWindowNode=pWindowNode->NextSiblingElement())
-		{
-			WindowSettings w;
-			const char *pName=pWindowNode->Attribute("name");
-			if (pName) w.name=pName;
-			
-			pWindowNode->QueryIntAttribute("x", &w.x); // If this fails, original value is left as-is
-			pWindowNode->QueryIntAttribute("y", &w.y);
-			pWindowNode->QueryIntAttribute("w", &w.w);
-			pWindowNode->QueryIntAttribute("hh", &w.h);
-
-			m_windows.push_back(w);
-		}
-	}
-
-	// block: connection
-	{
-		pElem=hRoot.FirstChild("Connection").Element();
-		if (pElem)
-		{
-			m_connection.ip=pElem->Attribute("ip");
-			pElem->QueryDoubleAttribute("timeout",&m_connection.timeout);
-		}
-	}*/
 
 }

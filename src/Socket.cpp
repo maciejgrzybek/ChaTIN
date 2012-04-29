@@ -37,7 +37,7 @@ namespace Socket
         //    free(hostAddress); // TODO: check this! Is it correct way to free this?
     }
 
-    bool Socket::isValidIp(const std::string& ipAddress)
+    bool Socket::isValidIP(const std::string& ipAddress)
     {
         in6_addr byteAddress;
         return (inet_pton(AF_INET6,ipAddress.c_str(),&byteAddress) == 1);

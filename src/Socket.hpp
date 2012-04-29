@@ -72,7 +72,7 @@ public:
      * Static function checks whether given string represents valid IPv6 address or not.
      * @return bool Boolean value. True when given string represents valid IPv6 address, false otherwise.
      */
-    static bool isValidIp(const std::string&);
+    static bool isValidIP(const std::string&);
 protected:
     /**
      * Constructor for already not created socket.

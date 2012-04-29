@@ -5,6 +5,7 @@
 #include <boost/variant.hpp>
 #include <boost/function.hpp>
 #include <boost/lexical_cast.hpp>
+#define TIXML_USE_STL 
 #include <tinyxml.h>
 #include <tinystr.h>
 #include "Exception.hpp"
@@ -34,8 +35,9 @@ public:
      * Loads configuration file.
      * @param const std::string& Reference to name of file containing configuration in XML.
      * @throw FileOpenException Exception thrown when configuration file can not be opened.
+     * @throw DataParsingException Exception thrown when XML format from file does not correspond suitable format.
      */
-    void loadFile(const std::string& = "config.xml") throw(FileOpenException);
+    void loadFile(const std::string& = "config.xml") throw(FileOpenException,DataParsingException);
 
     /**
      * Method returns value of given key from config.
@@ -43,7 +45,10 @@ public:
      * @return T Value of given key of type as template requests.
      */
     template<class T>
-    T getValue(const std::string&);
+    T getValue(const std::string& key)
+    {
+        return boost::get<T>(m_messages[key]);
+    }
 
 protected:
     /**
