@@ -110,12 +110,22 @@ void AliasManager::acceptSub( const ChaTIN::Alias& alias )
 
 void AliasManager::rejectSub( const ChaTIN::Alias& alias )
 {
+     if( subscriptions[alias] == REQUESTED )
+    {
+        sender.sendTo( alias, "IDKY" ); //TODO package content
+                                        //     try catch - whaat if he is off AliasNotConnectedException
+        subscriptions[alias] = REJECTED;
+    }
+    else
+    {
+       //FIXME
+       //THROW  YouAreNotRequestedException
+    }    
 
 }
 
 void AliasManager::wasRejected( const ChaTIN::Alias& alias )
 {
-
 }
 
 void AliasManager::wasAccepted( const ChaTIN::Alias& alias )
