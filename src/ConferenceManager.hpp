@@ -9,8 +9,7 @@
  */
 class ConferenceManager
 {
-    std::map< std::pair<Glib::ustring /*name*/, Glib::ustring /*owner ipv6*/>, std::vector< Glib::ustring /*members*/> conferences;
-
+public:
     /**
      * Method that allows to create confrence but only if name isnt already registred name 
      *  or other conference name and owner ::1.
@@ -45,4 +44,9 @@ class ConferenceManager
     void registerIncomingConference( 
             const Glib::ustring& name, const Glib::ustring& owner, const std::vector< Glib::ustring >& members );
     
+private:
+    std::map< 
+        std::pair<Glib::ustring /*name*/, Glib::ustring /*owner ipv6*/>, 
+        std::vector< Glib::ustring /*members*/
+    > conferences;
 };
