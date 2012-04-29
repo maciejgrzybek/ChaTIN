@@ -26,6 +26,13 @@ protected:
     std::string message;
 };
 
+class WrongTypeOfValueException : public DataParsingException
+{
+public:
+    WrongTypeOfValueException(const std::string&, const std::string&);
+    virtual const char* what() const throw();
+};
+
 namespace Socket
 {
 

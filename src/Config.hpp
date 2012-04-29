@@ -3,17 +3,25 @@
 
 #include <unordered_map>
 #include <boost/variant.hpp>
+#include <boost/function.hpp>
+#include <boost/lexical_cast.hpp>
 #include <tinyxml.h>
 #include <tinystr.h>
 #include "Exception.hpp"
+#include <string>
+#include <map>
 
 class Config
 {
 public:
     /**
+     * Typedef for boost::variant of accepting types from XML.
+     */
+    typedef boost::variant<int,char,std::string> SupportedTypesVariant;
+    /**
      * Typedef for map holding accepted types of keys and values corresponding to them.
      */
-    typedef std::unordered_map<boost::variant<int,char,std::string>,std::string> OptionsMap;
+    typedef std::unordered_map<std::string,SupportedTypesVariant> OptionsMap;
 
     /**
      * Config constructor.
@@ -23,12 +31,37 @@ public:
     Config(const std::string& = "config.xml") throw(FileOpenException);
 
     /**
+     * Loads configuration file.
+     * @param const std::string& Reference to name of file containing configuration in XML.
+     * @throw FileOpenException Exception thrown when configuration file can not be opened.
+     */
+    void loadFile(const std::string& = "config.xml") throw(FileOpenException);
+
+    /**
      * Method returns value of given key from config.
      * @param const std::string& Key name to get it's value.
      * @return T Value of given key of type as template requests.
      */
     template<class T>
     T getValue(const std::string&);
+
+protected:
+    /**
+     * Function returns value of given expression after casting to one of supported types (boost::variant).
+     */
+    //typedef boost::function<SupportedTypesVariant (const std::string&)> CastFunction;
+    typedef std::function<SupportedTypesVariant (const std::string&)> CastFunction;
+
+    /**
+     * Map of key=>value, where key is type to cast value given as parameter to value's function.
+     * Value is boost::function callback which returns casted value, as key specifies. 
+     * I.e. fromStringToTypeVariableMap["int"]("12"); will cast string "12" into int type, by given function (which uses boost::lexical_cast).
+     * Consider moving this map static.
+     */
+    std::map<const std::string, CastFunction> fromStringToTypeVariableMap;
+
+    OptionsMap m_messages;
+
 };
 
 #endif
