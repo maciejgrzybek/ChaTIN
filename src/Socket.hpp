@@ -144,7 +144,8 @@ public:
     public:
         /**
          * Size of buffer to receive message to.
-         * If message would be larger than this amount, this won't be lost. It will 
+         * If message would be larger than this amount, this won't be lost. It will
+		 * be divided into parts.
          */
         static const unsigned int buffer_size = 1024;
 
@@ -185,6 +186,7 @@ public:
     /**
      * Size of buffer to receive message to.
      * If message would be larger than this amount, this won't be lost. It will 
+	 * be divided into parts.
      */
     static const unsigned int buffer_size = 1024;
 
