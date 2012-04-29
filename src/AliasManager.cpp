@@ -86,14 +86,25 @@ void AliasManager::requestSub( const Glib::ustring& alias )
     }
     else
     {
-        sender.sendTo( alias , "IKY" );
+        sender.sendTo( alias , "IKY" ); //TODO package content
+                                        //     try catch - what if he is off AliasNotConnectedException
         subscriptions[alias] = ONE_SIDED;
     }
 }
 
 void AliasManager::acceptSub( const Glib::ustring& alias )
 {
-    
+    if( subscriptions[alias] == REQUESTED )
+    {
+        sender.sendTo( alias, "IKYA" ); //TODO package content
+                                        //     try catch - whaat if he is off AliasNotConnectedException
+        subscriptions[alias] = FULL;
+    }
+    else
+    {
+       //FIXME
+       //THROW  YouAreNotRequestedException
+    }    
 }
 
 void AliasManager::rejectSub( const Glib::ustring& alias )
