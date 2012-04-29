@@ -102,3 +102,13 @@ void AliasManager::wasAccepted( const Glib::ustring& alias )
 {
 
 }
+
+void AliasManager::loadSubscriptionsFromDB()
+{
+    //FIXME - when DBDriver interface is known
+}
+
+void AliasManager::saveSubscriptionsToDB()
+{
+    //FIXME - when DBDriver interface is know
+}
