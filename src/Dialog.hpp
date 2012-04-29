@@ -31,8 +31,9 @@ public:
     /**
      * Method sends message through socket.
      * @param const Glib::ustring& Reference to unicode string to be send through socket.
+	 * @throw SendFailureException Exception trow when send failed. Detail are stored in excepion object.
      */
-    void send(const Glib::ustring&) const;
+    void send(const Glib::ustring&) const throw(Socket::SendFailureException);
 
     /**
      * Receives unicode message from socket.
