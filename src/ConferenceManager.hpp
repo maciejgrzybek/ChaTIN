@@ -53,7 +53,4 @@ class ConferenceManager
     void registerIncomingConference( 
             const Glib::ustring& name, const std::vector< Glib::ustring >& members );
     
-    
-    
-
 };
