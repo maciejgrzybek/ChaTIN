@@ -1,6 +1,12 @@
 #ifndef _CONFIG_HPP_
 #define _CONFIG_HPP_
 
+#include <unordered_map>
+#include <boost/variant.hpp>
+#include <tinyxml.h>
+#include <tinystr.h>
+#include "Exception.hpp"
+
 class Config
 {
 public:
@@ -10,11 +16,11 @@ public:
     typedef std::unordered_map<boost::variant<int,char,std::string>,std::string> OptionsMap;
 
     /**
-     * Singleton instance getter.
+     * Config constructor.
      * @param const std::string& Reference to name of file containing configuration in XML.
-     * @return Config* Pointer to instance of Config class.
+     * @throw FileOpenException Exception thrown when configuration file cannot be opened.
      */
-    static Config* getInstance(const std::string& = "config.xml");
+    Config(const std::string& = "config.xml") throw(FileOpenException);
 
     /**
      * Method returns value of given key from config.
@@ -23,14 +29,6 @@ public:
      */
     template<class T>
     T getValue(const std::string&);
-private:
-    /**
-     * Config constructors are private, because we don't want anyone instantiating this class without getInstance() method.
-     * @param const std::string& Reference to name of file containing configuration in XML.
-     */
-    Config(const std::string& = "config.xml");
-    Config(const Config&);
-    Config& operator=(Config&);
 };
 
 #endif

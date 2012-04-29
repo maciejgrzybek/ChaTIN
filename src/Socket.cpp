@@ -13,6 +13,14 @@
 namespace Socket
 {
 
+    Conversable::Conversable()
+    {
+    }
+
+    Conversable::~Conversable()
+    {
+    }
+
     Socket::Socket()
     {
     }
