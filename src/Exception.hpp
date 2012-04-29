@@ -10,13 +10,13 @@ public:
     virtual const char* what() const throw();
 };
 
-class DataParsingException : public Exception
+class DataParsingException : virtual public Exception
 {
 public:
     virtual const char* what() const throw();
 };
 
-class FileOpenException : public Exception
+class FileOpenException : virtual public Exception
 {
 public:
     FileOpenException(const std::string&);
@@ -42,6 +42,16 @@ class WrongTypeOfValueException : public XMLParsingException
 public:
     WrongTypeOfValueException(const std::string&, const std::string&);
     ~WrongTypeOfValueException() throw();
+    virtual const char* what() const throw();
+protected:
+    std::string message;
+};
+
+class ValueNotExistsException : public XMLParsingException
+{
+public:
+    ValueNotExistsException(const std::string&);
+    ~ValueNotExistsException() throw();
     virtual const char* what() const throw();
 protected:
     std::string message;

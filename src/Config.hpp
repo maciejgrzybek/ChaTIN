@@ -45,9 +45,12 @@ public:
      * @return T Value of given key of type as template requests.
      */
     template<class T>
-    T getValue(const std::string& key)
+    T getValue(const std::string& key) const
     {
-        return boost::get<T>(m_messages[key]);
+        OptionsMap::const_iterator iter = m_messages.find(key);
+        if(iter == m_messages.end())
+            throw ValueNotExistsException(key);
+        return boost::get<T>(iter->second);//m_messages[key]);
     }
 
 protected:

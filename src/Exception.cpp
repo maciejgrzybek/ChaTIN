@@ -60,6 +60,21 @@ const char* WrongTypeOfValueException::what() const throw()
     return message.c_str();
 }
 
+ValueNotExistsException::ValueNotExistsException(const std::string& key)
+{
+    message = "Value does not exist at key: "+key;
+}
+
+ValueNotExistsException::~ValueNotExistsException() throw()
+{
+}
+
+const char* ValueNotExistsException::what() const throw()
+{
+    return message.c_str();
+}
+
+
 
 namespace Socket
 {
