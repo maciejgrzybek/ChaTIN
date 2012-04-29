@@ -1,9 +1,9 @@
 #include "AliasManager.hpp"
 #include "Socket.hpp"
 
-AliasManager::AliasManager( const DBDriver& db ) : db(db) //FIXME
-{ 
-    //FIXME: There is no known DBDriver interface
+AliasManager::AliasManager( const DBDriver& db, const DialogManager& sender ) : db(db), sender(sender) 
+{
+    loadSubscriptionsFromDB();
 }
 
 Glib::ustring AliasManager::getAlias( const Glib::ustring& ip )
@@ -80,7 +80,7 @@ void AliasManager::deleteAliasByAlias( const Glib::ustring& alias )
 
 void AliasManager::requestSub( const Glib::ustring& alias )
 {
-    
+      
 }
 
 void AliasManager::acceptSub( const Glib::ustring& alias )

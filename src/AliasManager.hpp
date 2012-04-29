@@ -4,6 +4,7 @@
 #include <iostream>
 #include <map>
 #include "DBDriver.hpp"
+#include "DialogManager.hpp"
 
 enum SubPhase { REQUESTED, ONE_SIDED, REJECTED, FULL };
 
@@ -23,12 +24,13 @@ class AliasManager
     /* subscriptions data (2) */
     std::map< Glib::ustring /*alias*/, SubPhase> subscriptions;
     const DBDriver& db;
+    const DialogManager& sender;
 
 public:
     /**
      * Default construtctor reading existing aliases from given DBDriver
      */
-    AliasManager( const DBDriver& );
+    AliasManager( const DBDriver&, const DialogManager& );
 
     /**
      * Gets alias from given ip
@@ -60,7 +62,7 @@ public:
      */
     void deleteAliasByIp( const Glib::ustring& ip );
     
-    /**
+    /*
      * Removes alias given by its name
      * @param const Glib::ustring& alias to find
      * @throw AliasDoesNotExistsException - when alias wansnt find
