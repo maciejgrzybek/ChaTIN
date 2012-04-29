@@ -67,7 +67,7 @@ bool ChatWindow::validateAlias( Glib::ustring )
     return true;
 }
 
-void ChatWindow::friendPickHandle(const Gtk::TreeModel::Path& path, Gtk::TreeViewColumn* column)
+void ChatWindow::friendPickHandle(const Gtk::TreeModel::Path& path, Gtk::TreeViewColumn* /*column*/)
 {
     Gtk::TreeModel::iterator iter = friendListModel->get_iter(path);
     if(iter)
@@ -89,7 +89,7 @@ void ChatWindow::openDialogTab( Glib::ustring alias )
     chatTabs.set_current_page(chatTabs.page_num(*dialogBoxes[alias]));
 }
 
-void ChatWindow::switchTabHandle( GtkNotebookPage* page, guint page_num )
+void ChatWindow::switchTabHandle( GtkNotebookPage* /*page*/, guint page_num )
 {
     if(page_num!=0)
     {
