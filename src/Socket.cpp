@@ -172,7 +172,7 @@ namespace Socket
     {
     }
 
-    void ServerSocket::ClientIncomeSocket::send(const std::string& messageBuffer) const
+    void ServerSocket::ClientIncomeSocket::send(const std::string& messageBuffer) const throw(SendFailureException)
     {
         ::send(sockfd,messageBuffer.c_str(),messageBuffer.length(),0);
     }
