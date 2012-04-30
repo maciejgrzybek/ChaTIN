@@ -1,5 +1,8 @@
 #include "XMLException.hpp"
 
+namespace XML
+{
+
 XMLParsingException::XMLParsingException()
 {
     message = "XML parsing exception";
@@ -46,4 +49,4 @@ const char* ValueNotExistsException::what() const throw()
 {
     return message.c_str();
 }
-
+}; //namespace XML

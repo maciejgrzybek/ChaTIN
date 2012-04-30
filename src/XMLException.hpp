@@ -1,7 +1,8 @@
 #ifndef _XML_PARSING_EXCEPTION_HPP_
 #define _XML_PARSING_EXCEPTION_HPP_
 
-#include "DataParsingException.hpp"
+#include "Exception.hpp"
+#include <string>
 
 namespace XML
 {

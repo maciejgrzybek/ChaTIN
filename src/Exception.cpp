@@ -3,16 +3,6 @@
 #include <netdb.h>
 #include <cstring>
 
-const char* Exception::what() const throw()
-{
-    return "Undefined ChaTIN exception";
-}
-
-const char* DataParsingException::what() const throw()
-{
-    return "Data parsing exception";
-}
-
 FileOpenException::FileOpenException(const std::string& fileName)
 {
     message = "File cannot be opened ("+fileName+")";
@@ -27,55 +17,15 @@ FileOpenException::~FileOpenException() throw()
 {
 }
 
-XMLParsingException::XMLParsingException()
+const char* Exception::what() const throw()
 {
-    message = "XML parsing exception";
+    return "Undefined ChaTIN exception";
 }
 
-XMLParsingException::XMLParsingException(const std::string& fileName)
+const char* DataParsingException::what() const throw()
 {
-    message = "XML parsing exception (filename: "+fileName+")";
+    return "Data parsing exception";
 }
-
-XMLParsingException::~XMLParsingException() throw()
-{
-}
-
-const char* XMLParsingException::what() const throw()
-{
-    return message.c_str();
-}
-
-WrongTypeOfValueException::WrongTypeOfValueException(const std::string& type, const std::string& value)
-{
-    message = "Wrong type of value exception. Got value: "+value+" is not required type: "+type;
-}
-
-WrongTypeOfValueException::~WrongTypeOfValueException() throw()
-{
-}
-
-const char* WrongTypeOfValueException::what() const throw()
-{
-    return message.c_str();
-}
-
-ValueNotExistsException::ValueNotExistsException(const std::string& key)
-{
-    message = "Value does not exist at key: "+key;
-}
-
-ValueNotExistsException::~ValueNotExistsException() throw()
-{
-}
-
-const char* ValueNotExistsException::what() const throw()
-{
-    return message.c_str();
-}
-
-
-
 namespace Socket
 {
 

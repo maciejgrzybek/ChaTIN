@@ -10,12 +10,6 @@ public:
     virtual const char* what() const throw();
 };
 
-class DataParsingException : virtual public Exception
-{
-public:
-    virtual const char* what() const throw();
-};
-
 class FileOpenException : virtual public Exception
 {
 public:
@@ -26,35 +20,10 @@ protected:
     std::string message;
 };
 
-class XMLParsingException : public DataParsingException
+class DataParsingException : public Exception
 {
 public:
-    XMLParsingException();
-    XMLParsingException(const std::string&);
-    ~XMLParsingException() throw();
     virtual const char* what() const throw();
-protected:
-    std::string message;
-};
-
-class WrongTypeOfValueException : public XMLParsingException
-{
-public:
-    WrongTypeOfValueException(const std::string&, const std::string&);
-    ~WrongTypeOfValueException() throw();
-    virtual const char* what() const throw();
-protected:
-    std::string message;
-};
-
-class ValueNotExistsException : public XMLParsingException
-{
-public:
-    ValueNotExistsException(const std::string&);
-    ~ValueNotExistsException() throw();
-    virtual const char* what() const throw();
-protected:
-    std::string message;
 };
 
 namespace Socket
@@ -87,8 +56,9 @@ public:
     virtual const char* what() const throw();
 };
 
+
 class WrongPortException : public SocketException,
-                           public DataParsingException
+                           public ::DataParsingException
 {
 public:
     WrongPortException(const int);
