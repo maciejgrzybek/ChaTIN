@@ -2,6 +2,7 @@
 #define _TYPES_HPP_
 
 #include <glibmm/ustring.h>
+#include "Exception.hpp"
 namespace ChaTIN
 {
 class IPv6;
@@ -18,7 +19,7 @@ public:
     /**
      * Copy from IPv6 adress its valid alias anyway
      */
-    Alias( const IPv6& );
+    Alias(const IPv6&);
 };
 
 /**
@@ -29,9 +30,9 @@ class IPv6 : public Glib::ustring
 {
     /**
      * Just cast to IPv6 if Alias is IP adress
-     * @throw CannotCastToIPv6Exception when alias isnt valid IPv6 adress
+     * @throw WrongAddressException Exception thronw when alias is not valid IPv6 adress.
      */
-    IPv6( const Alias& ); //FIXME - throw declaration
+    IPv6(const Alias&) throw(Socket::WrongAddressException);
 };
 
 /**

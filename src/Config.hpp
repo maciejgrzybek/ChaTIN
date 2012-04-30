@@ -9,6 +9,7 @@
 #include <tinyxml.h>
 #include <tinystr.h>
 #include "Exception.hpp"
+#include "XMLException.hpp"
 #include <string>
 #include <map>
 
@@ -49,7 +50,7 @@ public:
     {
         OptionsMap::const_iterator iter = m_messages.find(key);
         if(iter == m_messages.end())
-            throw ValueNotExistsException(key);
+            throw XML::ValueNotExistsException(key);
         return boost::get<T>(iter->second);//m_messages[key]);
     }
 

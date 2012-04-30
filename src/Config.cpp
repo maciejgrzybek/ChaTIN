@@ -28,7 +28,7 @@ void Config::loadFile(const std::string& fileName) throw(FileOpenException,DataP
 		pElem=hDoc.FirstChildElement().Element();
 		// should always have a valid root. If does not - throw exception.
 		if (!pElem)
-            throw XMLParsingException(fileName);
+            throw XML::XMLParsingException(fileName);
 
 		m_name=pElem->Value();
 
@@ -53,7 +53,7 @@ void Config::loadFile(const std::string& fileName) throw(FileOpenException,DataP
             }
             catch(boost::bad_lexical_cast&)
             {
-                throw WrongTypeOfValueException(pKey,pText);
+                throw XML::WrongTypeOfValueException(pKey,pText);
             }
 			if (pKey.length() > 0 && pText.length() > 0)
 			{
