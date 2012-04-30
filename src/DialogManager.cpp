@@ -13,7 +13,12 @@ void DialogManager::sendTo(const ChaTIN::Alias& alias, const Glib::ustring& mess
 
 void DialogManager::sendTo(const ChaTIN::ConferenceId& conferenceId, const Glib::ustring& message) throw(Socket::SendFailureException)
 {
-    //TODO: implement this
+    const std::vector<ChaTIN::IPv6> &IPs = conferenceManager.getList(conferenceId);
+    for(auto& ip : IPs)
+    {
+        const Dialog& dialog = getDialog(ip);
+        dialog.send(message);
+    }
 }
 
 const Dialog& DialogManager::getDialog(const ChaTIN::IPv6& ip)
