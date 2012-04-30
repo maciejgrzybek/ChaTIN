@@ -1,7 +1,12 @@
+#ifndef _CONFERENCE_MANAGER_HPP_
+#define _CONFERENCE_MANAGER_HPP_
+
 #include <map>
+//unordered_map>
 #include <vector>
 #include <glibmm/ustring.h>
-
+#include "types.hpp"
+#include "ConferenceException.hpp"
 
 /**
  * Class being able to create / remove conference container holding name of conference 
@@ -14,7 +19,7 @@ public:
      * Method that allows to create confrence but only if ConferenceId isnt aleardy
      *  registred.
      * @throw NameDoesNotExistsException when you try to add conference with unexisting name
-     * @throw NameAlreadyInUse if name was already usede
+     * @throw NameAlreadyInUse if name was already used
      */
     void addConference( 
         const ChaTIN::ConferenceId& id, const std::vector< ChaTIN::IPv6 >& members );
@@ -25,14 +30,14 @@ public:
      * @throw ConferenceNotFoundException when there is no conference with given name
      * @return reference to list of ipv6 in conference given by name in argument
      */
-    const std::vector< ChaTIN::IPv6 >& getList( const ChaTIN::ConferenceId& id );
+    const std::vector< ChaTIN::IPv6 >& getList( const ChaTIN::ConferenceId& id ) const throw(ConferenceNotExistsException);
 
     /**
      * Remove conference with given name from list
      * @param const Glib::ustring& name of conference
-     * @throw ConferenceNotFoundException when there is no conference with given name
+     * @throw ConferenceNotExistsException when there is no conference with given name
      */
-    void removeConfrence( const ChaTIN::ConferenceId& id );
+    void removeConference( const ChaTIN::ConferenceId& id ) throw(ConferenceNotExistsException);
 
     /**
      * Find if incoming name+ipv6 pair is already in use
@@ -45,6 +50,9 @@ public:
     void registerIncomingConference( 
             const ChaTIN::ConferenceId& id, const std::vector< ChaTIN::IPv6 >& members );
     
-private:
-    std::map< ChaTIN::ConferenceId, std::vector< ChaTIN::IPv6 > > conferences;
+protected:
+    typedef std::map< ChaTIN::ConferenceId, std::vector<ChaTIN::IPv6> > conferenceMap;
+    conferenceMap conferences;
 };
+
+#endif
