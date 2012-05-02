@@ -51,8 +51,30 @@ void ConferenceManager::registerIncomingConference(
         {
         }
 //        else
-        {
-            //FIXME unknown behavior
+    /*    {
+    *        //FIXME check it
+    *        Glib::ustring tempName;
+    *        tempName = id->first.name;
+    *        ChaTIN::ConferenceId = tempId;
+    *        tempId.ownerip = id->first.ownerip;
+    *        int maxConference = 256;
+    *        for (int i = 1; i <= maxConference ; i++)
+    *        {
+    *            tempId.name = tempName;
+    *            tempId.name += "~";
+    *            tempId.name +=(Glib::ustring)i;
+    *            iter = conferences.find( tempId );
+    *            if( iter!=conferences.end() )
+    *            {
+    *            }
+    *            else
+    *            {
+    *               if ( std::equal ( iter->second.begin(), iter->second.end(), members ) ) 
+    *               {
+    *                    return;
+    *                }
+    *            }
+    */        }
         }
     }
     else
