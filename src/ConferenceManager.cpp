@@ -74,8 +74,9 @@ void ConferenceManager::registerIncomingConference(
     *                    return;
     *                }
     *            }
-    */        }
-        }
+    *        }
+    *    }
+    */
     }
     else
     {
