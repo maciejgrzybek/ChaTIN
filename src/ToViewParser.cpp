@@ -7,5 +7,5 @@ void ToViewParser::doCommand( const ChaTIN::Alias& alias, const Glib::ustring& m
 
 void ToViewParser::operator()()
 {
-
+    
 }

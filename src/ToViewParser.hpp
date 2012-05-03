@@ -6,15 +6,14 @@
 /**
  * Class which should be used to add elements to waiting queue
  */
-class QueueAdder()
+class QueueAdder
 {
-    ChaTIN::Alias alias;
-    Glib::ustring msg;
-    SafeQueue q;
+    ChaTIN::incomingMassage income;
+    SafeQueue<ChaTIN::incomingMassage>& q;
 public:
-    QueueAdder( const ChaTIN::Alias& alias, const Glib::ustring& msg );
-    operator();        
-}
+    QueueAdder( const ChaTIN::incomingMassage& income, SafeQueue<ChaTIN::incomingMassage>& q );
+    void operator()();
+};
 
 /**
  * Parser of packages coming from inet
