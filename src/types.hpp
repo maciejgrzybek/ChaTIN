@@ -66,6 +66,8 @@ struct incomingMassage
 {
     Glib::ustring msg;
     Alias alias;  
+public:
+    incomingMassage( const Alias& alias, const Glib::ustring& msg );    
 };
 
 } /* namespace ChaTIN */
