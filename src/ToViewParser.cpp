@@ -22,4 +22,11 @@ void ToViewParser::doCommand( const ChaTIN::Alias& alias, const Glib::ustring& m
 
 void ToViewParser::operator()()
 {
+    ChaTIN::incomingMassage currentMassage;
+    for(;;)
+    {
+        currentMassage = q.front();
+        q.pop();
+        //FIXME do the stuff with currentMassage here
+    }
 }
