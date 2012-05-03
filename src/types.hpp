@@ -34,9 +34,16 @@ class IPv6 : public Glib::ustring
 {
     /**
      * Just cast to IPv6 if Alias is IP adress
-     * @throw WrongAddressException Exception thronw when alias is not valid IPv6 adress.
+     * @throw WrongAddressException Exception thrown when alias is not valid IPv6 adress.
      */
     IPv6(const Alias&) throw(Socket::WrongAddressException);
+public:
+    /**
+     * Constructs IPv6 from given IPv6 string.
+     * @param const std::string& Reference to string containing IP.
+     * @throw WrongAddressException Exception thrown when alias is not valid IPv6 adress.
+     */
+    IPv6(const std::string&) throw(Socket::WrongAddressException);
 };
 
 /**
