@@ -7,6 +7,8 @@
 #include <string>
 namespace ChaTIN
 {
+
+
 class IPv6;
 /**
  * Class created to gain types controll from language
@@ -47,6 +49,12 @@ struct ConferenceId
     IPv6          ownerip;
     Glib::ustring name;
     bool operator==(const ConferenceId& r) const;
+};
+
+struct incomingMassage
+{
+    Glib::ustring msg;
+    Alias alias;  
 };
 
 } /* namespace ChaTIN */
