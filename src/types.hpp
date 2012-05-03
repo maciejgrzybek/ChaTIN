@@ -51,6 +51,10 @@ struct ConferenceId
     bool operator==(const ConferenceId& r) const;
 };
 
+/**
+ * This struct agregate information about incoming alias with 
+ * the massage which came from him.
+ */
 struct incomingMassage
 {
     Glib::ustring msg;
