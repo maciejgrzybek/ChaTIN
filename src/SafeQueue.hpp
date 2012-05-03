@@ -32,29 +32,29 @@ public:
     T& front ( )
     {
         sizeSem.wait(); //must be in this order
-        sizeSem.post();
         boost::interprocess::scoped_lock<boost::mutex>(m);
+        sizeSem.post();
         return baseQueue::front();
     }
     const T& front ( ) const
     {
         sizeSem.wait(); //must be in this order
-        sizeSem.post();
         boost::interprocess::scoped_lock<boost::mutex>(m);
+        sizeSem.post();
         return baseQueue::front();
     }
     T& back ( )
     {
         sizeSem.wait(); //must be in this order
-        sizeSem.post();
         boost::interprocess::scoped_lock<boost::mutex>(m);
+        sizeSem.post();
         return baseQueue::back();
     }
     const T& back ( ) const
     {
         sizeSem.wait(); //must be in this order
-        sizeSem.post();
         boost::interprocess::scoped_lock<boost::mutex>(m);
+        sizeSem.post();
         return baseQueue::back();
     }
     void push ( const T& x )
