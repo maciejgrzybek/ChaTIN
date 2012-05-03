@@ -29,7 +29,14 @@ public:
  */
 class ToViewParser
 {
+    SafeQueue<ChaTIN::incomingMassage>& q; //queue for all stuff
 public:
+    /**
+     * Constructor taking queue reference to comunicate with rest of the world 
+     * @param SafeQueue<ChaTIN::incomingMassage>& q queue to communicate with world
+     */
+    ToViewParser( SafeQueue<ChaTIN::incomingMassage>& q );
+
     /**
      * Put a masssage with incoming alias to the queue
      * @param cosnt Glib::ustring& alias of person who send you that massage
