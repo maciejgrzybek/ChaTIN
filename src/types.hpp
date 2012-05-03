@@ -62,12 +62,12 @@ struct ConferenceId
  * This struct agregate information about incoming alias with 
  * the massage which came from him.
  */
-struct incomingMassage
+struct IncomingMassage
 {
     Glib::ustring msg;
     Alias alias;  
 public:
-    incomingMassage( const Alias& alias, const Glib::ustring& msg );    
+    IncomingMassage( const Alias& alias, const Glib::ustring& msg );    
 };
 
 } /* namespace ChaTIN */

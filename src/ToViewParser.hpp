@@ -8,15 +8,15 @@
  */
 class QueueAdder
 {
-    ChaTIN::incomingMassage income;
-    SafeQueue<ChaTIN::incomingMassage>& q;
+    ChaTIN::IncomingMassage income;
+    SafeQueue<ChaTIN::IncomingMassage>& q;
 public:
     /**
      * Create functor with given argumeters
-     * @param const ChaTIN::incomingMassage& massage that came  from DialogManager
-     * @param SafeQueue<ChaTIN::incomingMassage>& q queue to which we will add our income
+     * @param const ChaTIN::IncomingMassage& massage that came  from DialogManager
+     * @param SafeQueue<ChaTIN::IncomingMassage>& q queue to which we will add our income
      */
-    QueueAdder( const ChaTIN::incomingMassage& income, SafeQueue<ChaTIN::incomingMassage>& q );
+    QueueAdder( const ChaTIN::IncomingMassage& income, SafeQueue<ChaTIN::IncomingMassage>& q );
     
     /** 
      * Ads income to SafeQueue (designed to run in new thread).
@@ -29,16 +29,16 @@ public:
  */
 class ToViewParser
 {
-    SafeQueue<ChaTIN::incomingMassage>& q; //queue for all stuff
+    SafeQueue<ChaTIN::IncomingMassage>& q; //queue for all stuff
 public:
     /**
      * Constructor taking queue reference to comunicate with rest of the world 
-     * @param SafeQueue<ChaTIN::incomingMassage>& q queue to communicate with world
+     * @param SafeQueue<ChaTIN::IncomingMassage>& q queue to communicate with world
      */
-    ToViewParser( SafeQueue<ChaTIN::incomingMassage>& q );
+    ToViewParser( SafeQueue<ChaTIN::IncomingMassage>& q );
 
     /**
-     * Put a masssage with incoming alias to the queue
+     * Put a masssage with Incoming alias to the queue
      * @param cosnt Glib::ustring& alias of person who send you that massage
      * @param const Glib::ustring& msg directly what came from Socket::Socket 
      * @throw CannotParseMassageException if parser cannot understand that
