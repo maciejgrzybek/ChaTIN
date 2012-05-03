@@ -11,6 +11,8 @@
 #include <glibmm/ustring.h>
 #include <unordered_map>
 #include <string>
+#include <boost/thread.hpp>
+#include <boost/thread/locks.hpp>
 #include <boost/thread/tss.hpp>
 
 class AliasManager;
@@ -72,8 +74,9 @@ protected:
      * Method dispatches incoming connections.
      * Runs new thread and enters infinity loop handling client's requests.
      * @param const Socket::Server::ClientIncomeSocket& Reference to incame socket.
+     * @return boost::thread Thread created to handle dispathcer actions.
      */
-    void dispatchIncomingSocket(const Socket::ServerSocket::ClientIncomeSocket&);
+    boost::thread dispatchIncomingSocket(const Socket::ServerSocket::ClientIncomeSocket&);
 
     /**
      * Unordered map to store association IPv6 address -> Dialog.
@@ -111,12 +114,19 @@ protected:
      */
     boost::thread_specific_ptr<bool> working;
 
+    struct dispatcher
+    {
+        void operator()(const Socket::ServerSocket::ClientIncomeSocket*,DialogManager&); // MBO passing DialogManager reference to dispatcher could be wrong thing, but in this case, we need too much components of DialogManager, that would be uncomfortable to pass all of them by arguments. Shared memory is mutex-protected inside this method. All of the operations inside should be mutex-protected because of passing reference to above object.
+    };
+
 private:
     /**
      * Send message to given socket.
      * Method is invoked by sendTo(const Glib::ustring&), when grammar parser demand or on user action.
      */
     void sendTo(const Socket::Conversable&) const;
+
+    boost::shared_mutex mutexLock; // mutex to cope with readers-writers problem on dialogMap
 };
 
 #endif

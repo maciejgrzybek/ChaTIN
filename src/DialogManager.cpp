@@ -2,9 +2,7 @@
 
 DialogManager::DialogManager(const ToViewParser& toViewParser, const AliasManager& aliasManager, const ConferenceManager& conferenceManager, const Config&) : toViewParser(toViewParser), aliasManager(aliasManager), conferenceManager(conferenceManager), config(config)
 {
-    bool* working_state = new bool;
-    *working_state = false;
-    working.reset(working_state);
+    working.reset(new bool(false));
 }
 
 void DialogManager::sendTo(const ChaTIN::Alias& alias, const Glib::ustring& message) throw(Socket::SendFailureException)
@@ -27,12 +25,19 @@ void DialogManager::sendTo(const ChaTIN::ConferenceId& conferenceId, const Glib:
 const Dialog& DialogManager::getDialog(const ChaTIN::IPv6& ip)
 {
     int port = config.getValue<int>("port");
+    boost::shared_lock<boost::shared_mutex> lock(mutexLock); // lock for readers
     std::unordered_map<const ChaTIN::IPv6,const Dialog*>::const_iterator iter = dialogMap.find(ip);
+    lock.unlock(); // lock no more needed
     if(iter == dialogMap.end()) // if no dialog found
     {
+        boost::upgrade_lock<boost::shared_mutex> lock(mutexLock);
+        boost::upgrade_to_unique_lock<boost::shared_mutex> uniqueLock(lock); // lock for insertion
         dialogMap[ip] = new Dialog(ip,port); // create new one and assign to map of IPs.
-    }
-    return *(dialogMap[ip]); //MBO
+    } // now uniqueLock is destroyed and others can read
+    lock.lock(); // lock for reading
+    const Dialog& result = *(dialogMap[ip]); // MBO
+    lock.unlock();
+    return result;
 }
 
 void DialogManager::startServer() throw(Socket::ResolveException,Socket::WrongPortException)
@@ -46,9 +51,7 @@ void DialogManager::startServer() throw(Socket::ResolveException,Socket::WrongPo
     }
     serverSocket->listen();
     Socket::ServerSocket::ClientIncomeSocket* incomeSocket;
-    bool* working_state = new bool;
-    *working_state = true;
-    working.reset(working_state);
+    working.reset(new bool(true));
     while(*working)
     {
         incomeSocket = serverSocket->pickClient(); // can hang up here when no client to pick is available
@@ -61,7 +64,26 @@ void DialogManager::operator()() throw(Socket::ResolveException,Socket::WrongPor
     startServer();
 }
 
-void DialogManager::dispatchIncomingSocket(const Socket::ServerSocket::ClientIncomeSocket& incomeSocket)
+boost::thread DialogManager::dispatchIncomingSocket(const Socket::ServerSocket::ClientIncomeSocket& incomeSocket)
 {
-    //FIXME implement this
+    dispatcher dispatcherCall;
+    return boost::thread(dispatcherCall,&incomeSocket,boost::ref(*this)); // we assign pointer, because it's dynamically created, so the memory scope is the same in all threads.
+
+}
+
+void DialogManager::dispatcher::operator()(const Socket::ServerSocket::ClientIncomeSocket* incomeSocket, DialogManager& dialogManager)
+{
+    ChaTIN::IPv6 ip = incomeSocket->getHostAddress();
+    Dialog* dialog = new Dialog(incomeSocket);
+
+    boost::upgrade_lock<boost::shared_mutex> lock(dialogManager.mutexLock);
+    boost::upgrade_to_unique_lock<boost::shared_mutex> uniqueLock(lock); // lock for insertion
+    dialogManager.dialogMap[ip] = dialog;
+    lock.unlock(); // let others read data I already put in map
+
+    while(1) // TODO change condition
+    {
+        std::string receivedMessage = dialog->receive(); // can hang up here
+        dialogManager.toViewParser.doCommand(ip,receivedMessage); // send received message to parser
+    }
 }
