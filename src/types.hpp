@@ -81,8 +81,8 @@ size_t operator()(const ChaTIN::ConferenceId& v) const
 {
     hash<std::string> hashf;
     size_t resultHash;
-    std::string owneripString = v.ownerip.c_str();
-    std::string nameString = v.name.c_str();
+    std::string owneripString = v.ownerip;
+    std::string nameString = v.name;
     resultHash = hashf(owneripString) ^ hashf(nameString);
     return resultHash;
 }
