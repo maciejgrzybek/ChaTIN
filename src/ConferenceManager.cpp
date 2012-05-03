@@ -1,9 +1,9 @@
 #include "ConferenceManager.hpp"
 
 void ConferenceManager::addConference( 
-        const ChaTIN::ConferenceId& id, const std::vector< ChaTIN::IPv6 >& members )
+        const ChaTIN::ConferenceId& id, const std::vector<ChaTIN::IPv6>& members )
 {
-    conferenceMap::const_iterator iter = conferences.find(id); 
+    conferenceMap::const_iterator iter = conferences.find(id);
     if( iter!=conferences.end() )
     {
         // FIXME
@@ -11,7 +11,7 @@ void ConferenceManager::addConference(
     }
     else
     {
-        conferences[id] = members; 
+        conferences[id] = members;
     }
 }
 
@@ -44,11 +44,11 @@ void ConferenceManager::removeConference( const ChaTIN::ConferenceId& id ) throw
 void ConferenceManager::registerIncomingConference( 
             const ChaTIN::ConferenceId& id, const std::vector< ChaTIN::IPv6 >& members )
 {
-    conferenceMap::const_iterator iter = conferences.find( id ); 
+    conferenceMap::const_iterator iter = conferences.find( id );
     if( iter!=conferences.end() )
     {
     /*    //FIXME test it
-    *    if ( std::equal ( iter->second.begin(), iter->second.end(), members ) ) 
+    *    if ( std::equal ( iter->second.begin(), iter->second.end(), members ) )
     *    {
     *    }
     *    else
@@ -67,7 +67,7 @@ void ConferenceManager::registerIncomingConference(
     *            iter = conferences.find( tempId );
     *            if( iter!=conferences.end() )
     *            {
-    *               if ( std::equal ( iter->second.begin(), iter->second.end(), members ) ) 
+    *               if ( std::equal ( iter->second.begin(), iter->second.end(), members ) )
     *               {
     *                    return;
     *               }
@@ -83,6 +83,6 @@ void ConferenceManager::registerIncomingConference(
     }
     else
     {
-        conferences[id] = members;  
+        conferences[id] = members;
     }
 }

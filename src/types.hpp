@@ -3,6 +3,8 @@
 
 #include <glibmm/ustring.h>
 #include "Exception.hpp"
+#include <functional>
+#include <string>
 namespace ChaTIN
 {
 class IPv6;
@@ -44,8 +46,60 @@ struct ConferenceId
 {
     IPv6          ownerip;
     Glib::ustring name;
+    bool operator==(const ConferenceId& r) const
+    {
+        return (ownerip == r.ownerip) && (name == r.name);
+    }
+};
+} /* namespace ChaTIN */
+namespace std
+{
+
+template <>
+struct hash<ChaTIN::IPv6 const>
+{
+    size_t operator()(const ChaTIN::IPv6& v) const
+    {
+        hash<std::string> hashf;
+        size_t resultHash;
+        std::string ipv6String = v.c_str(); //MBO @see hash<ChaTIN::ConferenceId>::operator()
+        resultHash = hashf(ipv6String);
+        return resultHash;
+    }
 };
 
-}/*namespace ChaTIN*/
+template <>
+struct equal_to<ChaTIN::ConferenceId>
+{
+    bool operator()(const ChaTIN::ConferenceId& l,const ChaTIN::ConferenceId& r) const
+    {
+        return (l.ownerip == r.ownerip) && (l.name == r.name);
+    }
+};
+
+template <>
+struct hash<ChaTIN::ConferenceId>
+{
+/*
+ * std::hash specialization for ChaTIN::ConferenceId.
+ * Produces hash by xoring hash of each ConferenceId's component.
+ * MBO: Method uses strings which are created from ConferenceId's components. It could be more efficient if there is own implementation of hash function, without using hash<std::string> (which needs creatinion of std::string from Glib::ustring).
+ * @param const ChaTIN::ConferenceId& Reference to ConferenceId to be hash evaluated of.
+ * @return size_t Evaluated hash.
+ */
+size_t operator()(const ChaTIN::ConferenceId& v) const
+{
+    hash<std::string> hashf;
+    size_t resultHash;
+    std::string owneripString = v.ownerip.c_str();
+    std::string nameString = v.name.c_str();
+    resultHash = hashf(owneripString) ^ hashf(nameString);
+    return resultHash;
+}
+
+}; /* namespace std */
+
+}
+
 
 #endif
