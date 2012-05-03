@@ -20,13 +20,16 @@ public:
  */
 class ToViewParser
 {
+public:
     /**
-     * Put a masssage with incoming alias to the queue
-     * @param cosnt Glib::ustring& alias of person who send you that massage
-     * @param const Glib::ustring& msg directly what came from Socket::Socket 
+     * Put a message with incoming alias to the queue
+     * Parse massage incoming from alias given by first argument
+     * it invokes any method needed after analizying msg and context
+     * @param const ChaTIN::Alias& alias of person who send you that massage
+     * @param const Glib::ustring& message to be parsed
      * @throw CannotParseMassageException if parser cannot understand that
      */
-    void doCommand( const ChaTIN::Alias& alias, const Glib::ustring& msg );
+    void doCommand( const ChaTIN::Alias&, const Glib::ustring&) const;
     
     /**
      * Main loop of ToViewParser, build to run as a thread
