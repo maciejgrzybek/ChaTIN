@@ -1,8 +1,8 @@
 #ifndef _CONFERENCE_MANAGER_HPP_
 #define _CONFERENCE_MANAGER_HPP_
 
-#include <map>
-//unordered_map>
+//#include <map>
+#include <unordered_map>
 #include <vector>
 #include <glibmm/ustring.h>
 #include "types.hpp"
@@ -22,7 +22,7 @@ public:
      * @throw NameAlreadyInUse if name was already used
      */
     void addConference( 
-        const ChaTIN::ConferenceId& id, const std::vector< ChaTIN::IPv6 >& members );
+        const ChaTIN::ConferenceId& id, const std::vector<ChaTIN::IPv6>& members );
 
     /**
      * Method that can be used to find list of ipv6 in conference given by name
@@ -51,7 +51,7 @@ public:
             const ChaTIN::ConferenceId& id, const std::vector< ChaTIN::IPv6 >& members );
     
 protected:
-    typedef std::map< ChaTIN::ConferenceId, std::vector<ChaTIN::IPv6> > conferenceMap;
+    typedef std::unordered_map< ChaTIN::ConferenceId, std::vector<ChaTIN::IPv6> > conferenceMap;
     conferenceMap conferences;
 };
 

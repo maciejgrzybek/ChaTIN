@@ -1,7 +1,7 @@
 #include "ConferenceManager.hpp"
 
 void ConferenceManager::addConference( 
-        const ChaTIN::ConferenceId& id, const std::vector< ChaTIN::IPv6 >& members )
+        const ChaTIN::ConferenceId& id, const std::vector<ChaTIN::IPv6>& members )
 {
     conferenceMap::const_iterator iter = conferences.find(id); 
     if( iter!=conferences.end() )
@@ -11,7 +11,7 @@ void ConferenceManager::addConference(
     }
     else
     {
-        conferences[id] = members; 
+        conferences[id] = members;
     }
 }
 
