@@ -6,6 +6,7 @@
 #include "AliasManager.hpp"
 #include "ConferenceManager.hpp"
 #include "Config.hpp"
+#include "types.hpp"
 
 #include <glibmm/ustring.h>
 #include <unordered_map>
@@ -45,8 +46,18 @@ public:
 
     /**
      * Starts server, which handles incomming connections and dispatches it.
+     * @throw Socket::ResolveException Exception thrown when resolvation of address failed.
+     * @throw Socket::WrongPortException Exception thrown when chosen port to listen on is wrong.
      */
-    void startServer();
+    void startServer() throw(Socket::ResolveException,Socket::WrongPortException);
+
+    /**
+     * This is the same as calling startServer() but can be used as argument to boost::thread.
+     * @see startServer()
+     * @throw Socket::ResolveException Exception thrown when resolvation of address failed.
+     * @throw Socket::WrongPortException Exception thrown when chosen port to listen on is wrong.
+     */
+    void operator()() throw(Socket::ResolveException,Socket::WrongPortException);
 
 protected:
     /**
@@ -66,18 +77,37 @@ protected:
     /**
      * Unordered map to store association IPv6 address -> Dialog.
      */
-    std::map<const ChaTIN::IPv6,const Dialog*> dialogMap;
+    std::unordered_map<const ChaTIN::IPv6,const Dialog*> dialogMap;
 
     /**
      * Reference to incoming network packets grammar parser.
      */
     const ToViewParser& toViewParser;
 
+    /**
+     * Reference to alias manager
+     */
     const AliasManager& aliasManager;
 
+    /**
+     * Reference to conference manager
+     */
     const ConferenceManager& conferenceManager;
 
+    /**
+     * Reference to config
+     */
     const Config& config;
+
+    /**
+     * Pointer to server socket which will be in listen mode after startServer().
+     */
+    Socket::ServerSocket* serverSocket;
+
+    /**
+     * Variable set to true, when server is in working state (listening and ready for incoming clients), or false when it should stop accepting clients.
+     */
+    bool working;
 
 private:
     /**
