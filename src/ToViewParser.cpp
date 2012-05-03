@@ -26,6 +26,14 @@ void ToViewParser::operator()()
     {
         ChaTIN::IncomingMassage currentMassage = q.front();
         q.pop();
-        //FIXME do the stuff with currentMassage here
+        parse( currentMassage );
     }
 }
+
+
+void ToViewParser::parse( const ChaTIN::IncomingMassage& income )
+{
+    Glib::ustring msg = income.msg;
+    //DO PARSING (no gramar yet)
+}
+

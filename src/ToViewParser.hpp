@@ -51,4 +51,7 @@ public:
      * and massage
      */
     void operator()();
+
+private:
+    void parse( const ChaTIN::IncomingMassage& msg );
 };
