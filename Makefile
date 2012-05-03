@@ -4,7 +4,7 @@ GLIBI=`pkg-config glibmm-2.4 --cflags`
 GLIBL=`pkg-config glibmm-2.4 --libs`
 GTKI=`pkg-config gtkmm-2.4 --cflags`
 GTKL=`pkg-config gtkmm-2.4 --libs`
-LFLAGS=-ltinyxml
+LFLAGS=-ltinyxml -lboost_thread
 
 all: obj/ChatWindow.o obj/main.o obj/Socket.o obj/AliasManager.o obj/ConferenceManager.o obj/Dialog.o obj/DialogManager.o obj/Config.o obj/types.o obj/XMLException.o obj/ConferenceException.o obj/Exception.o 
 	g++ $^ $(GEN) $(GTKL) $(LFLAGS) -o bin/ChaTIN

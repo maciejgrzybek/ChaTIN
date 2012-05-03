@@ -11,6 +11,7 @@
 #include <glibmm/ustring.h>
 #include <unordered_map>
 #include <string>
+#include <boost/thread/tss.hpp>
 
 class AliasManager;
 
@@ -106,8 +107,9 @@ protected:
 
     /**
      * Variable set to true, when server is in working state (listening and ready for incoming clients), or false when it should stop accepting clients.
+     * boost thread_specific_ptr used because of possibility of multi-thread usage of startServer() which uses this.
      */
-    bool working;
+    boost::thread_specific_ptr<bool> working;
 
 private:
     /**

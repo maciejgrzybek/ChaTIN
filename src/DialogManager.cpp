@@ -1,7 +1,10 @@
 #include "DialogManager.hpp"
 
-DialogManager::DialogManager(const ToViewParser& toViewParser, const AliasManager& aliasManager, const ConferenceManager& conferenceManager, const Config&) : toViewParser(toViewParser), aliasManager(aliasManager), conferenceManager(conferenceManager), config(config), working(false)
+DialogManager::DialogManager(const ToViewParser& toViewParser, const AliasManager& aliasManager, const ConferenceManager& conferenceManager, const Config&) : toViewParser(toViewParser), aliasManager(aliasManager), conferenceManager(conferenceManager), config(config)
 {
+    bool* working_state = new bool;
+    *working_state = false;
+    working.reset(working_state);
 }
 
 void DialogManager::sendTo(const ChaTIN::Alias& alias, const Glib::ustring& message) throw(Socket::SendFailureException)
@@ -43,8 +46,10 @@ void DialogManager::startServer() throw(Socket::ResolveException,Socket::WrongPo
     }
     serverSocket->listen();
     Socket::ServerSocket::ClientIncomeSocket* incomeSocket;
-    working = true;
-    while(working)
+    bool* working_state = new bool;
+    *working_state = true;
+    working.reset(working_state);
+    while(*working)
     {
         incomeSocket = serverSocket->pickClient(); // can hang up here when no client to pick is available
         dispatchIncomingSocket(*incomeSocket);
