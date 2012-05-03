@@ -31,7 +31,7 @@ public:
      * @param const ConferenceManager& Reference to conference manager.
      * @param const Config& Reference to config class.
      */
-    DialogManager(const ToViewParser&, const AliasManager&, const ConferenceManager&, const Config&);
+    DialogManager(ToViewParser&, const AliasManager&, const ConferenceManager&, const Config&);
 
     /**
      * Send message to given IPv6 address or alias.

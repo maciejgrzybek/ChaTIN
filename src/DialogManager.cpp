@@ -1,6 +1,6 @@
 #include "DialogManager.hpp"
 
-DialogManager::DialogManager(const ToViewParser& toViewParser, const AliasManager& aliasManager, const ConferenceManager& conferenceManager, const Config&) : toViewParser(toViewParser), aliasManager(aliasManager), conferenceManager(conferenceManager), config(config)
+DialogManager::DialogManager(ToViewParser& toViewParser, const AliasManager& aliasManager, const ConferenceManager& conferenceManager, const Config&) : toViewParser(toViewParser), aliasManager(aliasManager), conferenceManager(conferenceManager), config(config)
 {
     working.reset(new bool(false));
 }
