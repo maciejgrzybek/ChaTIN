@@ -46,12 +46,11 @@ struct ConferenceId
 {
     IPv6          ownerip;
     Glib::ustring name;
-    bool operator==(const ConferenceId& r) const
-    {
-        return (ownerip == r.ownerip) && (name == r.name);
-    }
+    bool operator==(const ConferenceId& r) const;
 };
+
 } /* namespace ChaTIN */
+
 namespace std
 {
 
@@ -65,15 +64,6 @@ struct hash<ChaTIN::IPv6 const>
         std::string ipv6String = v.c_str(); //MBO @see hash<ChaTIN::ConferenceId>::operator()
         resultHash = hashf(ipv6String);
         return resultHash;
-    }
-};
-
-template <>
-struct equal_to<ChaTIN::ConferenceId>
-{
-    bool operator()(const ChaTIN::ConferenceId& l,const ChaTIN::ConferenceId& r) const
-    {
-        return (l.ownerip == r.ownerip) && (l.name == r.name);
     }
 };
 
@@ -97,9 +87,10 @@ size_t operator()(const ChaTIN::ConferenceId& v) const
     return resultHash;
 }
 
-}; /* namespace std */
+};
 
-}
+} /* namespace std */
+
 
 
 #endif
