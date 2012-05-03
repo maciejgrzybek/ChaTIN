@@ -86,7 +86,7 @@ protected:
     /**
      * Reference to incoming network packets grammar parser.
      */
-    const ToViewParser& toViewParser;
+    ToViewParser& toViewParser;
 
     /**
      * Reference to alias manager
