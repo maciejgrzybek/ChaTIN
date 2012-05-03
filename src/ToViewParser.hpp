@@ -11,7 +11,16 @@ class QueueAdder
     ChaTIN::incomingMassage income;
     SafeQueue<ChaTIN::incomingMassage>& q;
 public:
+    /**
+     * Create functor with given argumeters
+     * @param const ChaTIN::incomingMassage& massage that came  from DialogManager
+     * @param SafeQueue<ChaTIN::incomingMassage>& q queue to which we will add our income
+     */
     QueueAdder( const ChaTIN::incomingMassage& income, SafeQueue<ChaTIN::incomingMassage>& q );
+    
+    /** 
+     * Ads income to SafeQueue (designed to run in new thread).
+     */
     void operator()();
 };
 
@@ -22,14 +31,12 @@ class ToViewParser
 {
 public:
     /**
-     * Put a message with incoming alias to the queue
-     * Parse massage incoming from alias given by first argument
-     * it invokes any method needed after analizying msg and context
-     * @param const ChaTIN::Alias& alias of person who send you that massage
-     * @param const Glib::ustring& message to be parsed
+     * Put a masssage with incoming alias to the queue
+     * @param cosnt Glib::ustring& alias of person who send you that massage
+     * @param const Glib::ustring& msg directly what came from Socket::Socket 
      * @throw CannotParseMassageException if parser cannot understand that
      */
-    void doCommand( const ChaTIN::Alias&, const Glib::ustring&) const;
+    void doCommand( const ChaTIN::Alias& alias, const Glib::ustring& msg );
     
     /**
      * Main loop of ToViewParser, build to run as a thread
