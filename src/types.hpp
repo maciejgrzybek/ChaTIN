@@ -56,12 +56,25 @@ namespace std
 {
 
 template <>
+struct hash<ChaTIN::IPv6 const>
+{
+    size_t operator()(const ChaTIN::IPv6& v) const
+    {
+        hash<std::string> hashf;
+        size_t resultHash;
+        std::string ipv6String = v.c_str(); //MBO @see hash<ChaTIN::ConferenceId>::operator()
+        resultHash = hashf(ipv6String);
+        return resultHash;
+    }
+};
+
+template <>
 struct equal_to<ChaTIN::ConferenceId>
 {
-bool operator()(const ChaTIN::ConferenceId& l,const ChaTIN::ConferenceId& r) const
-{
-    return (l.ownerip == r.ownerip) && (l.name == r.name);
-}
+    bool operator()(const ChaTIN::ConferenceId& l,const ChaTIN::ConferenceId& r) const
+    {
+        return (l.ownerip == r.ownerip) && (l.name == r.name);
+    }
 };
 
 template <>
