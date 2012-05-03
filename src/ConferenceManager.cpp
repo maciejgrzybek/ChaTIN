@@ -47,35 +47,39 @@ void ConferenceManager::registerIncomingConference(
     conferenceMap::const_iterator iter = conferences.find( id ); 
     if( iter!=conferences.end() )
     {
-//        if ( std::equal ( iter->second.begin(), iter->second.end(), members ) ) //FIXME test it
-        {
-        }
-//        else
-    /*    {
-    *        //FIXME check it
+    /*    //FIXME test it
+    *    if ( std::equal ( iter->second.begin(), iter->second.end(), members ) ) 
+    *    {
+    *    }
+    *    else
+    *    {
     *        Glib::ustring tempName;
     *        tempName = id->first.name;
-    *        ChaTIN::ConferenceId = tempId;
+    *        ChaTIN::ConferenceId tempId;
     *        tempId.ownerip = id->first.ownerip;
     *        int maxConference = 256;
     *        for (int i = 1; i <= maxConference ; i++)
     *        {
-    *            tempId.name = tempName;
-    *            tempId.name += "~";
-    *            tempId.name +=(Glib::ustring)i;
+    *            std::stringstream nameNumber;
+    *            nameNumber tempName << "~" << i;
+    *            Glib::ustring newName = nameNumber.str();
+    *            tempId.name = newName;
     *            iter = conferences.find( tempId );
     *            if( iter!=conferences.end() )
-    *            {
-    *            }
-    *            else
     *            {
     *               if ( std::equal ( iter->second.begin(), iter->second.end(), members ) ) 
     *               {
     *                    return;
-    *                }
+    *               }
+    *               else
+    *               {
+    *                    conferences[tempId] = members;
+    *               }
     *            }
-    */        }
-        }
+    *        }
+    *        trow MaxConferenceReachedException();
+    *    }
+    */
     }
     else
     {
