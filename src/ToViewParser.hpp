@@ -32,8 +32,24 @@ public:
 class ToViewParser
 {
     SafeQueue<ChaTIN::IncomingMassage>& q; //queue for all stuff
+   
     
-    typedef boost::function<void ( const ChaTIN::Alias&, const Glib::ustring& msgText ) > inActionFun;
+    /**
+     * This is the map name->value for other information
+     *  which can be find in xml and can be usefull in some cotext (eg. conference name for conference income)
+     */
+    typedef std::map<Glib::ustring, Glib::ustring> otherAttributes;
+//    typedef std::string otherAttributes;
+ 
+    /**
+     * This is boost::function refering to ToViewParser method.
+     * Correct method (action) should:
+     *      - return void
+     *      - gets const ChaTIN::Alias& as first  argument (from who is the massage comming)
+     *      - gets const Glib::ustring& as second argument (massage text)
+     *      - gets const otherAtributes as third  argument (additional information map: name->str_value)
+     */
+    typedef boost::function<void ( ToViewParser*, const ChaTIN::Alias&, const Glib::ustring&, const otherAttributes& ) > inActionFun;
 
     
     // map msg_type -> callback (boost::function)

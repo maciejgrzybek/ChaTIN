@@ -48,7 +48,7 @@ void ToViewParser::parse( const ChaTIN::IncomingMassage& income )
             auto iter = actions.find( type->GetText() );
             if( iter != actions.end() )
             {
-                iter->second(income.alias, text->GetText() );
+                iter->second(this, income.alias, text->GetText(), otherAttributes());
             }
             else
             {
