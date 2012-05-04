@@ -1,3 +1,4 @@
+#pragma once
 #include <queue>
 #include <boost/thread/mutex.hpp>
 #include <boost/interprocess/sync/scoped_lock.hpp>
