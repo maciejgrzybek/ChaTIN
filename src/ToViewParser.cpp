@@ -46,9 +46,23 @@ void ToViewParser::parse( const ChaTIN::IncomingMassage& income )
         if( type && text )
         {
             auto iter = actions.find( type->GetText() );
+            Glib::ustring msgText = text->GetText();
+            otherAttributes otherAtt;            
+
             if( iter != actions.end() )
             {
-                iter->second(this, income.alias, text->GetText(), otherAttributes());
+                msgNode->RemoveChild(type); //we remove those in order to not 
+                msgNode->RemoveChild(text); //find them again in loop
+
+                //now find and save every other children of this massage
+                TiXmlElement* current = msgNode->FirstChildElement();
+                while( current )
+                {
+                    otherAtt[current->Value()] = current->GetText();
+                    current = msgNode->IterateChildren(current)->ToElement(); //Wow! Just like in NWScript
+                }
+                
+                iter->second(this, income.alias, msgText, otherAtt);
             }
             else
             {
