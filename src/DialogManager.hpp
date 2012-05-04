@@ -34,6 +34,12 @@ public:
     DialogManager(ToViewParser&, const AliasManager&, const ConferenceManager&, const Config&);
 
     /**
+     * Copy constructor needed by boost::threads
+     * it just copy all references from one object to the other
+     */
+    DialogManager(DialogManager&);
+
+    /**
      * Send message to given IPv6 address or alias.
      * @param const ChaTIN::Alias& Reference to IPv6 or alias as unicode string.
      * @param const Glib::ustring& Reference to message to send as unicode string.

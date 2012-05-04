@@ -5,6 +5,11 @@ DialogManager::DialogManager(ToViewParser& toViewParser, const AliasManager& ali
     working.reset(new bool(false));
 }
 
+DialogManager::DialogManager( DialogManager& dm )
+    : toViewParser(dm.toViewParser), aliasManager(dm.aliasManager),
+      conferenceManager(dm.conferenceManager), config(dm.config)
+{}
+
 void DialogManager::sendTo(const ChaTIN::Alias& alias, const Glib::ustring& message) throw(Socket::SendFailureException)
 {
     const ChaTIN::IPv6 ip = aliasManager.getIP(alias); // resolve ip from alias
