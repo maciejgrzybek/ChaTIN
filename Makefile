@@ -6,7 +6,7 @@ GTKI=`pkg-config gtkmm-2.4 --cflags`
 GTKL=`pkg-config gtkmm-2.4 --libs`
 LFLAGS=-ltinyxml -lboost_thread -lpthread
 
-all: obj/ChatWindow.o obj/main.o obj/Socket.o obj/AliasManager.o obj/ConferenceManager.o obj/Dialog.o obj/ToViewParser.o obj/DialogManager.o obj/Config.o obj/types.o obj/XMLException.o obj/ConferenceException.o obj/Exception.o 
+all: obj/ChatWindow.o obj/main.o obj/Socket.o obj/AliasManager.o obj/ConferenceManager.o obj/Dialog.o obj/ToViewParser.o obj/DialogManager.o obj/Config.o obj/types.o obj/XMLException.o obj/ConferenceException.o obj/Exception.o obj/FromViewParser.o 
 	g++ $^ $(GEN) $(GTKL) $(LFLAGS) -o bin/ChaTIN
 obj/main.o: src/main.cpp src/ChatWindow.hpp
 	g++ src/main.cpp -c $(GEN) $(GTKI) -o $@
