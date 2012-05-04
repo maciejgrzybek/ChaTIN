@@ -20,13 +20,13 @@ obj/AliasManager.o: src/AliasManager.cpp src/AliasManager.hpp
 	g++ src/AliasManager.cpp -c $(GEN) $(GLIBI)  -o $@
 obj/ConferenceManager.o: src/ConferenceManager.cpp src/ConferenceManager.hpp
 	g++ src/ConferenceManager.cpp -c $(GEN) -o $@
-obj/Dialog.o: src/Dialog.cpp src/Dialog.hpp
+obj/Dialog.o: src/Dialog.cpp src/Dialog.hpp src/types.hpp obj/Socket.o
 	g++ src/Dialog.cpp -c $(GEN) $(GLIBI) -o $@
-obj/DialogManager.o: src/DialogManager.cpp src/DialogManager.hpp
+obj/DialogManager.o: src/DialogManager.cpp src/DialogManager.hpp obj/Dialog.o obj/Config.o
 	g++ src/DialogManager.cpp -c $(GEN) $(GLIBI) -o $@
-obj/Config.o: src/Config.cpp src/Config.hpp
+obj/Config.o: src/Config.cpp src/Config.hpp  obj/XMLException.o
 	g++ src/Config.cpp -c $(GEN) -o $@
-obj/types.o: src/types.cpp src/types.hpp
+obj/types.o: src/types.cpp src/types.hpp obj/Exception.o
 	g++ src/types.cpp -c $(GEN) $(GLIBI) -o $@
 obj/XMLException.o: src/XMLException.cpp src/XMLException.hpp
 	g++ src/XMLException.cpp -c $(GEN) -o $@
