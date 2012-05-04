@@ -4,27 +4,7 @@
 #include <boost/function.hpp>
 #include "types.hpp"
 #include "SafeQueue.hpp"
-
-/**
- * Class which should be used to add elements to waiting queue
- */
-class QueueAdder
-{
-    ChaTIN::IncomingMassage income;
-    SafeQueue<ChaTIN::IncomingMassage>& q;
-public:
-    /**
-     * Create functor with given argumeters
-     * @param const ChaTIN::IncomingMassage& massage that came  from DialogManager
-     * @param SafeQueue<ChaTIN::IncomingMassage>& q queue to which we will add our income
-     */
-    QueueAdder( const ChaTIN::IncomingMassage& income, SafeQueue<ChaTIN::IncomingMassage>& q );
-    
-    /** 
-     * Ads income to SafeQueue (designed to run in new thread).
-     */
-    void operator()();
-};
+#include "QueueAdder.hpp"
 
 /**
  * Parser of packages coming from inet

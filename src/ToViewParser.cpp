@@ -3,16 +3,6 @@
 #define TIXML_USE_STL
 #include <tinyxml.h>
 
-
-QueueAdder::QueueAdder( const ChaTIN::IncomingMassage& income, SafeQueue<ChaTIN::IncomingMassage>& q )
-    : q(q), income(income)
-{}
-
-void QueueAdder::operator()()
-{
-    q.push(income); //this may hang process for a while
-}
-
 ToViewParser::ToViewParser( SafeQueue<ChaTIN::IncomingMassage>& q )
     : q(q)
 {}
@@ -20,7 +10,7 @@ ToViewParser::ToViewParser( SafeQueue<ChaTIN::IncomingMassage>& q )
 void ToViewParser::doCommand( const ChaTIN::Alias& alias, const Glib::ustring& msg )
 {
     //just invoke QueueAdder thread
-    boost::thread adderThread(QueueAdder(ChaTIN::IncomingMassage(alias, msg),q));
+    boost::thread adderThread(QueueAdder<ChaTIN::IncomingMassage>(ChaTIN::IncomingMassage(alias, msg),q));
 }
 
 void ToViewParser::operator()()
