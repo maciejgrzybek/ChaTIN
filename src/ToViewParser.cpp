@@ -41,7 +41,21 @@ void ToViewParser::parse( const ChaTIN::IncomingMassage& income )
     TiXmlElement* msgNode = massage.FirstChildElement("massage");
     if( msgNode )
     {
-            
+        TiXmlElement* type = msgNode->FirstChildElement("type");
+        TiXmlElement* text = msgNode->FirstChildElement("text");
+        if( type && text )
+        {
+            auto iter = actions.find( type->GetText() );
+            if( iter != actions.end() )
+            {
+                iter->second(income.alias, text->GetText() );
+            }
+            else
+            {
+                //FIXME
+                //THROW CannotParseMassageException
+            }
+        }            
     }
     else
     {

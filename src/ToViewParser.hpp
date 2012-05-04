@@ -36,7 +36,7 @@ class ToViewParser
     typedef boost::function<void ( const ChaTIN::Alias&, const Glib::ustring& msgText ) > inActionFun;
 
     
-    // map msg_type -> callback (boost bind)
+    // map msg_type -> callback (boost::function)
     std::map< Glib::ustring, inActionFun > actions;
 
 public:
