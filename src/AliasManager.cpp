@@ -1,4 +1,5 @@
 #include "AliasManager.hpp"
+#include "XMLPackageCreator.hpp"
 #include "Socket.hpp"
 
 AliasManager::AliasManager( const DBDriver& db, DialogManager& sender ) : db(db), sender(sender) 
@@ -87,8 +88,9 @@ void AliasManager::requestSub( const ChaTIN::Alias& alias )
     }
     else
     {
-        sender.sendTo( alias , "IKY" ); //TODO package content
-                                        //     try catch - what if he is off AliasNotConnectedException
+        XMLPackageCreator xml("iky","");
+        sender.sendTo( alias , xml.getXML() );
+                                        //FIXME try catch - what if he is off AliasNotConnectedException
         subscriptions[alias] = ONE_SIDED;
     }
 }
@@ -97,8 +99,9 @@ void AliasManager::acceptSub( const ChaTIN::Alias& alias )
 {
     if( subscriptions[alias] == REQUESTED )
     {
-        sender.sendTo( alias, "IKYA" ); //TODO package content
-                                        //     try catch - whaat if he is off AliasNotConnectedException
+        XMLPackageCreator xml("ikya","");
+        sender.sendTo( alias , xml.getXML() );
+                                        //FIXME try catch - whaat if he is off AliasNotConnectedException
         subscriptions[alias] = FULL;
     }
     else
