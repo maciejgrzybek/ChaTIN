@@ -5,6 +5,7 @@
 #include "types.hpp"
 #include "SafeQueue.hpp"
 #include "QueueAdder.hpp"
+#include "XMLPackageCreator.hpp"
 
 /**
  * Parser of packages coming from inet
@@ -12,14 +13,10 @@
 class ToViewParser
 {
     SafeQueue<ChaTIN::IncomingMassage>& q; //queue for all stuff
-   
-    
-    /**
-     * This is the map name->value for other information
-     *  which can be find in xml and can be usefull in some cotext (eg. conference name for conference income)
-     */
-    typedef std::map<Glib::ustring, Glib::ustring> otherAttributes;
-//    typedef std::string otherAttributes;
+
+public:
+    //FIXME i should use full version everywhere, but its only for now
+    typedef XMLPackageCreator::OtherAttributes otherAttributes;
  
     /**
      * This is boost::function refering to ToViewParser method.
@@ -30,8 +27,9 @@ class ToViewParser
      *      - gets const otherAtributes as third  argument (additional information map: name->str_value)
      */
     typedef boost::function<void ( ToViewParser*, const ChaTIN::Alias&, const Glib::ustring&, const otherAttributes& ) > inActionFun;
+    //FIXME ^ it shoud start with uppercase
 
-    
+private:    
     // map msg_type -> callback (boost::function)
     std::map< Glib::ustring, inActionFun > actions;
 
