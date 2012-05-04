@@ -1,5 +1,8 @@
 #include "ToViewParser.hpp"
 #include <boost/thread.hpp>
+#define TIXML_USE_STL
+#include <tinyxml.h>
+
 
 QueueAdder::QueueAdder( const ChaTIN::IncomingMassage& income, SafeQueue<ChaTIN::IncomingMassage>& q )
     : q(q), income(income)
@@ -33,7 +36,19 @@ void ToViewParser::operator()()
 
 void ToViewParser::parse( const ChaTIN::IncomingMassage& income )
 {
-    Glib::ustring msg = income.msg;
+    TiXmlDocument massage;
+    massage.Parse( income.msg.c_str() );
+    TiXmlElement* msgNode = massage.FirstChildElement("massage");
+    if( msgNode )
+    {
+            
+    }
+    else
+    {
+        //FIXME
+        //THROW CannotParseMassageException
+    }
+     
     //DO PARSING (no gramar yet)
 }
 
