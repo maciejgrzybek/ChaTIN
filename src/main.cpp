@@ -31,6 +31,7 @@ int main(int argc, char *argv[])
 
     ChatWindow win;
     Gtk::Main::run(win);
-    
+    toViewThread.join();
+    dialogThread.join();  
     return 0;
 }
