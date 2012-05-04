@@ -34,6 +34,8 @@ obj/ConferenceException.o: src/ConferenceException.cpp src/ConferenceException.h
 	g++ src/ConferenceException.cpp -c $(GEN) -o $@
 obj/ToViewParser.o: src/ToViewParser.cpp src/ToViewParser.hpp
 	g++ src/ToViewParser.cpp -c $(GEN) -o $@
+obj/FromViewParser.o: src/FromViewParser.cpp src/FromViewParser.hpp
+	g++ src/FromViewParser.cpp -c $(GEN) -o $@
 clean:
 	rm obj/*.o
 debug: GEN += -DDEBUG -Wall -Wextra -g3
