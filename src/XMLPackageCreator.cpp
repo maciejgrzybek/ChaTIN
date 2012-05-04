@@ -18,12 +18,13 @@ Glib::ustring XMLPackageCreator::getXML()
     xml+="\t<type>"+type+"</type>\n";
     xml+="\t<text>\n";
     xml+=text;
-    xml+="\t</text>\n";
+    xml+="\n\t</text>\n";    
     for( auto& i : other )
     {
-        xml+="<"+i.first+">";
+        xml+="\t<"+i.first+">";
         xml+=i.second;
         xml+="</"+i.first+">\n";
     }
     xml+="</massage>\n";
+    return xml;
 }
