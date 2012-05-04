@@ -1,3 +1,4 @@
+#include <boost/thread.hpp>
 #include "ChatWindow.hpp"
 #include "DBDriver.hpp"
 #include "ToViewParser.hpp"
@@ -12,6 +13,7 @@
 
 int main(int argc, char *argv[])
 {
+    //create objects
     Gtk::Main kit(argc, argv);
     DBDriver db;
     SafeQueue<ChaTIN::IncomingMassage> toViewParserQueue;
@@ -22,8 +24,13 @@ int main(int argc, char *argv[])
     DialogManager dialogManager( toViewParser, aliasManager, conferenceManager, config);
     aliasManager.setDialogManager( dialogManager );
     FromViewParser fromViewParser( dialogManager );
-    
+
+    //create threads
+    boost::thread dialogThread( dialogManager );
+    boost::thread toViewThread( toViewParser  );
+
     ChatWindow win;
     Gtk::Main::run(win);
+    
     return 0;
 }
