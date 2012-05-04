@@ -1,5 +1,7 @@
 #pragma once
 #include <glibmm/ustring.h>
+#include <map>
+#include <boost/function.hpp>
 #include "types.hpp"
 #include "SafeQueue.hpp"
 
@@ -30,6 +32,13 @@ public:
 class ToViewParser
 {
     SafeQueue<ChaTIN::IncomingMassage>& q; //queue for all stuff
+    
+    typedef boost::function<void ( const ChaTIN::Alias&, const Glib::ustring& msgText ) > inActionFun;
+
+    
+    // map msg_type -> callback (boost bind)
+    std::map< Glib::ustring, inActionFun > actions;
+
 public:
     /**
      * Constructor taking queue reference to comunicate with rest of the world 
@@ -53,5 +62,9 @@ public:
     void operator()();
 
 private:
+    /**
+     * It do all parsing using tinyxml and then call function based on massage type
+     * @throw CannotParseMassageExcpeion if parser cannot understand income
+     */
     void parse( const ChaTIN::IncomingMassage& msg );
 };
