@@ -1,4 +1,9 @@
 #include "FromViewParser.hpp"
+#include "XMLPackageCreator.hpp"
+
+FromViewParser::FromViewParser( DialogManager& dialogManager )
+    : dialogManager(dialogManager)
+{}
 
 void FromViewParser::doCommand( const ChaTIN::Alias& alias, const Glib::ustring& input )
 {
@@ -8,7 +13,8 @@ void FromViewParser::doCommand( const ChaTIN::Alias& alias, const Glib::ustring&
     }
     else
     {
-        //Its simple massage package
+        XMLPackageCreator xml("msg", input);
+        dialogManager.sendTo(alias, xml.getXML());
     }
 }
 
@@ -20,7 +26,10 @@ void FromViewParser::doCommand( const ChaTIN::ConferenceId& name, const Glib::us
     }
     else
     {
-        //Its simple massage package
+        XMLPackageCreator xml("cmsg", input);
+        xml["name"] = name.name;
+        xml["ownerip"] = name.ownerip;
+        dialogManager.sendTo(name, xml.getXML());
     }
 }
 
