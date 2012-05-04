@@ -25,4 +25,6 @@ class FromViewParser
      * @throw UnknownCommandExcepion when input begins with '/' and isnt parseable
      */
     void doCommand( const ChaTIN::ConferenceId& name, const Glib::ustring& input );
+
+    static bool isInputCommand( const Glib::ustring& input );
 };
