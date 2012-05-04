@@ -2,9 +2,15 @@
 #include "XMLPackageCreator.hpp"
 #include "Socket.hpp"
 
-AliasManager::AliasManager( const DBDriver& db, DialogManager& sender ) : db(db), sender(sender) 
+AliasManager::AliasManager( const DBDriver& db ) 
+    : db(db)
 {
     loadSubscriptionsFromDB();
+}
+
+void AliasManager::setDialogManager( DialogManager& sender_ )
+{
+    sender = sender_;
 }
 
 ChaTIN::Alias AliasManager::getAlias( const ChaTIN::IPv6& ip ) const
@@ -88,8 +94,9 @@ void AliasManager::requestSub( const ChaTIN::Alias& alias )
     }
     else
     {
+        if( !sender ) ; //FIXME throw NoDialogManagerGivenException
         XMLPackageCreator xml("iky","");
-        sender.sendTo( alias , xml.getXML() );
+        sender->sendTo( alias , xml.getXML() );
                                         //FIXME try catch - what if he is off AliasNotConnectedException
         subscriptions[alias] = ONE_SIDED;
     }
@@ -99,8 +106,9 @@ void AliasManager::acceptSub( const ChaTIN::Alias& alias )
 {
     if( subscriptions[alias] == REQUESTED )
     {
+        if( !sender ) ; //FIXME throw NoDialogManagerGivenException
         XMLPackageCreator xml("ikya","");
-        sender.sendTo( alias , xml.getXML() );
+        sender->sendTo( alias , xml.getXML() );
                                         //FIXME try catch - whaat if he is off AliasNotConnectedException
         subscriptions[alias] = FULL;
     }
@@ -115,8 +123,10 @@ void AliasManager::rejectSub( const ChaTIN::Alias& alias )
 {
     if( subscriptions[alias] == REQUESTED )
     {
-        sender.sendTo( alias, "IDKY" ); //TODO package content
-                                        //     try catch - whaat if he is off AliasNotConnectedException
+        if( !sender ) ; //FIXME throw NoDialogManagerGivenException
+        XMLPackageCreator xml("idky","");
+        sender->sendTo( alias, xml.getXML() );
+                                        //FIXME try catch - whaat if he is off AliasNotConnectedException
         subscriptions[alias] = REJECTED;
     }
     else

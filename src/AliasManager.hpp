@@ -4,6 +4,7 @@
 
 #include <glibmm/ustring.h>
 #include <boost/bimap.hpp>
+#include <boost/optional.hpp>
 #include <iostream>
 #include <map>
 #include "DBDriver.hpp"
@@ -30,13 +31,21 @@ class AliasManager
     /* subscriptions data (2) */
     std::map<ChaTIN::Alias, SubPhase> subscriptions;
     const DBDriver& db;
-    DialogManager& sender;
+    bool sendReady;
+    boost::optional<DialogManager&> sender;
 
 public:
     /**
      * Default construtctor reading existing aliases from given DBDriver
      */
-    AliasManager( const DBDriver&, DialogManager& );
+    AliasManager( const DBDriver& );
+
+    /**
+     * Allow to set dialog manager after some actions.
+     * Before calling this method AliasManager cannot do many things
+     * (everything that need to send sth)
+     */
+    void setDialogManager( DialogManager& sender_ );
 
     /**
      * Gets alias from given ip
@@ -84,6 +93,7 @@ public:
      * @param const ChaTIN::Alias& Alias to request
      * @throw AliasNotConnected - if alias client ist connected right now
      * @throw AliasAlreadyFullSubscribed - if alias is on FULL phase with you
+     * @throw NoDialogManagerGivenException - if it try to send sth but dialogManager isnt set yet
      */
     void requestSub(const ChaTIN::Alias&); 
 
@@ -92,6 +102,7 @@ public:
      * @param const ChaTIN::Alias& Alias to accept
      * @throw YouAreNotRequested - when alias client didnt send you request
      * @throw AliasNotConnected - if alias client ist connected right now
+     * @throw NoDialogManagerGivenException - if it try to send sth but dialogManager isnt set yet
      */
     void acceptSub(const ChaTIN::Alias&);
 
@@ -100,6 +111,7 @@ public:
      * @param const ChaTIN::Alias& alias to reject
      * @throw YouAreNotRequested - when alias client didnt send you request
      * @throw AliasNotConnected - if alias client ist connected right now
+     * @throw NoDialogManagerGivenException - if it try to send sth but dialogManager isnt set yet
      */
     void rejectSub(const ChaTIN::Alias&);
 
