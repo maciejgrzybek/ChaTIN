@@ -1,4 +1,5 @@
 #include "ChatWindow.hpp"
+#include "ChatTabFactory.hpp"
 #include <cassert>
 
 ChatWindow::ChatWindow( FromViewParser& fromViewParser ) 
@@ -29,7 +30,7 @@ ChatWindow::FriendData::FriendData()
 
 void ChatWindow::textInHandle()
 {
-    selectedTab->doCommand( fromViewParser, chatField.get_text() );
+    //selectedTab->doCommand( fromViewParser, chatField.get_text() );
 /*
     if( chatField.get_text() != "" )
     {
@@ -186,9 +187,11 @@ void ChatWindow::buildTreeModel()
 
 void ChatWindow::initializeTabs()
 {
-    logBox = std::shared_ptr<ChatTab>( new ChatTabLog("LOG") );
+    logBox = ChatTabFactory::create(Glib::ustring("LOG"));
     chatTabs.set_scrollable();
+
     selName = logBox->getFullAlias(); //fist seleceted tab
+
     chatTabs.insert_page(*logBox, cutAlias(selName), 0);
     selectedTab = logBox;
     chatBoxBuffer = logBox->get_buffer(); //select LOG TextView as default text buffer

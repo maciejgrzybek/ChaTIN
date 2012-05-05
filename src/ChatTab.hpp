@@ -30,7 +30,7 @@ class ChatTab : public Gtk::TextView
  */
 class ChatTabDialog : public ChatTab
 {
-        const ChaTIN::Alias& alias;
+        ChaTIN::Alias alias;
     public:
         ChatTabDialog( const ChaTIN::Alias& );
         const Glib::ustring& getFullAlias() const;
@@ -44,7 +44,7 @@ class ChatTabDialog : public ChatTab
  */
 class ChatTabConference : public ChatTab
 {
-        const ChaTIN::ConferenceId& name;
+        ChaTIN::ConferenceId name;
     public:
         ChatTabConference( const ChaTIN::ConferenceId& );
         const Glib::ustring& getFullAlias() const;
@@ -58,7 +58,7 @@ class ChatTabConference : public ChatTab
  */
 class ChatTabLog : public ChatTab
 {
-        const Glib::ustring& name;
+        Glib::ustring name;
     public:
         ChatTabLog( const Glib::ustring& );
         const Glib::ustring& getFullAlias() const;

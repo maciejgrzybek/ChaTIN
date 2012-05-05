@@ -27,7 +27,7 @@ int main(int argc, char *argv[])
     ChatWindow win(fromViewParser);
 
     //create threads
-    boost::thread dialogThread( dialogManager );
+//    boost::thread dialogThread( dialogManager );
     boost::thread toViewThread( toViewParser  );
 
     Gtk::Main::run(win);
