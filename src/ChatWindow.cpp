@@ -29,6 +29,8 @@ ChatWindow::FriendData::FriendData()
 
 void ChatWindow::textInHandle()
 {
+    selectedTab->doCommand( fromViewParser, chatField.get_text() );
+/*
     if( chatField.get_text() != "" )
     {
         if( chatField.get_text()[0] != '/' )
@@ -55,6 +57,7 @@ void ChatWindow::textInHandle()
             }
         }
     }
+*/
 }
 
 Glib::ustring ChatWindow::cutAlias( Glib::ustring alias )
