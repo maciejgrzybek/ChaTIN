@@ -2,12 +2,17 @@
 #include "types.hpp"
 #include <glibmm/ustring.h>
 
+/**
+ * Enum used to recognize type in up cast
+ */
 enum ChatTabType{ DIALOG, CONFERENCE, LOG };
 
 /**
  * Class for holding separation between view-controll and view
- * It contains  fullAlias of tab as well as it is Widget
+ * It contains informations needed to comunicate
+ * with FromViewParser.
  * @author: Andrzej Fiedukowicz
+ * @see FromViewParser::doCommand
  */
 class ChatTab : public Gtk::TextView
 {
@@ -16,6 +21,10 @@ class ChatTab : public Gtk::TextView
         virtual ChatTabType getType() const = 0;
 };
 
+/**
+ * This class contains ChaTIN::Alias which can be use to
+ * call doCommand on FromViewParser
+ */
 class ChatTabDialog : public ChatTab
 {
         const ChaTIN::Alias& alias;
@@ -25,6 +34,10 @@ class ChatTabDialog : public ChatTab
         ChatTabType getType() const;
 };
 
+/**
+ * This class contains ChaTIN::ConferenceId which can be use to
+ * call doCommand on FromViewParser
+ */
 class ChatTabConference : public ChatTab
 {
         const ChaTIN::ConferenceId& name;
@@ -34,6 +47,10 @@ class ChatTabConference : public ChatTab
         ChatTabType getType() const;
 };
 
+/**
+ * This class contains Glib::ustring which can be use to
+ * call doCommand on FromViewParser
+ */
 class ChatTabLog : public ChatTab
 {
         const Glib::ustring& name;
