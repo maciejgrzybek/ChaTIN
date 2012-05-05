@@ -30,35 +30,8 @@ ChatWindow::FriendData::FriendData()
 
 void ChatWindow::textInHandle()
 {
-    //selectedTab->doCommand( fromViewParser, chatField.get_text() );
-/*
-    if( chatField.get_text() != "" )
-    {
-        if( chatField.get_text()[0] != '/' )
-        {
-            appendTextToCurrentTab("Wyslano: "+chatField.get_text()+"\n");
-            chatField.set_text("");
-        }
-        else
-        {
-            // command interpretation here 
-            if(chatField.get_text() == "/exit")
-                exit(0);
-            if(chatField.get_text() == "/close")
-            {
-                closeCurrentTab();
-            }
-            if(chatField.get_text().substr(0,5) == "/open" )
-            {
-                Glib::ustring toOpen = chatField.get_text().substr(6); 
-                if(validateAlias(toOpen))
-                {
-                    openDialogTab(toOpen);
-                }
-            }
-        }
-    }
-*/
+    selectedTab->doCommand( fromViewParser, chatField.get_text() );
+    chatField.set_text("");
 }
 
 Glib::ustring ChatWindow::cutAlias( Glib::ustring alias )
