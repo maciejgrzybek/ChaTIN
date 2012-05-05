@@ -22,7 +22,7 @@ namespace ChaTIN
     {
         return ( ownerip == r.ownerip ) && (name == r.name );
     }
-    
+
     IncomingMassage::IncomingMassage( const ChaTIN::Alias& alias, const Glib::ustring& msg )
         : alias(alias), msg(msg)
     {}

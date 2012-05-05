@@ -83,7 +83,7 @@ void ChatWindow::openDialogTab( Glib::ustring alias )
     if( dialogBoxes.find(alias) == dialogBoxes.end() )
     {
         /*create page if it is necessary*/            
-        dialogBoxes[alias] = std::shared_ptr<ChatTab>(new ChatTab(alias));    
+        dialogBoxes[alias] = std::shared_ptr<ChatTab>(new ChatTabLog(alias));    
         chatTabs.insert_page(*dialogBoxes[alias], cutAlias(alias), 1);
         show_all_children();
     }
@@ -183,7 +183,7 @@ void ChatWindow::buildTreeModel()
 
 void ChatWindow::initializeTabs()
 {
-    logBox = std::shared_ptr<ChatTab>( new ChatTab("LOG") );
+    logBox = std::shared_ptr<ChatTab>( new ChatTabLog("LOG") );
     chatTabs.set_scrollable();
     selName = logBox->getFullAlias(); //fist seleceted tab
     chatTabs.insert_page(*logBox, cutAlias(selName), 0);
@@ -194,15 +194,4 @@ void ChatWindow::initializeTabs()
     chatTabs.set_can_focus(false);
 }
 
-ChatWindow::ChatTab::ChatTab( 
-        Glib::ustring fullAlias )
-    : fullAlias(fullAlias)
-{
-}
-
-
-Glib::ustring ChatWindow::ChatTab::getFullAlias()
-{
-    return fullAlias;
-}
 

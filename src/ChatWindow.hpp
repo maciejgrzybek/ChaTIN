@@ -5,6 +5,7 @@
 #include <map>
 #include <memory>
 #include "FromViewParser.hpp"
+#include "ChatTab.hpp"
 
 /**
  * Class holding whole GUI in it
@@ -39,21 +40,6 @@ protected:
             FriendData();
             Gtk::TreeModelColumn<Glib::ustring> alias; 
             Gtk::TreeModelColumn<Glib::ustring> fullAlias;
-    };
-
-    /**
-     * Class for holding separation between view-controll and view
-     * It contains  fullAlias of tab as well as it is Widget
-     * @author: Andrzej Fiedukowicz
-     */
-    class ChatTab : public Gtk::TextView
-    {
-        public:
-            ChatTab(Glib::ustring fullAlias);
-            Glib::ustring getFullAlias();   
-
-        private:
-            Glib::ustring fullAlias;
     };
 
     /* SIGNAL HANDLERS */
