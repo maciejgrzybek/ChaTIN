@@ -28,3 +28,17 @@ ChatTabType ChatTabConference::getType() const
 {
     return CONFERENCE;
 }
+
+ChatTabLog::ChatTabLog( const Glib::ustring& name )
+    : name(name)
+{}
+
+const Glib::ustring& ChatTabLog::getFullAlias() const
+{
+    return name;
+}
+
+ChatTabType ChatTabLog::getType() const
+{
+    return LOG;
+}
