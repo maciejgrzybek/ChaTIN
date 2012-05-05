@@ -1,5 +1,6 @@
 #pragma once
 #include "types.hpp"
+#include "FromViewParser.hpp"
 #include <gtkmm.h>
 #include <glibmm/ustring.h>
 
@@ -20,6 +21,7 @@ class ChatTab : public Gtk::TextView
     public:
         virtual const Glib::ustring& getFullAlias() const = 0;
         virtual ChatTabType getType() const = 0;
+        virtual void doCommand( FromViewParser&, Glib::ustring ) const = 0;
 };
 
 /**
@@ -33,6 +35,7 @@ class ChatTabDialog : public ChatTab
         ChatTabDialog( const ChaTIN::Alias& );
         const Glib::ustring& getFullAlias() const;
         ChatTabType getType() const;
+        virtual void doCommand( FromViewParser&, Glib::ustring ) const;
 };
 
 /**
@@ -46,6 +49,7 @@ class ChatTabConference : public ChatTab
         ChatTabConference( const ChaTIN::ConferenceId& );
         const Glib::ustring& getFullAlias() const;
         ChatTabType getType() const;
+        virtual void doCommand( FromViewParser&, Glib::ustring ) const;
 };
 
 /**
@@ -59,4 +63,5 @@ class ChatTabLog : public ChatTab
         ChatTabLog( const Glib::ustring& );
         const Glib::ustring& getFullAlias() const;
         ChatTabType getType() const;
+        virtual void doCommand( FromViewParser&, Glib::ustring ) const;
 };
