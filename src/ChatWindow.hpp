@@ -4,6 +4,7 @@
 #include <string>
 #include <map>
 #include <memory>
+#include "FromViewParser.hpp"
 
 /**
  * Class holding whole GUI in it
@@ -13,13 +14,14 @@
  */
 class ChatWindow : public Gtk::Window
 {
+    FromViewParser& fromViewParser;
 public: 
     /**
      * Main constructor of window
      * It creates and sets all components it their positions
      * It also register all handlers for Gtk signals.
      */
-    ChatWindow();
+    ChatWindow( FromViewParser& );
     /**
      * For now it does not do anything because 
      * all object are being released by smart poionters

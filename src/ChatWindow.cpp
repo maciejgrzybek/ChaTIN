@@ -1,7 +1,8 @@
 #include "ChatWindow.hpp"
 #include <cassert>
 
-ChatWindow::ChatWindow() : sendButton("Send")
+ChatWindow::ChatWindow( FromViewParser& fromViewParser ) 
+    : sendButton("Send"), fromViewParser(fromViewParser)
 {
     set_title("ChatTIN");
     set_default_size(600,400);
@@ -37,7 +38,7 @@ void ChatWindow::textInHandle()
         }
         else
         {
-            /* command interpretation here */
+            // command interpretation here 
             if(chatField.get_text() == "/exit")
                 exit(0);
             if(chatField.get_text() == "/close")
