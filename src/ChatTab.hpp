@@ -1,5 +1,6 @@
 #pragma once
 #include "types.hpp"
+#include <gtkmm.h>
 #include <glibmm/ustring.h>
 
 /**

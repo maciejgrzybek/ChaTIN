@@ -6,7 +6,7 @@ GTKI=`pkg-config gtkmm-2.4 --cflags`
 GTKL=`pkg-config gtkmm-2.4 --libs`
 LFLAGS=-ltinyxml -lboost_thread -lpthread
 
-all: obj/ChatWindow.o obj/main.o obj/Socket.o obj/AliasManager.o obj/ConferenceManager.o obj/Dialog.o obj/ToViewParser.o obj/DialogManager.o obj/Config.o obj/types.o obj/XMLException.o obj/ConferenceException.o obj/Exception.o obj/FromViewParser.o obj/XMLPackageCreator.o
+all: obj/ChatWindow.o obj/main.o obj/Socket.o obj/AliasManager.o obj/ConferenceManager.o obj/Dialog.o obj/ToViewParser.o obj/DialogManager.o obj/Config.o obj/types.o obj/XMLException.o obj/ConferenceException.o obj/Exception.o obj/FromViewParser.o obj/XMLPackageCreator.o obj/ChatTab.o
 	g++ $^ $(GEN) $(GTKL) $(LFLAGS) -o bin/ChaTIN
 obj/main.o: src/main.cpp src/ChatWindow.hpp
 	g++ src/main.cpp -c $(GEN) $(GTKI) -o $@
@@ -38,6 +38,8 @@ obj/FromViewParser.o: src/FromViewParser.cpp src/FromViewParser.hpp
 	g++ src/FromViewParser.cpp -c $(GEN) -o $@
 obj/XMLPackageCreator.o: src/XMLPackageCreator.cpp src/XMLPackageCreator.hpp
 	g++ src/XMLPackageCreator.cpp -c $(GEN) -o $@
+obj/ChatTab.o: src/ChatTab.cpp src/ChatTab.hpp
+	g++ src/ChatTab.cpp -c $(GEN) $(GTKI) -o $@
 clean:
 	rm obj/*.o
 debug: GEN += -DDEBUG -Wall -Wextra -g3
