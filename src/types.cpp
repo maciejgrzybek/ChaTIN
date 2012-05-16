@@ -5,6 +5,8 @@ namespace ChaTIN
 {
     Alias::Alias( const IPv6& ip ) : Glib::ustring( static_cast<Glib::ustring>(ip) )
     {}
+    Alias::Alias( const Glib::ustring& alias ) : Glib::ustring(alias)
+    {}
 
     IPv6::IPv6( const Alias& alias ) throw(Socket::WrongAddressException) : Glib::ustring( static_cast<Glib::ustring>(alias) )
     {

@@ -24,6 +24,7 @@ public:
      * Copy from IPv6 adress its valid alias anyway
      */
     Alias(const IPv6&);
+    Alias(const Glib::ustring&);
 };
 
 /**
