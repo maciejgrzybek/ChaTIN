@@ -31,8 +31,9 @@ ChatWindow::FriendData::FriendData()
 void ChatWindow::textInHandle()
 {
     assert("Selected tab cannot be NULL" && selectedTab != NULL);
-    assert("Event cannot be NULL" && selectedTab->createEvent( chatField.get_text()) != NULL);
-    bq.push(selectedTab->createEvent( chatField.get_text()));
+    EPtr event = selectedTab->createEvent( chatField.get_text() );
+    assert("Event cannot be NULL" && event != EPtr(NULL));
+    bq.push(event);
     chatField.set_text("");
 }
 
