@@ -11,7 +11,6 @@
 #include "Exception.hpp"
 #include "XMLException.hpp"
 #include <string>
-#include <unordered_map>
 
 class Config
 {
