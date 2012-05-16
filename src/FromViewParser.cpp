@@ -45,7 +45,6 @@ void FromViewParser::doCommand( const Glib::ustring& name, const Glib::ustring& 
     {
         //FIXME
         XMLPackageCreator xml("cmsg", input);
-        sleep(5);    
         std::cout << xml.getXML();
     }
 } 
