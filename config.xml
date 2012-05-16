@@ -1,0 +1,6 @@
+<?xml version="1.0" ?>
+<configuration>
+    <int name="port">2222</int>
+    <int name="backlog">1024</int>
+    <string name="host">localhost</string>
+</configuration>
