@@ -122,7 +122,11 @@ protected:
 
     struct dispatcher
     {
-        void operator()(const Socket::ServerSocket::ClientIncomeSocket*,DialogManager&); // MBO passing DialogManager reference to dispatcher could be wrong thing, but in this case, we need too much components of DialogManager, that would be uncomfortable to pass all of them by arguments. Shared memory is mutex-protected inside this method. All of the operations inside should be mutex-protected because of passing reference to above object.
+        const Socket::ServerSocket::ClientIncomeSocket& incomeSocket;
+        DialogManager& dialogManager;
+
+        dispatcher(const Socket::ServerSocket::ClientIncomeSocket&,DialogManager&);
+        void operator()();//const Socket::ServerSocket::ClientIncomeSocket*,DialogManager&); // MBO passing DialogManager reference to dispatcher could be wrong thing, but in this case, we need too much components of DialogManager, that would be uncomfortable to pass all of them by arguments. Shared memory is mutex-protected inside this method. All of the operations inside should be mutex-protected because of passing reference to above object.
     };
 
 private:

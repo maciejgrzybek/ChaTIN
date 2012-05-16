@@ -69,17 +69,20 @@ void DialogManager::operator()() throw(Socket::ResolveException,Socket::WrongPor
     startServer();
 }
 
+DialogManager::dispatcher::dispatcher(const Socket::ServerSocket::ClientIncomeSocket& incomeSocket_, DialogManager& dialogManager_) : incomeSocket(incomeSocket_), dialogManager(dialogManager_)
+{}
+
 boost::thread DialogManager::dispatchIncomingSocket(const Socket::ServerSocket::ClientIncomeSocket& incomeSocket)
 {
-    dispatcher dispatcherCall;
-    return boost::thread(dispatcherCall,&incomeSocket,boost::ref(*this)); // we assign pointer, because it's dynamically created, so the memory scope is the same in all threads.
+    dispatcher dispatcherCall(incomeSocket,*this);
+    return boost::thread(dispatcherCall);//,&incomeSocket,boost::ref(*this)); // we assign pointer, because it's dynamically created, so the memory scope is the same in all threads.
 
 }
 
-void DialogManager::dispatcher::operator()(const Socket::ServerSocket::ClientIncomeSocket* incomeSocket, DialogManager& dialogManager)
+void DialogManager::dispatcher::operator()()//const Socket::ServerSocket::ClientIncomeSocket* incomeSocket, DialogManager& dialogManager)
 {
-    ChaTIN::IPv6 ip = incomeSocket->getHostAddress();
-    Dialog* dialog = new Dialog(incomeSocket);
+    ChaTIN::IPv6 ip = incomeSocket.getHostAddress();
+    Dialog* dialog = new Dialog(&incomeSocket);
 
     boost::upgrade_lock<boost::shared_mutex> lock(dialogManager.mutexLock);
     boost::upgrade_to_unique_lock<boost::shared_mutex> uniqueLock(lock); // lock for insertion
