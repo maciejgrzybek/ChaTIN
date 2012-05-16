@@ -26,12 +26,12 @@ public:
     /**
      * Constructor of DialogManager.
      * Stores reference to network packets grammar parser.
-     * @param const ToViewParser& Reference to network packets grammar parser.
-     * @param const AliasManager& Reference to alias manager.
-     * @param const ConferenceManager& Reference to conference manager.
+     * @param ToViewParser& Reference to network packets grammar parser.
+     * @param AliasManager& Reference to alias manager.
+     * @param ConferenceManager& Reference to conference manager.
      * @param const Config& Reference to config class.
      */
-    DialogManager(ToViewParser&, const AliasManager&, const ConferenceManager&, const Config&);
+    DialogManager(ToViewParser&, AliasManager&, ConferenceManager&, const Config&);
 
     /**
      * Copy constructor needed by boost::threads
@@ -97,12 +97,12 @@ protected:
     /**
      * Reference to alias manager
      */
-    const AliasManager& aliasManager;
+    AliasManager& aliasManager;
 
     /**
      * Reference to conference manager
      */
-    const ConferenceManager& conferenceManager;
+    ConferenceManager& conferenceManager;
 
     /**
      * Reference to config

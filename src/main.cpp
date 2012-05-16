@@ -20,7 +20,7 @@ int main(int argc, char *argv[])
     SafeQueue<ChaTIN::IncomingMassage> toViewParserQueue;
     SafeQueue<EPtr> fromViewParserQueue;
     ToViewParser toViewParser(toViewParserQueue);
-    Config config;
+    const Config config;
     ConferenceManager conferenceManager;
     AliasManager aliasManager( db );
     DialogManager dialogManager( toViewParser, aliasManager, conferenceManager, config);
@@ -29,7 +29,7 @@ int main(int argc, char *argv[])
     ChatWindow win( fromViewParserQueue );
 
     //create threads
-//    boost::thread dialogThread( dialogManager );
+    boost::thread dialogThread( dialogManager );
     boost::thread toViewThread( toViewParser  );
     boost::thread fromViewThread( fromViewParser  );
 
