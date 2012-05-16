@@ -4,11 +4,15 @@
 #include "Event.hpp"
 #include <gtkmm.h>
 #include <glibmm/ustring.h>
+#include <memory>
 
 /**
  * Enum used to recognize type in up cast
  */
 enum ChatTabType{ DIALOG, CONFERENCE, LOG };
+
+class ChatTab;
+typedef std::shared_ptr<ChatTab> CPtr;
 
 /**
  * Class for holding separation between view-controll and view
@@ -85,3 +89,4 @@ class ChatTabLog : public ChatTab
         ChatTabType getType() const;
         virtual EPtr createEvent( const Glib::ustring& ) const;
 };
+
