@@ -130,6 +130,10 @@ protected:
     };
 
 private:
+
+    typedef boost::unique_lock< boost::shared_mutex > WriteLock;
+    typedef boost::shared_lock< boost::shared_mutex >  ReadLock;
+
     /**
      * Send message to given socket.
      * Method is invoked by sendTo(const Glib::ustring&), when grammar parser demand or on user action.

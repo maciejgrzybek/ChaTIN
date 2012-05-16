@@ -29,19 +29,19 @@ void DialogManager::sendTo(const ChaTIN::ConferenceId& conferenceId, const Glib:
 
 const Dialog& DialogManager::getDialog(const ChaTIN::IPv6& ip)
 {
+    std::unordered_map<const ChaTIN::IPv6,const Dialog*>::const_iterator iter;
     int port = config.getValue<int>("port");
-    boost::shared_lock<boost::shared_mutex> lock(mutexLock); // lock for readers
-    std::unordered_map<const ChaTIN::IPv6,const Dialog*>::const_iterator iter = dialogMap.find(ip);
-    lock.unlock(); // lock no more needed
+    {
+        ReadLock lock(mutexLock); // lock for readers
+        iter = dialogMap.find(ip);
+    } // lock no more needed
     if(iter == dialogMap.end()) // if no dialog found
     {
-        boost::upgrade_lock<boost::shared_mutex> lock(mutexLock);
-        boost::upgrade_to_unique_lock<boost::shared_mutex> uniqueLock(lock); // lock for insertion
+        WriteLock lock(mutexLock); // lock for insertion
         dialogMap[ip] = new Dialog(ip,port); // create new one and assign to map of IPs.
     } // now uniqueLock is destroyed and others can read
-    lock.lock(); // lock for reading
+    ReadLock lock(mutexLock); // lock for reading
     const Dialog& result = *(dialogMap[ip]); // MBO
-    lock.unlock();
     return result;
 }
 
@@ -55,11 +55,12 @@ void DialogManager::startServer() throw(Socket::ResolveException,Socket::WrongPo
         serverSocket = new Socket::ServerSocket(host,port,backlog);
     }
     serverSocket->listen();
-    Socket::ServerSocket::ClientIncomeSocket* incomeSocket;
+    Socket::ServerSocket::ClientIncomeSocket* incomeSocket = NULL;
     working.reset(new bool(true));
     while(*working)
     {
         incomeSocket = serverSocket->pickClient(); // can hang up here when no client to pick is available
+        assert("incomeSocket can not be NULL" && incomeSocket != NULL);
         dispatchIncomingSocket(*incomeSocket);
     }
 }
@@ -84,10 +85,10 @@ void DialogManager::dispatcher::operator()()//const Socket::ServerSocket::Client
     ChaTIN::IPv6 ip = incomeSocket.getHostAddress();
     Dialog* dialog = new Dialog(&incomeSocket);
 
-    boost::upgrade_lock<boost::shared_mutex> lock(dialogManager.mutexLock);
-    boost::upgrade_to_unique_lock<boost::shared_mutex> uniqueLock(lock); // lock for insertion
-    dialogManager.dialogMap[ip] = dialog;
-    lock.unlock(); // let others read data I already put in map
+    {
+        WriteLock lock(dialogManager.mutexLock); // lock for insertion
+        dialogManager.dialogMap[ip] = dialog;
+    } // let others read data I already put in map
 
     while(1) // TODO change condition
     {
