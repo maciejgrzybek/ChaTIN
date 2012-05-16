@@ -1,18 +1,20 @@
 #pragma once
 #include "types.hpp"
+#include <memory>
+
+class ChatTab;
+typedef std::shared_ptr<ChatTab> TPtr;
+
 #include "FromViewParser.hpp"
 #include "Event.hpp"
 #include <gtkmm.h>
 #include <glibmm/ustring.h>
-#include <memory>
 
 /**
  * Enum used to recognize type in up cast
  */
 enum ChatTabType{ DIALOG, CONFERENCE, LOG };
 
-class ChatTab;
-typedef std::shared_ptr<ChatTab> CPtr;
 
 /**
  * Class for holding separation between view-controll and view
