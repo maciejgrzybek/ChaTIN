@@ -82,13 +82,14 @@ protected:
      */
     Glib::ustring cutAlias( Glib::ustring alias );
 
+public:
     /* GUI Actions */
     
     /**
      * Method opening dialog tab or swiching to existing one
      * @param Glib::ustring name of tab
      */
-    void openDialogTab( Glib::ustring alias );
+    void openDialogTab( TPtr tab );
 
     /**
      * Adds position to friend list which will have given name
@@ -111,7 +112,7 @@ protected:
     void appendTextToCurrentTab( Glib::ustring text );
 
 
-    private:
+private:
     /* INITIALIZATION */
 
     /**
@@ -144,7 +145,7 @@ protected:
     FriendData friends;
     Gtk::Button sendButton;
     Gtk::Entry chatField;
-    std::shared_ptr<ChatTab> logBox;
+    TPtr logBox;
     Gtk::TreeView friendList;
     Gtk::HBox mainBox;
     Gtk::VBox rightBox;    
@@ -154,7 +155,7 @@ protected:
     Glib::RefPtr<Gtk::TextBuffer> chatBoxBuffer;
     Glib::RefPtr<Gtk::TreeStore>  friendListModel;
     Glib::ustring selName;
-    std::shared_ptr<ChatTab> selectedTab;
-    std::map<Glib::ustring, std::shared_ptr<ChatTab> > dialogBoxes;   //Glib::RefPtr cannot be used here
-                                                                            //becouse it hasnt operator*
+    TPtr selectedTab;
+    std::set< TPtr > dialogBoxes;   //Glib::RefPtr cannot be used here
+                                    //becouse it hasnt operator*
 };

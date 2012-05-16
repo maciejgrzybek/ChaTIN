@@ -56,28 +56,25 @@ void ChatWindow::friendPickHandle(const Gtk::TreeModel::Path& path, Gtk::TreeVie
 }
 
 
-void ChatWindow::openDialogTab( Glib::ustring alias )
+void ChatWindow::openDialogTab( TPtr tab )
 {
-    if( dialogBoxes.find(alias) == dialogBoxes.end() )
+    if( dialogBoxes.find(tab) == dialogBoxes.end() )
     {
         /*create page if it is necessary*/            
-        dialogBoxes[alias] = std::shared_ptr<ChatTab>(new ChatTabLog(alias));    
-        chatTabs.insert_page(*dialogBoxes[alias], cutAlias(alias), 1);
+        dialogBoxes.insert(tab);    
+        chatTabs.insert_page(*tab, cutAlias(tab->getFullAlias()), 1);
         show_all_children();
     }
-    chatTabs.set_current_page(chatTabs.page_num(*dialogBoxes[alias]));
+    chatTabs.set_current_page(chatTabs.page_num(*tab));
 }
 
 void ChatWindow::switchTabHandle( GtkNotebookPage* /*page*/, guint page_num )
 {
     if(page_num!=0)
     {
-        selectedTab = dialogBoxes[
-                static_cast<ChatTab*>(chatTabs.get_nth_page(page_num))->getFullAlias()
-        ];    
-        selName = selectedTab->getFullAlias();
-
+        selectedTab = TPtr(static_cast<ChatTab*>(chatTabs.get_nth_page(page_num)));
         chatBoxBuffer = selectedTab->get_buffer();
+
         appendTextToCurrentTab("Teraz piszesz do: "+selName+"\n");
         selectedTab->set_editable(false);
     }
@@ -99,19 +96,7 @@ void ChatWindow::addFriend( Glib::ustring name )
 
 void ChatWindow::closeCurrentTab()
 {
-    if( selName != "LOG" )
-    {
-        Glib::ustring toRemove = selName;
-        chatTabs.remove_page(*selectedTab);
-        dialogBoxes.erase(toRemove);
-        selectedTab = NULL;
-        selName = "LOG";
-        chatTabs.set_current_page(0);
-    }
-    else
-    {
-        exit(0);
-    }
+    //FIXME it shouldnt be current anyway
 }
 
 void ChatWindow::appendTextToCurrentTab( Glib::ustring text )
@@ -161,7 +146,7 @@ void ChatWindow::buildTreeModel()
 
 void ChatWindow::initializeTabs()
 {
-    logBox = ChatTabFactory::create(Glib::ustring("LOG"));
+    logBox = TPtr( new ChatTabLog("LOG") );//ChatTabFactory::create(Glib::ustring("LOG"));
     chatTabs.set_scrollable();
 
     selName = logBox->getFullAlias(); //fist seleceted tab
