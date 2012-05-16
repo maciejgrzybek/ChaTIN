@@ -19,9 +19,28 @@ enum ChatTabType{ DIALOG, CONFERENCE, LOG };
 class ChatTab : public Gtk::TextView
 {
     public:
+        /**
+         * Return sth that can be used to represent
+         * tab by view
+         */
         virtual const Glib::ustring& getFullAlias() const = 0;
+
+        /**
+         * return the ChatTabType enum (use from upcast)
+         */
         virtual ChatTabType getType() const = 0;
+
+        /**
+         * calls doCommand with proper type argument
+         * and Glib::ustring as input on FromViewParser
+         * @param FromViewParser& parser to call doCommand on
+         * @param Glib::ustring input from user
+         * @see FromViewParser::doCommand
+         */
         virtual void doCommand( FromViewParser&, Glib::ustring ) const = 0;
+         // TODO it can just return bind to doCommand prepared for FormViewParser
+         //          with first argument binded. To have the call in ChatWindow:
+         //      fromViewParser.(selectedTab->getDoCommand())(chatField.get_text());
 };
 
 /**
