@@ -1,11 +1,18 @@
 #include "FromViewParser.hpp"
 #include "XMLPackageCreator.hpp"
 #include "SafeQueue.hpp"
+#include "ChatTab.hpp"
 #include <iostream>
 
 FromViewParser::FromViewParser( DialogManager& dialogManager, SafeQueue<EPtr>& bq )
-    : dialogManager(dialogManager), bq(bq)
+    : dialogManager(dialogManager), bq(bq) 
 {}
+
+void FromViewParser::setView( ChatWindow* cw )
+{
+    this->cw = cw;
+}
+
 
 void FromViewParser::doCommand( const ChaTIN::Alias& alias, const Glib::ustring& input )
 {
@@ -39,6 +46,12 @@ void FromViewParser::doCommand( const Glib::ustring& name, const Glib::ustring& 
 {
     if( isInputCommand( input ) )
     {
+        if( input.substr(1,5) == "open " )
+        {
+            TPtr tab = TPtr( new  ChatTabDialog( ChaTIN::Alias( input.substr(6) ) ) );
+            //FIXME ALWAYS OPENING NEW ONE 
+            cw->openDialogTab(tab);
+        }
         //ANALYZE COMMAND
     }
     else

@@ -4,6 +4,9 @@
 #include "DialogManager.hpp"
 #include "SafeQueue.hpp"
 #include "Event.hpp"
+#include "ChatWindow.hpp"
+
+class ChatWindow;
 
 /**
  * Parser class converting user input into method calls
@@ -12,6 +15,7 @@ class FromViewParser
 {
     DialogManager& dialogManager;
     SafeQueue<EPtr>& bq;
+    ChatWindow* cw;
     
     public:
 
@@ -20,6 +24,8 @@ class FromViewParser
      * @param DialogManager& reference to the dialogManager to use in parser.
      */
     FromViewParser( DialogManager&, SafeQueue<EPtr>& );
+
+    void setView( ChatWindow* );
 
     /**
      * Parse and analize input from view and call appropriate methods 
