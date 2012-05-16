@@ -23,7 +23,7 @@ obj/ConferenceManager.o: src/ConferenceManager.cpp src/ConferenceManager.hpp
 obj/Dialog.o: src/Dialog.cpp src/Dialog.hpp src/types.hpp obj/Socket.o
 	g++ src/Dialog.cpp -c $(GEN) $(GLIBI) -o $@
 obj/DialogManager.o: src/DialogManager.cpp src/DialogManager.hpp obj/Dialog.o obj/Config.o
-	g++ src/DialogManager.cpp -c $(GEN) $(GLIBI) -o $@
+	g++ src/DialogManager.cpp -c $(GEN) $(GTKI) -o $@
 obj/Config.o: src/Config.cpp src/Config.hpp  obj/XMLException.o
 	g++ src/Config.cpp -c $(GEN) -o $@
 obj/types.o: src/types.cpp src/types.hpp obj/Exception.o
@@ -35,7 +35,7 @@ obj/ConferenceException.o: src/ConferenceException.cpp src/ConferenceException.h
 obj/ToViewParser.o: src/ToViewParser.cpp src/ToViewParser.hpp
 	g++ src/ToViewParser.cpp -c $(GEN) -o $@
 obj/FromViewParser.o: src/FromViewParser.cpp src/FromViewParser.hpp
-	g++ src/FromViewParser.cpp -c $(GEN) -o $@
+	g++ src/FromViewParser.cpp -c $(GEN) $(GTKI) -o $@
 obj/XMLPackageCreator.o: src/XMLPackageCreator.cpp src/XMLPackageCreator.hpp
 	g++ src/XMLPackageCreator.cpp -c $(GEN) -o $@
 obj/ChatTab.o: src/ChatTab.cpp src/ChatTab.hpp
