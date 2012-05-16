@@ -27,6 +27,7 @@ int main(int argc, char *argv[])
     aliasManager.setDialogManager( dialogManager );
     FromViewParser fromViewParser( dialogManager, fromViewParserQueue );
     ChatWindow win( fromViewParserQueue );
+    fromViewParser.setView( &win );
 
     //create threads
     boost::thread dialogThread( dialogManager );
