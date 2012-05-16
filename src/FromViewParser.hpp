@@ -2,6 +2,8 @@
 #include <glibmm/ustring.h>
 #include "types.hpp"
 #include "DialogManager.hpp"
+#include "SafeQueue.hpp"
+#include "Event.hpp"
 
 /**
  * Parser class converting user input into method calls
@@ -9,13 +11,15 @@
 class FromViewParser
 {
     DialogManager& dialogManager;
+    SafeQueue<EPtr>& bq;
+    
     public:
 
     /**
      * Simple constructor giving paser reference to DialogManager
      * @param DialogManager& reference to the dialogManager to use in parser.
      */
-    FromViewParser( DialogManager& );
+    FromViewParser( DialogManager&, SafeQueue<EPtr>& );
 
     /**
      * Parse and analize input from view and call appropriate methods 
@@ -43,6 +47,11 @@ class FromViewParser
      * @throw UnknownCommandExcepion when input begins with '/' and isnt parseable
      */
     void doCommand( const Glib::ustring& name, const Glib::ustring& input );
+
+    /**
+     * Just handle all events from bq 
+     */
+    void operator()();
 
     static bool isInputCommand( const Glib::ustring& input );
 };

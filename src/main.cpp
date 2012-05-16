@@ -9,6 +9,7 @@
 #include "AliasManager.hpp"
 #include "DialogManager.hpp"
 #include "FromViewParser.hpp"
+#include "Event.hpp"
 
 
 int main(int argc, char *argv[])
@@ -17,18 +18,20 @@ int main(int argc, char *argv[])
     Gtk::Main kit(argc, argv);
     DBDriver db;
     SafeQueue<ChaTIN::IncomingMassage> toViewParserQueue;
+    SafeQueue<EPtr> fromViewParserQueue;
     ToViewParser toViewParser(toViewParserQueue);
     Config config;
     ConferenceManager conferenceManager;
     AliasManager aliasManager( db );
     DialogManager dialogManager( toViewParser, aliasManager, conferenceManager, config);
     aliasManager.setDialogManager( dialogManager );
-    FromViewParser fromViewParser( dialogManager );
-    ChatWindow win(fromViewParser);
+    FromViewParser fromViewParser( dialogManager, fromViewParserQueue );
+    ChatWindow win( fromViewParserQueue );
 
     //create threads
 //    boost::thread dialogThread( dialogManager );
     boost::thread toViewThread( toViewParser  );
+    boost::thread fromViewThread( fromViewParser  );
 
     Gtk::Main::run(win);
     //FIXME: killing window should kill aplication

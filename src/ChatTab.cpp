@@ -14,9 +14,9 @@ ChatTabType ChatTabDialog::getType() const
     return DIALOG;
 }
 
-void ChatTabDialog::doCommand( FromViewParser& fromViewParser, Glib::ustring text ) const
+EPtr ChatTabDialog::createEvent( const Glib::ustring& text ) const
 {
-    fromViewParser.doCommand(alias, text);
+    return EPtr( new EventDialog( alias, text ) );
 }
 
 
@@ -34,9 +34,9 @@ ChatTabType ChatTabConference::getType() const
     return CONFERENCE;
 }
 
-void ChatTabConference::doCommand( FromViewParser& fromViewParser, Glib::ustring text ) const
+EPtr ChatTabConference::createEvent( const Glib::ustring& text ) const
 {
-    fromViewParser.doCommand(name, text);
+    return EPtr( new EventConference( name, text ) );
 }
 
 ChatTabLog::ChatTabLog( const Glib::ustring& name )
@@ -53,7 +53,7 @@ ChatTabType ChatTabLog::getType() const
     return LOG;
 }
 
-void ChatTabLog::doCommand( FromViewParser& fromViewParser, Glib::ustring text ) const
+EPtr ChatTabLog::createEvent( const Glib::ustring& text ) const
 {
-    fromViewParser.doCommand(name, text);
+    return EPtr( new EventLog( name,text ) );
 }

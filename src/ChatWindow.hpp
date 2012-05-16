@@ -6,6 +6,8 @@
 #include <memory>
 #include "FromViewParser.hpp"
 #include "ChatTab.hpp"
+#include "SafeQueue.hpp"
+#include "Event.hpp"
 
 /**
  * Class holding whole GUI in it
@@ -15,14 +17,14 @@
  */
 class ChatWindow : public Gtk::Window
 {
-    FromViewParser& fromViewParser;
+    SafeQueue<EPtr>& bq;
 public: 
     /**
      * Main constructor of window
      * It creates and sets all components it their positions
      * It also register all handlers for Gtk signals.
      */
-    ChatWindow( FromViewParser& );
+    ChatWindow( SafeQueue<EPtr>& );
     /**
      * For now it does not do anything because 
      * all object are being released by smart poionters

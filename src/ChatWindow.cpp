@@ -2,8 +2,8 @@
 #include "ChatTabFactory.hpp"
 #include <cassert>
 
-ChatWindow::ChatWindow( FromViewParser& fromViewParser ) 
-    : sendButton("Send"), fromViewParser(fromViewParser)
+ChatWindow::ChatWindow( SafeQueue<EPtr>& bq ) 
+    : sendButton("Send"), bq(bq)
 {
     set_title("ChatTIN");
     set_default_size(600,400);
@@ -30,7 +30,7 @@ ChatWindow::FriendData::FriendData()
 
 void ChatWindow::textInHandle()
 {
-    selectedTab->doCommand( fromViewParser, chatField.get_text() );
+    bq.push(selectedTab->createEvent( chatField.get_text()));
     chatField.set_text("");
 }
 
@@ -46,12 +46,13 @@ bool ChatWindow::validateAlias( Glib::ustring )
 }
 
 void ChatWindow::friendPickHandle(const Gtk::TreeModel::Path& path, Gtk::TreeViewColumn* /*column*/)
-{
+{    
+    /*
     Gtk::TreeModel::iterator iter = friendListModel->get_iter(path);
     if(iter)
     {
         openDialogTab((*iter)[friends.fullAlias]);
-    } 
+    }*/ 
 }
 
 

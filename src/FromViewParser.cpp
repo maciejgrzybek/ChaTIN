@@ -1,9 +1,10 @@
 #include "FromViewParser.hpp"
 #include "XMLPackageCreator.hpp"
+#include "SafeQueue.hpp"
 #include <iostream>
 
-FromViewParser::FromViewParser( DialogManager& dialogManager )
-    : dialogManager(dialogManager)
+FromViewParser::FromViewParser( DialogManager& dialogManager, SafeQueue<EPtr>& bq )
+    : dialogManager(dialogManager), bq(bq)
 {}
 
 void FromViewParser::doCommand( const ChaTIN::Alias& alias, const Glib::ustring& input )
@@ -44,11 +45,21 @@ void FromViewParser::doCommand( const Glib::ustring& name, const Glib::ustring& 
     {
         //FIXME
         XMLPackageCreator xml("cmsg", input);
+        sleep(5);    
         std::cout << xml.getXML();
     }
-}
+} 
 
-bool FromViewParser::isInputCommand( const Glib::ustring& input )
+void FromViewParser::operator()()
 {
-    return input[0]=='/';
+    for(;;)
+    {
+        bq.front()->doCommand(*this);
+        bq.pop();
+    }
+}
+  
+bool FromViewParser::isInputCommand( const Glib::ustring& input )
+{ 
+     return input[0]=='/';
 }   

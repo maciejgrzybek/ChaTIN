@@ -1,6 +1,7 @@
 #pragma once
 #include "types.hpp"
 #include "FromViewParser.hpp"
+#include "Event.hpp"
 #include <gtkmm.h>
 #include <glibmm/ustring.h>
 
@@ -37,10 +38,10 @@ class ChatTab : public Gtk::TextView
          * @param Glib::ustring input from user
          * @see FromViewParser::doCommand
          */
-        virtual void doCommand( FromViewParser&, Glib::ustring ) const = 0;
-         // TODO it can just return bind to doCommand prepared for FormViewParser
-         //          with first argument binded. To have the call in ChatWindow:
-         //      fromViewParser.(selectedTab->getDoCommand())(chatField.get_text());
+        virtual EPtr createEvent( const Glib::ustring& ) const = 0;
+        // TODO it can just return bind to doCommand prepared for FormViewParser
+        //          with first argument binded. To have the call in ChatWindow:
+        //      fromViewParser.(selectedTab->getDoCommand())(chatField.get_text());
 };
 
 /**
@@ -54,7 +55,7 @@ class ChatTabDialog : public ChatTab
         ChatTabDialog( const ChaTIN::Alias& );
         const Glib::ustring& getFullAlias() const;
         ChatTabType getType() const;
-        virtual void doCommand( FromViewParser&, Glib::ustring ) const;
+        virtual EPtr createEvent( const Glib::ustring& ) const;
 };
 
 /**
@@ -68,7 +69,7 @@ class ChatTabConference : public ChatTab
         ChatTabConference( const ChaTIN::ConferenceId& );
         const Glib::ustring& getFullAlias() const;
         ChatTabType getType() const;
-        virtual void doCommand( FromViewParser&, Glib::ustring ) const;
+        virtual EPtr createEvent( const Glib::ustring& ) const;
 };
 
 /**
@@ -82,5 +83,5 @@ class ChatTabLog : public ChatTab
         ChatTabLog( const Glib::ustring& );
         const Glib::ustring& getFullAlias() const;
         ChatTabType getType() const;
-        virtual void doCommand( FromViewParser&, Glib::ustring ) const;
+        virtual EPtr createEvent( const Glib::ustring& ) const;
 };
