@@ -40,7 +40,9 @@ namespace Socket
     bool Socket::isValidIP(const std::string& ipAddress)
     {
         in6_addr byteAddress;
-        return (inet_pton(AF_INET6,ipAddress.c_str(),&byteAddress) == 1);
+        std::string ip = ipAddress;
+        ip.erase(ip.find('%')); // delete everything from % forwards.
+        return (inet_pton(AF_INET6,ip.c_str(),&byteAddress) == 1);
     }
 
     addrinfo* Socket::getResolvedAddrinfo(const std::string& address, const unsigned int port)
