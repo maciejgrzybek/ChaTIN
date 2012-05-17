@@ -9,6 +9,7 @@
 #include <cstdlib>
 #include <cerrno>
 #include <unistd.h>
+#include <cassert>
 
 namespace Socket
 {
@@ -27,6 +28,11 @@ namespace Socket
 
     Socket::Socket(int sock) : sockfd(sock)
     {
+        socklen_t len = sizeof hostAddress;
+        if(getpeername(sock,(sockaddr*)&hostAddress,&len)!=0)
+        {
+            throw WrongAddressException("",errno);
+        }
     }
 
     Socket::~Socket()
@@ -41,7 +47,9 @@ namespace Socket
     {
         in6_addr byteAddress;
         std::string ip = ipAddress;
-        ip.erase(ip.find('%')); // delete everything from % forwards.
+        size_t pos = ip.find('%');
+        if(pos != std::string::npos)
+            ip.erase(pos); // delete everything from % forwards.
         return (inet_pton(AF_INET6,ip.c_str(),&byteAddress) == 1);
     }
 
@@ -122,7 +130,8 @@ namespace Socket
     std::string Socket::getHostAddress() const
     {
         char humanReadableAddress[INET6_ADDRSTRLEN]; // 15 dots + 32 chars describes IPv6 as string
-        inet_ntop(AF_INET6,&hostAddress.sin6_addr,humanReadableAddress,sizeof(humanReadableAddress));
+        const char* result = inet_ntop(AF_INET6,&hostAddress.sin6_addr,humanReadableAddress,INET6_ADDRSTRLEN);
+        assert("Address stored in Socket cannot be invalid." && result != NULL);
         return std::string(humanReadableAddress);
     }
 
