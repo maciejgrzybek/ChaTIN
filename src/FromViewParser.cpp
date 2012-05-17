@@ -52,7 +52,7 @@ void FromViewParser::doCommand( const Glib::ustring& name, const Glib::ustring& 
         {
             TPtr tab = TPtr( new  ChatTabDialog( ChaTIN::Alias( input.substr(6) ) ) );
             //FIXME ALWAYS OPENING NEW ONE 
-            aq.push( boost::bind(&ChatWindow::openDialogTab, cw, tab) );    
+            aq.push( boost::bind(&ChatWindow::openDialogTab, _1, tab) );    
         }
         //ANALYZE COMMAND
     }

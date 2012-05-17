@@ -6,8 +6,8 @@
 #include <functional>
 #include <boost/function.hpp>
 #include <string>
-
-typedef boost::function<void()> Action;
+class ChatWindow;
+typedef boost::function<void(ChatWindow*)> Action;
 
 namespace ChaTIN
 {

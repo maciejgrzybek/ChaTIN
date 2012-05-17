@@ -75,7 +75,7 @@ bool ChatWindow::idle()
 {
     if( !aq.empty() )
     {
-        aq.front()(); //try_front...
+        aq.front()(this); //try_front...
         aq.pop();
     }
     return true;
