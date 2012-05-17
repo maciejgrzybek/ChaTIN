@@ -2,8 +2,8 @@
 #include "ChatTabFactory.hpp"
 #include <cassert>
 
-ChatWindow::ChatWindow( SafeQueue<EPtr>& bq ) 
-    : sendButton("Send"), bq(bq)
+ChatWindow::ChatWindow( SafeQueue<EPtr>& bq, SafeQueue<Action>& aq) 
+    : sendButton("Send"), bq(bq), aq(aq)
 {
     set_title("ChatTIN");
     set_default_size(600,400);
@@ -71,6 +71,16 @@ void ChatWindow::openDialogTab( TPtr tab )
     chatTabs.set_current_page(chatTabs.page_num(*tab));
 }
 
+bool ChatWindow::idle()
+{
+    if( !aq.empty() )
+    {
+        aq.front()(); //try_front...
+        aq.pop();
+    }
+    return true;
+}
+
 void ChatWindow::switchTabHandle( GtkNotebookPage* /*page*/, guint page_num )
 {
     if(page_num!=0)
@@ -123,6 +133,7 @@ void ChatWindow::registerSignals()
     friendList.signal_row_activated().connect(sigc::mem_fun(*this, &ChatWindow::friendPickHandle));
     chatTabs.signal_switch_page().connect(sigc::mem_fun(*this, &ChatWindow::switchTabHandle));    
     chatField.signal_activate().connect(sigc::mem_fun(*this, &ChatWindow::textInHandle));
+    Glib::signal_timeout().connect( sigc::mem_fun(*this, &ChatWindow::idle), 50 );
 }
 
 void ChatWindow::createInterface()

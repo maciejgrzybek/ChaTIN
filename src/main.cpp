@@ -1,4 +1,5 @@
 #include <boost/thread.hpp>
+#include "FromViewParser.hpp"
 #include "ChatWindow.hpp"
 #include "DBDriver.hpp"
 #include "ToViewParser.hpp"
@@ -8,7 +9,6 @@
 #include "ConferenceManager.hpp"
 #include "AliasManager.hpp"
 #include "DialogManager.hpp"
-#include "FromViewParser.hpp"
 #include "Event.hpp"
 
 
@@ -19,14 +19,15 @@ int main(int argc, char *argv[])
     DBDriver db;
     SafeQueue<ChaTIN::IncomingMassage> toViewParserQueue;
     SafeQueue<EPtr> fromViewParserQueue;
+    SafeQueue<Action> actionQueue;
     ToViewParser toViewParser(toViewParserQueue);
     const Config config;
     ConferenceManager conferenceManager;
     AliasManager aliasManager( db );
     DialogManager dialogManager( toViewParser, aliasManager, conferenceManager, config);
     aliasManager.setDialogManager( dialogManager );
-    FromViewParser fromViewParser( dialogManager, fromViewParserQueue );
-    ChatWindow win( fromViewParserQueue );
+    FromViewParser fromViewParser( dialogManager, fromViewParserQueue, actionQueue );
+    ChatWindow win( fromViewParserQueue, actionQueue );
     fromViewParser.setView( &win );
 
     //create threads

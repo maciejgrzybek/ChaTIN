@@ -4,10 +4,13 @@
 #include <string>
 #include <map>
 #include <memory>
-#include "FromViewParser.hpp"
+#include <boost/function.hpp>
 #include "ChatTab.hpp"
 #include "SafeQueue.hpp"
 #include "Event.hpp"
+#include "FromViewParser.hpp"
+#include "types.hpp"
+
 
 /**
  * Class holding whole GUI in it
@@ -18,13 +21,14 @@
 class ChatWindow : public Gtk::Window
 {
     SafeQueue<EPtr>& bq;
+    SafeQueue<Action>& aq;
 public: 
     /**
      * Main constructor of window
      * It creates and sets all components it their positions
      * It also register all handlers for Gtk signals.
      */
-    ChatWindow( SafeQueue<EPtr>& );
+    ChatWindow( SafeQueue<EPtr>&, SafeQueue<Action>& );
     /**
      * For now it does not do anything because 
      * all object are being released by smart poionters
@@ -90,6 +94,11 @@ public:
      * @param Glib::ustring name of tab
      */
     void openDialogTab( TPtr tab );
+
+    /**
+     * Check for actions and do if they are there
+     */
+    bool idle();
 
     /**
      * Adds position to friend list which will have given name

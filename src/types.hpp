@@ -4,7 +4,11 @@
 #include <glibmm/ustring.h>
 #include "Exception.hpp"
 #include <functional>
+#include <boost/function.hpp>
 #include <string>
+
+typedef boost::function<void()> Action;
+
 namespace ChaTIN
 {
 

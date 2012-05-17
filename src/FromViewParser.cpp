@@ -3,9 +3,11 @@
 #include "SafeQueue.hpp"
 #include "ChatTab.hpp"
 #include <iostream>
+#include <boost/bind.hpp>
+#include <boost/function.hpp>
 
-FromViewParser::FromViewParser( DialogManager& dialogManager, SafeQueue<EPtr>& bq )
-    : dialogManager(dialogManager), bq(bq) 
+FromViewParser::FromViewParser( DialogManager& dialogManager, SafeQueue<EPtr>& bq, SafeQueue<Action>& aq )
+    : dialogManager(dialogManager), bq(bq), aq(aq)
 {}
 
 void FromViewParser::setView( ChatWindow* cw )
@@ -50,7 +52,7 @@ void FromViewParser::doCommand( const Glib::ustring& name, const Glib::ustring& 
         {
             TPtr tab = TPtr( new  ChatTabDialog( ChaTIN::Alias( input.substr(6) ) ) );
             //FIXME ALWAYS OPENING NEW ONE 
-            cw->openDialogTab(tab);
+            aq.push( boost::bind(&ChatWindow::openDialogTab, cw, tab) );    
         }
         //ANALYZE COMMAND
     }
