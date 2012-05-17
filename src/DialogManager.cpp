@@ -90,9 +90,17 @@ void DialogManager::dispatcher::operator()()//const Socket::ServerSocket::Client
         dialogManager.dialogMap[ip] = dialog;
     } // let others read data I already put in map
 
-    while(1) // TODO change condition
+    while(*(dialogManager.working))
     {
-        std::string receivedMessage = dialog->receive(); // can hang up here
-        dialogManager.toViewParser.doCommand(ip,receivedMessage); // send received message to parser
+        try
+        {
+            std::string receivedMessage = dialog->receive(); // can hang up here
+            dialogManager.toViewParser.doCommand(ip,receivedMessage); // send received message to parser
+        }
+        catch(Socket::ReceiveFailureException& e)
+        {
+            std::cout << "Something went wrong on receive." << std::endl;
+            std::cout << e.what() << std::endl;
+        }
     }
 }
