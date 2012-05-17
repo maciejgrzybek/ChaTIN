@@ -155,7 +155,7 @@ private:
     Glib::RefPtr<Gtk::TextBuffer> chatBoxBuffer;
     Glib::RefPtr<Gtk::TreeStore>  friendListModel;
     Glib::ustring selName;
-    TPtr selectedTab;
+    ChatTab* selectedTab;
     std::set< TPtr > dialogBoxes;   //Glib::RefPtr cannot be used here
                                     //becouse it hasnt operator*
 };

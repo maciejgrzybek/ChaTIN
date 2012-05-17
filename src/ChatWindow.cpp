@@ -75,7 +75,7 @@ void ChatWindow::switchTabHandle( GtkNotebookPage* /*page*/, guint page_num )
 {
     if(page_num!=0)
     {
-        selectedTab = TPtr(static_cast<ChatTab*>(chatTabs.get_nth_page(page_num)));
+        selectedTab = static_cast<ChatTab*>(chatTabs.get_nth_page(page_num));
         chatBoxBuffer = selectedTab->get_buffer();
 
         appendTextToCurrentTab("Teraz piszesz do: "+selName+"\n");
@@ -155,7 +155,7 @@ void ChatWindow::initializeTabs()
     selName = logBox->getFullAlias(); //fist seleceted tab
 
     chatTabs.insert_page(*logBox, cutAlias(selName), 0);
-    selectedTab = logBox;
+    selectedTab = &*logBox;
     chatBoxBuffer = logBox->get_buffer(); //select LOG TextView as default text buffer
     logBox->set_editable(false);
     logBox->set_can_focus(false);
