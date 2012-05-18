@@ -10,7 +10,9 @@ ToViewParser::ToViewParser( SafeQueue<ChaTIN::IncomingMassage>& q )
 void ToViewParser::doCommand( const ChaTIN::Alias& alias, const Glib::ustring& msg )
 {
     //just invoke QueueAdder thread
-    boost::thread adderThread(QueueAdder<ChaTIN::IncomingMassage>(ChaTIN::IncomingMassage(alias, msg),q));
+    //boost::thread adderThread(QueueAdder<ChaTIN::IncomingMassage>(ChaTIN::IncomingMassage(alias, msg),q));
+    q.push(ChaTIN::IncomingMassage(alias,msg)); // FIXME: can be vulnerable of out of memory when SafeQueue is full and we try to push to it.
+    // In this case, thread which called doCommand will hang up.
 }
 
 void ToViewParser::operator()()

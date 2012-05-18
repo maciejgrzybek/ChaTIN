@@ -30,7 +30,7 @@ void DialogManager::sendTo(const ChaTIN::ConferenceId& conferenceId, const Glib:
 const Dialog& DialogManager::getDialog(const ChaTIN::IPv6& ip)
 {
     std::unordered_map<const ChaTIN::IPv6,const Dialog*>::const_iterator iter;
-    int port = config.getValue<int>("port");
+    int port = config.getValue<int>("clientPort");
     {
         ReadLock lock(mutexLock); // lock for readers
         iter = dialogMap.find(ip);
@@ -49,8 +49,8 @@ void DialogManager::startServer() throw(Socket::ResolveException,Socket::WrongPo
 {
     if(serverSocket == NULL)
     {
-        std::string host = config.getValue<std::string>("host");
-        unsigned int port = config.getValue<int>("port");
+        std::string host = config.getValue<std::string>("serverHost");
+        unsigned int port = config.getValue<int>("serverPort");
         unsigned int backlog = config.getValue<int>("backlog");
         serverSocket = new Socket::ServerSocket(host,port,backlog);
     }
@@ -90,7 +90,7 @@ void DialogManager::dispatcher::operator()()//const Socket::ServerSocket::Client
         dialogManager.dialogMap[ip] = dialog;
     } // let others read data I already put in map
 
-    while(*(dialogManager.working))
+    while(1)//*(dialogManager.working))
     {
         try
         {

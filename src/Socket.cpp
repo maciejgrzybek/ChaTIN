@@ -186,7 +186,7 @@ namespace Socket
         sockaddr clientAddr;
         socklen_t addrlen;
 
-        int clientSocket = accept(sockfd,&clientAddr,&addrlen);
+        int clientSocket = ::accept(sockfd,&clientAddr,&addrlen);
         if(clientSocket == -1)
             throw AcceptFailureException(errno);
 
