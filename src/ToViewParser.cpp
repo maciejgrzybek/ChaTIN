@@ -1,10 +1,12 @@
 #include "ToViewParser.hpp"
 #include <boost/thread.hpp>
+#ifndef TIXML_USE_STL
 #define TIXML_USE_STL
+#endif
 #include <tinyxml.h>
 
-ToViewParser::ToViewParser( SafeQueue<ChaTIN::IncomingMassage>& q )
-    : q(q)
+ToViewParser::ToViewParser( SafeQueue<ChaTIN::IncomingMassage>& q, SafeQueue<Action>& aq )
+    : q(q), aq(aq)
 {}
 
 void ToViewParser::doCommand( const ChaTIN::Alias& alias, const Glib::ustring& msg )
@@ -28,6 +30,10 @@ void ToViewParser::operator()()
 
 void ToViewParser::parse( const ChaTIN::IncomingMassage& income )
 {
+    Glib::ustring msgText;
+    Glib::ustring typeName;
+    otherAttributes otherAtt;    
+
     TiXmlDocument massage;
     massage.Parse( income.msg.c_str() );
     TiXmlElement* msgNode = massage.FirstChildElement("massage");
@@ -38,8 +44,8 @@ void ToViewParser::parse( const ChaTIN::IncomingMassage& income )
         if( type && text )
         {
             auto iter = actions.find( type->GetText() );
-            Glib::ustring msgText = text->GetText();
-            otherAttributes otherAtt;            
+            msgText = text->GetText();
+            typeName = type->GetText();
 
             if( iter != actions.end() )
             {
@@ -68,7 +74,8 @@ void ToViewParser::parse( const ChaTIN::IncomingMassage& income )
         //FIXME
         //THROW CannotParseMassageException
     }
-    //aq.push(boost::bind(sendToTab())); 
+    
+    aq.push( boost::bind(&ChatWindow::showIncomingMessageA, _1, income.alias, msgText ));
     //DO PARSING (no gramar yet)
 }
 

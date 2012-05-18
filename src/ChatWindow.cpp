@@ -143,15 +143,16 @@ void ChatWindow::showIncomingMessageA( ChaTIN::Alias alias, Glib::ustring messag
     TPtr tab;
     std::set<TPtr>::iterator i = myfind(dialogBoxes.begin(), dialogBoxes.end(), alias);
     if( i == dialogBoxes.end() )
-    {
+    {       
         tab = TPtr( new ChatTabDialog(alias) );
+        openDialogTab( tab, false );
     }
     else
     {
         tab = *i;
     }
-    //Glib::ustring toShow = alias+" >> "+message;
-    Glib::ustring toShow = "aasd";
+    Glib::ustring toShow = alias+" >> "+message+"\n";
+    //Glib::ustring toShow = "aasd";
     appendTextToTab( tab, toShow );
 }
 

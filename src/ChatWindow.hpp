@@ -3,6 +3,7 @@
 #include <iostream>
 #include <string>
 #include <map>
+#include <set>
 #include <memory>
 #include <boost/function.hpp>
 #include "ChatTab.hpp"

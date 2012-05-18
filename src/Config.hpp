@@ -5,7 +5,9 @@
 #include <boost/variant.hpp>
 #include <boost/function.hpp>
 #include <boost/lexical_cast.hpp>
-#define TIXML_USE_STL 
+#ifndef TIXML_USE_STL
+#define TIXML_USE_STL
+#endif 
 #include <tinyxml.h>
 #include <tinystr.h>
 #include "Exception.hpp"

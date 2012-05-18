@@ -16,6 +16,7 @@
 #include <boost/thread/tss.hpp>
 
 class AliasManager;
+class ToViewParser;
 
 /**
  * Singleton class stores dialogs and provides functionality of dispatching incomming connections.
@@ -31,7 +32,7 @@ public:
      * @param ConferenceManager& Reference to conference manager.
      * @param const Config& Reference to config class.
      */
-    DialogManager(ToViewParser&, AliasManager&, ConferenceManager&, const Config&);
+    DialogManager( ToViewParser&, AliasManager&, ConferenceManager&, const Config&);
 
     /**
      * Copy constructor needed by boost::threads

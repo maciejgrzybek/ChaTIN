@@ -7,6 +7,7 @@
 #include "ChatWindow.hpp"
 
 class ChatWindow;
+class DialogManager;
 
 /**
  * Parser class converting user input into method calls

@@ -53,9 +53,6 @@ void FromViewParser::doCommand( const ChaTIN::LogName& name, const Glib::ustring
             TPtr tab = TPtr( new  ChatTabDialog( ChaTIN::Alias( input.substr(6) ) ) );
             //FIXME ALWAYS OPENING NEW ONE 
             aq.push( boost::bind(&ChatWindow::openDialogTab, _1, tab, true ) );    
-            aq.push( boost::bind(&ChatWindow::showIncomingMessageL, _1, ChaTIN::LogName("koles"), Glib::ustring("mowie cos fajnego")));
-            sleep(2);
-            aq.push( boost::bind(&ChatWindow::showIncomingMessageL, _1, ChaTIN::LogName("koles"), Glib::ustring("mowie cos innego")));
         }
         //ANALYZE COMMAND
     }

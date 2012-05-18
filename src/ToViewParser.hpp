@@ -3,9 +3,12 @@
 #include <map>
 #include <boost/function.hpp>
 #include "types.hpp"
+#include "ChatWindow.hpp"
 #include "SafeQueue.hpp"
 #include "QueueAdder.hpp"
 #include "XMLPackageCreator.hpp"
+
+class DialogManager;
 
 /**
  * Parser of packages coming from inet
@@ -13,6 +16,7 @@
 class ToViewParser
 {
     SafeQueue<ChaTIN::IncomingMassage>& q; //queue for all stuff
+    SafeQueue<Action>& aq;
 
 public:
     //FIXME i should use full version everywhere, but its only for now
@@ -38,7 +42,7 @@ public:
      * Constructor taking queue reference to comunicate with rest of the world 
      * @param SafeQueue<ChaTIN::IncomingMassage>& q queue to communicate with world
      */
-    ToViewParser( SafeQueue<ChaTIN::IncomingMassage>& q );
+    ToViewParser( SafeQueue<ChaTIN::IncomingMassage>& q, SafeQueue<Action>& aq );
 
     /**
      * Put a masssage with Incoming alias to the queue

@@ -17,7 +17,7 @@ obj/Socket.o: src/Socket.cpp src/Socket.hpp
 obj/Exception.o: src/Exception.cpp src/Exception.hpp
 	g++ src/Exception.cpp -c $(GEN) $(GLIBI) -o $@
 obj/AliasManager.o: src/AliasManager.cpp src/AliasManager.hpp
-	g++ src/AliasManager.cpp -c $(GEN) $(GLIBI)  -o $@
+	g++ src/AliasManager.cpp -c $(GEN) $(GTKI)  -o $@
 obj/ConferenceManager.o: src/ConferenceManager.cpp src/ConferenceManager.hpp
 	g++ src/ConferenceManager.cpp -c $(GEN) -o $@
 obj/Dialog.o: src/Dialog.cpp src/Dialog.hpp src/types.hpp obj/Socket.o
@@ -33,7 +33,7 @@ obj/XMLException.o: src/XMLException.cpp src/XMLException.hpp
 obj/ConferenceException.o: src/ConferenceException.cpp src/ConferenceException.hpp
 	g++ src/ConferenceException.cpp -c $(GEN) -o $@
 obj/ToViewParser.o: src/ToViewParser.cpp src/ToViewParser.hpp
-	g++ src/ToViewParser.cpp -c $(GEN) -o $@
+	g++ src/ToViewParser.cpp -c $(GEN) $(GTKI) -o $@
 obj/FromViewParser.o: src/FromViewParser.cpp src/FromViewParser.hpp
 	g++ src/FromViewParser.cpp -c $(GEN) $(GTKI) -o $@
 obj/XMLPackageCreator.o: src/XMLPackageCreator.cpp src/XMLPackageCreator.hpp

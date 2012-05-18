@@ -20,7 +20,7 @@ int main(int argc, char *argv[])
     SafeQueue<ChaTIN::IncomingMassage> toViewParserQueue;
     SafeQueue<EPtr> fromViewParserQueue;
     SafeQueue<Action> actionQueue;
-    ToViewParser toViewParser(toViewParserQueue);
+    ToViewParser toViewParser(toViewParserQueue, actionQueue);
     const Config config;
     ConferenceManager conferenceManager;
     AliasManager aliasManager( db );
