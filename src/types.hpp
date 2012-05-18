@@ -14,6 +14,13 @@ namespace ChaTIN
 
 
 class IPv6;
+
+class LogName : public Glib::ustring 
+{
+    public:
+    LogName(const Glib::ustring&);
+};
+
 /**
  * Class created to gain types controll from language
  * It is string but it can be used only in some contexts

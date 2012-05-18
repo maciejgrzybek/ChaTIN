@@ -93,7 +93,7 @@ public:
      * Method opening dialog tab or swiching to existing one
      * @param Glib::ustring name of tab
      */
-    void openDialogTab( TPtr tab );
+    void openDialogTab( TPtr tab, bool changeTab = true );
 
     /**
      * Check for actions and do if they are there
@@ -115,10 +115,19 @@ public:
 
 
     /**
+     * Shows incoming massage.
+     * If there is no card connected to given alias/id/string it creates new one
+     */
+    void showIncomingMessageL( ChaTIN::LogName, Glib::ustring );
+    void showIncomingMessageA( ChaTIN::Alias, Glib::ustring );
+    void showIncomingMessageC( ChaTIN::ConferenceId, Glib::ustring );
+
+
+    /**
      * Appends text to chatBox in current tab
      * @param Glib::ustring text to append
      */
-    void appendTextToCurrentTab( Glib::ustring text );
+    void appendTextToTab( TPtr tab, Glib::ustring text );
 
 
 private:

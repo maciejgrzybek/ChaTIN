@@ -53,7 +53,7 @@ class FromViewParser
      * @param const Glib::ustring& input - what thas user typed
      * @throw UnknownCommandExcepion when input begins with '/' and isnt parseable
      */
-    void doCommand( const Glib::ustring& name, const Glib::ustring& input );
+    void doCommand( const ChaTIN::LogName& name, const Glib::ustring& input );
 
     /**
      * Just handle all events from bq 

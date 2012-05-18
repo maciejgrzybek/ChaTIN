@@ -3,6 +3,9 @@
 
 namespace ChaTIN
 {
+    LogName::LogName( const Glib::ustring& name ) : Glib::ustring(name)
+    {}    
+
     Alias::Alias( const IPv6& ip ) : Glib::ustring( static_cast<Glib::ustring>(ip) )
     {}
     Alias::Alias( const Glib::ustring& alias ) : Glib::ustring(alias)

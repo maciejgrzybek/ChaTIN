@@ -37,9 +37,9 @@ class EventConference : public Event
 
 class EventLog : public Event
 {
-    Glib::ustring name;
+    ChaTIN::LogName name;
     public:
-    EventLog(const Glib::ustring& name, const Glib::ustring& input);
+    EventLog(const ChaTIN::LogName& name, const Glib::ustring& input);
     virtual void doCommand(FromViewParser&);
 };
 

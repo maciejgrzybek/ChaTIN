@@ -23,7 +23,7 @@ void EventConference::doCommand(FromViewParser& p)
     p.doCommand(name,input);
 }
 
-EventLog::EventLog(const Glib::ustring& name, const Glib::ustring& input)
+EventLog::EventLog(const ChaTIN::LogName& name, const Glib::ustring& input)
     : Event(input), name(name)
 {}
 void EventLog::doCommand(FromViewParser& p)

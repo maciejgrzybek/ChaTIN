@@ -59,7 +59,7 @@ void ChatWindow::friendPickHandle(const Gtk::TreeModel::Path& path, Gtk::TreeVie
 }
 
 
-void ChatWindow::openDialogTab( TPtr tab )
+void ChatWindow::openDialogTab( TPtr tab, bool changeTab )
 {
     if( dialogBoxes.find(tab) == dialogBoxes.end() )
     {
@@ -68,7 +68,8 @@ void ChatWindow::openDialogTab( TPtr tab )
         chatTabs.insert_page(*tab, cutAlias(tab->getFullAlias()), 1);
         show_all_children();
     }
-    chatTabs.set_current_page(chatTabs.page_num(*tab));
+    if( changeTab )
+        chatTabs.set_current_page(chatTabs.page_num(*tab));
 }
 
 bool ChatWindow::idle()
@@ -88,7 +89,7 @@ void ChatWindow::switchTabHandle( GtkNotebookPage* /*page*/, guint page_num )
         selectedTab = static_cast<ChatTab*>(chatTabs.get_nth_page(page_num));
         chatBoxBuffer = selectedTab->get_buffer();
 
-        appendTextToCurrentTab("Teraz piszesz do: "+selName+"\n");
+        //appendTextToCurrentTab("Teraz piszesz do: "+selName+"\n");
         selectedTab->set_editable(false);
     }
     else
@@ -112,11 +113,59 @@ void ChatWindow::closeCurrentTab()
     //FIXME it shouldnt be current anyway
 }
 
-void ChatWindow::appendTextToCurrentTab( Glib::ustring text )
+template<class InputIterator, class T>
+InputIterator myfind( InputIterator first, InputIterator last, const T& value)
 {
-    chatBoxBuffer->insert(chatBoxBuffer->end(), text);
-    Gtk::TextIter iter = chatBoxBuffer->end();
-    selectedTab->scroll_to_iter(iter,0.0);
+    for( ; first!=last; first++) if(**first==value) break;
+    return first;
+}
+
+void ChatWindow::showIncomingMessageL( ChaTIN::LogName name, Glib::ustring message )
+{
+    TPtr tab;
+    std::set<TPtr>::iterator i =  myfind(dialogBoxes.begin(), dialogBoxes.end(), name);
+    //std::set<TPtr>::iterator i = dialogBoxes.begin();
+    if( i == dialogBoxes.end() )
+    {
+        tab = TPtr( new ChatTabLog(name) );
+        openDialogTab( tab, false );
+    }
+    else
+    {
+        tab = *i;
+    }
+    Glib::ustring toShow = "[LOG] "+message+"\n";
+    appendTextToTab( tab, toShow );
+}
+
+void ChatWindow::showIncomingMessageA( ChaTIN::Alias alias, Glib::ustring message )
+{
+    TPtr tab;
+    std::set<TPtr>::iterator i = myfind(dialogBoxes.begin(), dialogBoxes.end(), alias);
+    if( i == dialogBoxes.end() )
+    {
+        tab = TPtr( new ChatTabDialog(alias) );
+    }
+    else
+    {
+        tab = *i;
+    }
+    //Glib::ustring toShow = alias+" >> "+message;
+    Glib::ustring toShow = "aasd";
+    appendTextToTab( tab, toShow );
+}
+
+void ChatWindow::showIncomingMessageC( ChaTIN::ConferenceId, Glib::ustring message )
+{
+    //FIXME
+}
+
+void ChatWindow::appendTextToTab( TPtr tab, Glib::ustring text )
+{
+    Glib::RefPtr<Gtk::TextBuffer> buffer = tab->get_buffer();
+    buffer->insert(buffer->end(), text);
+    Gtk::TextIter iter = buffer->end();
+    tab->scroll_to_iter(iter,0.0);
 }
 
 void ChatWindow::initializeFriends()
@@ -160,7 +209,7 @@ void ChatWindow::buildTreeModel()
 
 void ChatWindow::initializeTabs()
 {
-    logBox = TPtr( new ChatTabLog("LOG") );//ChatTabFactory::create(Glib::ustring("LOG"));
+    logBox = TPtr( new ChatTabLog(ChaTIN::LogName("LOG")) );//ChatTabFactory::create(Glib::ustring("LOG"));
     chatTabs.set_scrollable();
 
     selName = logBox->getFullAlias(); //fist seleceted tab

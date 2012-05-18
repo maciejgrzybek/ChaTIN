@@ -48,6 +48,10 @@ class ChatTab : public Gtk::TextView
         // TODO it can just return bind to doCommand prepared for FormViewParser
         //          with first argument binded. To have the call in ChatWindow:
         //      fromViewParser.(selectedTab->getDoCommand())(chatField.get_text());
+
+        virtual bool operator==( const ChaTIN::LogName&      ) const = 0;
+        virtual bool operator==( const ChaTIN::Alias&        ) const = 0;
+        virtual bool operator==( const ChaTIN::ConferenceId& ) const = 0;
 };
 
 /**
@@ -61,7 +65,10 @@ class ChatTabDialog : public ChatTab
         ChatTabDialog( const ChaTIN::Alias& );
         const Glib::ustring& getFullAlias() const;
         ChatTabType getType() const;
-        virtual EPtr createEvent( const Glib::ustring& ) const;
+        virtual EPtr createEvent( const Glib::ustring&  ) const;
+        virtual bool operator==( const ChaTIN::LogName&        ) const;
+        virtual bool operator==( const ChaTIN::Alias&        ) const;
+        virtual bool operator==( const ChaTIN::ConferenceId& ) const;
 };
 
 /**
@@ -76,6 +83,9 @@ class ChatTabConference : public ChatTab
         const Glib::ustring& getFullAlias() const;
         ChatTabType getType() const;
         virtual EPtr createEvent( const Glib::ustring& ) const;
+        virtual bool operator==( const ChaTIN::LogName&        ) const;
+        virtual bool operator==( const ChaTIN::Alias&        ) const;
+        virtual bool operator==( const ChaTIN::ConferenceId& ) const;
 };
 
 /**
@@ -84,11 +94,14 @@ class ChatTabConference : public ChatTab
  */
 class ChatTabLog : public ChatTab
 {
-        Glib::ustring name;
+        ChaTIN::LogName name;
     public:
-        ChatTabLog( const Glib::ustring& );
+        ChatTabLog( const ChaTIN::LogName& );
         const Glib::ustring& getFullAlias() const;
         ChatTabType getType() const;
         virtual EPtr createEvent( const Glib::ustring& ) const;
+        virtual bool operator==( const ChaTIN::LogName&        ) const;
+        virtual bool operator==( const ChaTIN::Alias&        ) const;
+        virtual bool operator==( const ChaTIN::ConferenceId& ) const;
 };
 

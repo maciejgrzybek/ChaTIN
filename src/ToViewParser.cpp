@@ -68,7 +68,7 @@ void ToViewParser::parse( const ChaTIN::IncomingMassage& income )
         //FIXME
         //THROW CannotParseMassageException
     }
-     
+    //aq.push(boost::bind(sendToTab())); 
     //DO PARSING (no gramar yet)
 }
 
