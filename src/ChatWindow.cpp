@@ -138,7 +138,7 @@ void ChatWindow::showIncomingMessageL( ChaTIN::LogName name, Glib::ustring messa
     appendTextToTab( tab, toShow );
 }
 
-void ChatWindow::showIncomingMessageA( ChaTIN::Alias alias, Glib::ustring message )
+void ChatWindow::showIncomingMessageA( ChaTIN::Alias alias, Glib::ustring message, bool incoming )
 {
     TPtr tab;
     std::set<TPtr>::iterator i = myfind(dialogBoxes.begin(), dialogBoxes.end(), alias);
@@ -151,8 +151,12 @@ void ChatWindow::showIncomingMessageA( ChaTIN::Alias alias, Glib::ustring messag
     {
         tab = *i;
     }
-    Glib::ustring toShow = alias+" >> "+message+"\n";
-    //Glib::ustring toShow = "aasd";
+    
+    Glib::ustring toShow;
+    if( incoming )
+        toShow = alias+" >> "+message+"\n";
+    else
+        toShow = "ME ----> "+message+"\n";
     appendTextToTab( tab, toShow );
 }
 

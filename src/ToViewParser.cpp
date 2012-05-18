@@ -75,7 +75,7 @@ void ToViewParser::parse( const ChaTIN::IncomingMassage& income )
         //THROW CannotParseMassageException
     }
     
-    aq.push( boost::bind(&ChatWindow::showIncomingMessageA, _1, income.alias, msgText ));
+    aq.push( boost::bind(&ChatWindow::showIncomingMessageA, _1, income.alias, msgText, true ));
     //DO PARSING (no gramar yet)
 }
 

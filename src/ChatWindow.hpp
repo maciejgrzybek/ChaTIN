@@ -120,7 +120,7 @@ public:
      * If there is no card connected to given alias/id/string it creates new one
      */
     void showIncomingMessageL( ChaTIN::LogName, Glib::ustring );
-    void showIncomingMessageA( ChaTIN::Alias, Glib::ustring );
+    void showIncomingMessageA( ChaTIN::Alias, Glib::ustring, bool incoming = true );
     void showIncomingMessageC( ChaTIN::ConferenceId, Glib::ustring );
 
 

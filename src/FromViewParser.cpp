@@ -26,6 +26,8 @@ void FromViewParser::doCommand( const ChaTIN::Alias& alias, const Glib::ustring&
     {
         XMLPackageCreator xml("msg", input);
         dialogManager.sendTo(alias, xml.getXML());
+        aq.push( boost::bind(&ChatWindow::showIncomingMessageA, _1, alias, input, false ));
+
     }
 }
 
