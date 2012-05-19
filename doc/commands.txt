@@ -1,0 +1,52 @@
+Komendy u¿ytkownika:
+- /sub IP alias
+    Wysy³a zapytanie o subskrypcjê pod dany adres IP zapisuj¹c go w lokalnej liœcie znajomych pod danym aliasem   
+    
+- /subakc IP alias
+    Akceptuje zawarcie subskrypcji z dan¹ osob¹ zapisuj¹c j¹ jednoczeœcie w swojej liœcie znajomych pod danym aliasem.
+    
+- /subdec IP
+    Odrzuca subskrypcjê od osoby o danym adresie IP.
+
+- /ignore IP/alias
+    Dodaje podany adres IP b¹dŸ odpowiedni adres IP przypisany lokalnemu aliasowi do listy osób ignorowanych
+    
+- /unignore IP
+    Usuwa z listy osób ignorowanych dany adres IP
+    
+- /unignoreall
+    Usuwa ca³¹ listê osób ignorowanych
+
+- /mode whitelist/blacklist
+    Prze³¹cza aplikacjê w tryb bi³ej lub czarnej listy. 
+    Bia³a lista - akceptowane s¹ po³¹czenia tylko od zasubskrybowanych adresów.
+    Czarna lista - akceptowane s¹ po³¹czenia od adresów które nie znajduj¹ siê  na liœcie osób ignorowanych.
+    
+- /save friendlist
+    Zapisuje listê znajomych do pliku.
+    
+- /load friendlist
+    Wczytuje listê znajomych z pliku.
+    
+- /open alias/IP
+    Otwiera okno do rozmowy z zapisanym lokalnie aliasem lub adresem IP.
+    Gdy okno by³o w tle przenosi je na pierwszy plan.
+    
+- /confopen name (list of aliases)
+    Otwiera okno z konferencj¹ o danej nazwie oraz danych jej cz³onkach. 
+    Gdy konferencja ju¿ istnia³a wystarczy podaæ nazwê by prze³¹czyæ j¹ na pierwszy plan.
+    
+- /close (alias/IP/name)
+    Zamyka okno z rozmow¹ o danym aliasie lub danym IP lub konferencjê o danej nazwie.
+    Gdy podane bez ¿adnych argumentów zamyka aktualnie otwarte okno.
+    
+- /closeall
+    Zamyka wszystkie otwarte okna rozmów i konferencji.
+    
+- /clear
+    Czyœci aktualnie otwarte okno z rozmow¹.
+    
+- /wisp alias/IP/name
+    Wysy³a wiadomoœæ do osoby o danym aliasie lub IP lub konferencji o danej nazwie niezale¿nie od tego jakie okno jest akualnie aktywne.
+
+    
