@@ -6,6 +6,7 @@
 #include <functional>
 #include <boost/function.hpp>
 #include <string>
+
 class ChatWindow;
 typedef boost::function<void(ChatWindow*)> Action;
 
@@ -16,12 +17,12 @@ namespace ChaTIN
 class IPv6;
 
 /*FIXME Implement before any other functionality*/
-class TabId 
+/*class TabId 
 {
     void getType()    const = 0;
     TPtr createTab()  const = 0;
     bool operator==() const = 0;
-}
+}*/
 
 class LogName : public Glib::ustring 
 {

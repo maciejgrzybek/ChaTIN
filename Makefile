@@ -21,7 +21,7 @@ obj/AliasManager.o: src/AliasManager.cpp src/AliasManager.hpp
 obj/ConferenceManager.o: src/ConferenceManager.cpp src/ConferenceManager.hpp
 	g++ src/ConferenceManager.cpp -c $(GEN) -o $@
 obj/Dialog.o: src/Dialog.cpp src/Dialog.hpp src/types.hpp obj/Socket.o
-	g++ src/Dialog.cpp -c $(GEN) $(GLIBI) -o $@
+	g++ src/Dialog.cpp -c $(GEN) $(GTKI) -o $@
 obj/DialogManager.o: src/DialogManager.cpp src/DialogManager.hpp obj/Dialog.o obj/Config.o
 	g++ src/DialogManager.cpp -c $(GEN) $(GTKI) -o $@
 obj/Config.o: src/Config.cpp src/Config.hpp  obj/XMLException.o

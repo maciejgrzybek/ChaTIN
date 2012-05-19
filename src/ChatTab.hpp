@@ -10,6 +10,7 @@ typedef std::shared_ptr<ChatTab> TPtr;
 #include <gtkmm.h>
 #include <glibmm/ustring.h>
 
+
 /**
  * Enum used to recognize type in up cast
  */

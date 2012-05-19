@@ -67,7 +67,7 @@ void FromViewParser::doCommand( const ChaTIN::LogName& name, const Glib::ustring
     }
 } 
 
-bool tryParseGeneral( const Glib::ustring& input )
+bool FromViewParser::tryParseGeneral( const Glib::ustring& input )
 {
     if( !isInputCommand( input ) )
         return false;
