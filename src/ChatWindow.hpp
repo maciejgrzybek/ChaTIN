@@ -88,7 +88,7 @@ protected:
     Glib::ustring cutAlias( Glib::ustring alias );    
 
 
-    TPtr unsafeOpenTab( TIPtr, bool changeTab = true );
+    TPtr unsafeOpenTab( TIPtr );
 
 public:
     /* GUI Actions */

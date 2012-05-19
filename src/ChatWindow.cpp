@@ -58,16 +58,12 @@ void ChatWindow::friendPickHandle(const Gtk::TreeModel::Path& path, Gtk::TreeVie
     }*/ 
 }
 
-TPtr ChatWindow::unsafeOpenTab( TIPtr tabId, bool changeTab )
+TPtr ChatWindow::unsafeOpenTab( TIPtr tabId )
 {
     TPtr tab = tabId->createTab();
     dialogBoxes.insert(tab);    
     chatTabs.insert_page(*tab, cutAlias(tab->getFullAlias()), 1);
     show_all_children();
-
-    if( changeTab )
-        chatTabs.set_current_page(chatTabs.page_num(*tab));   
-
     return tab;
 }
 
@@ -88,10 +84,15 @@ std::pair<bool, TPtr> ChatWindow::isTabExist( TIPtr tabId )
 
 TPtr ChatWindow::openTab( TIPtr tabId, bool changeTab )
 {
+    TPtr result;
     std::pair<bool, TPtr> finder = isTabExist(tabId);
     if( finder.first == true )
-        return finder.second;
-    return unsafeOpenTab( tabId, false );
+        result = finder.second;
+    else
+        result = unsafeOpenTab( tabId );
+    chatTabs.set_current_page(chatTabs.page_num(*result));
+
+    return result;
 }
 
 bool ChatWindow::idle()
