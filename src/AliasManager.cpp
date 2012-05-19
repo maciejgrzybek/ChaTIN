@@ -37,8 +37,7 @@ ChaTIN::IPv6 AliasManager::getIP( const ChaTIN::Alias& alias ) const
     {
         if( Socket::Socket::isValidIP( alias ) )
         {
-            //FIXME change to smart cast in ChaTIN::Alias friended with ChaTIN::IPv6.
-            return reinterpret_cast<const ChaTIN::IPv6&>(alias);
+            return ChaTIN::IPv6(std::string(alias));
         }
         else
         {
