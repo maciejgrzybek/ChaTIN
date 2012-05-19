@@ -1,7 +1,8 @@
 <?xml version="1.0" ?>
 <configuration>
-    <int name="serverPort">2223</int>
+    <int name="serverPort">2222</int>
     <int name="backlog">1024</int>
     <string name="serverHost">::</string>
     <int name="clientPort">2222</int>
+    <string name="clientInterface">eth0</string>
 </configuration>

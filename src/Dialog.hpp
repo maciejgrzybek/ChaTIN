@@ -5,6 +5,7 @@
 #include "Socket.hpp"
 #include "Exception.hpp"
 #include <glibmm/ustring.h>
+#include <string>
 
 /**
  * Class which objects are created everytime conversation is started.
@@ -18,9 +19,10 @@ public:
      * It creates ClientSocket as ConversableSocket and becomes ready to conversate after sucesfull connection.
      * @param const ChaTIN::IPv6& Reference for IPv6 address.
      * @param const unsigned int Port to send to (in most cases read from Config).
+     * @param const std::string& Reference to string containing interface used for connection.
      * @throw Socket::ConnectionFailureException Exception thrown when socket cannot establish connection to given ipv6 address.
      */
-    Dialog(const ChaTIN::IPv6&, const unsigned int) throw(Socket::ConnectionFailureException);
+    Dialog(const ChaTIN::IPv6&, const std::string&, const unsigned int) throw(Socket::ConnectionFailureException);
 
     /**
      * Constructor creates Dialog with given ConversableSocket (i.e. received from DialogManager (it's ServerSocket) ).

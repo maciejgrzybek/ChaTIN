@@ -2,9 +2,11 @@
 #include <string>
 #include <glibmm/ustring.h>
 
-Dialog::Dialog(const ChaTIN::IPv6& ipAddress, const unsigned int port) throw(Socket::ConnectionFailureException) : conversationSocket(new Socket::ClientSocket())
+Dialog::Dialog(const ChaTIN::IPv6& ipAddress, const std::string& interface, const unsigned int port) throw(Socket::ConnectionFailureException) : conversationSocket(new Socket::ClientSocket())
 {
-    ((Socket::ClientSocket*)(conversationSocket))->connect(std::string(ipAddress.c_str()),port);
+    std::string ip = ipAddress;
+    ip += interface;
+    ((Socket::ClientSocket*)(conversationSocket))->connect(ip,port);
 }
 
 Dialog::Dialog(const Socket::Conversable* conversationSocket) : conversationSocket(conversationSocket)

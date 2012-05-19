@@ -37,8 +37,9 @@ const Dialog& DialogManager::getDialog(const ChaTIN::IPv6& ip)
     } // lock no more needed
     if(iter == dialogMap.end()) // if no dialog found
     {
+        const std::string interface = config.getValue<std::string>("clientInterface");
         WriteLock lock(mutexLock); // lock for insertion
-        dialogMap[ip] = new Dialog(ip,port); // create new one and assign to map of IPs.
+        dialogMap[ip] = new Dialog(ip,interface,port); // create new one and assign to map of IPs.
     } // now uniqueLock is destroyed and others can read
     ReadLock lock(mutexLock); // lock for reading
     const Dialog& result = *(dialogMap[ip]); // MBO
