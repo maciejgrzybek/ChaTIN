@@ -6,28 +6,37 @@
 #include <functional>
 #include <boost/function.hpp>
 #include <string>
+#include <memory>
 
 class ChatWindow;
 typedef boost::function<void(ChatWindow*)> Action;
 
+class ChatTab;
+typedef std::shared_ptr<ChatTab> TPtr;
+
+
 namespace ChaTIN
 {
 
-
+enum TabIdType{ DIALOG, CONFERENCE, LOG };
 class IPv6;
 
 /*FIXME Implement before any other functionality*/
-/*class TabId 
+class TabId 
 {
-    void getType()    const = 0;
-    TPtr createTab()  const = 0;
-    bool operator==() const = 0;
-}*/
+    public:
+    virtual TabIdType getType()    const = 0;
+    virtual TPtr createTab()  const = 0;
+    virtual bool operator==( const TabId& ) const = 0;
+};
 
-class LogName : public Glib::ustring 
+class LogName : public Glib::ustring, public TabId
 {
     public:
     LogName(const Glib::ustring&);
+    virtual TabIdType getType()    const;
+    virtual TPtr createTab()  const;
+    virtual bool operator==( const TabId& ) const;
 };
 
 /**
@@ -37,7 +46,7 @@ class LogName : public Glib::ustring
  *  but even if it has IPv6 it has to be translated via AliasManager
  *  to IPv6 type.
  */
-class Alias : public Glib::ustring
+class Alias : public Glib::ustring, public TabId
 {
 public:
     /**
@@ -45,6 +54,9 @@ public:
      */
     Alias(const IPv6&);
     Alias(const Glib::ustring&);
+    virtual TabIdType getType()    const;
+    virtual TPtr createTab()  const;
+    virtual bool operator==( const TabId& ) const;
 };
 
 /**
@@ -72,11 +84,14 @@ public:
  * It holds name of the conference and ip of its owner
  *  which is enough data to identify conference by ConferenceManager
  */
-struct ConferenceId
+struct ConferenceId : public TabId
 {
     IPv6          ownerip;
     Glib::ustring name;
     bool operator==(const ConferenceId& r) const;
+    virtual TabIdType getType()    const;
+    virtual TPtr createTab()  const;
+    virtual bool operator==( const TabId& ) const;
 };
 
 /**

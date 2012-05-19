@@ -1,4 +1,4 @@
-GEN=-std=c++0x -O$(O) $(GLIBI)
+GEN=-std=c++0x -O$(O) $(GTKI)
 O=2
 GLIBI=`pkg-config glibmm-2.4 --cflags`
 GLIBL=`pkg-config glibmm-2.4 --libs`
