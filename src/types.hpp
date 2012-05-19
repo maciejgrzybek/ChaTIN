@@ -34,7 +34,8 @@ class LogName : public Glib::ustring, public TabId
 {
     public:
     LogName(const Glib::ustring&);
-    virtual TabIdType getType()    const;
+    bool operator==( const LogName& ) const;
+    virtual TabIdType getType() const;
     virtual TPtr createTab()  const;
     virtual bool operator==( const TabId& ) const;
 };
@@ -54,6 +55,7 @@ public:
      */
     Alias(const IPv6&);
     Alias(const Glib::ustring&);
+    bool operator==( const Alias& ) const;
     virtual TabIdType getType()    const;
     virtual TPtr createTab()  const;
     virtual bool operator==( const TabId& ) const;

@@ -17,6 +17,11 @@ namespace ChaTIN
         return TPtr( new ChatTabLog(*this) );
     }
 
+    bool LogName::operator==( const LogName& toCmp ) const
+    {
+        return std::string(toCmp)==std::string(*this);
+    }
+
     bool LogName::operator==( const TabId& toCmp ) const
     {
         return getType()==toCmp.getType() && *this==(const LogName&)toCmp;
@@ -35,6 +40,11 @@ namespace ChaTIN
     TPtr Alias::createTab() const
     {
         return TPtr( new ChatTabDialog(*this) );
+    }
+
+    bool Alias::operator==( const Alias& toCmp ) const
+    {
+        return std::string(toCmp)==std::string(*this);
     }
 
     bool Alias::operator==( const TabId& toCmp ) const
