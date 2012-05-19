@@ -11,8 +11,12 @@
 #include <glibmm/ustring.h>
 #include <unordered_map>
 #include <string>
+#include <boost/thread.hpp>
+#include <boost/thread/locks.hpp>
+#include <boost/thread/tss.hpp>
 
 class AliasManager;
+class ToViewParser;
 
 /**
  * Singleton class stores dialogs and provides functionality of dispatching incomming connections.
@@ -23,12 +27,18 @@ public:
     /**
      * Constructor of DialogManager.
      * Stores reference to network packets grammar parser.
-     * @param const ToViewParser& Reference to network packets grammar parser.
-     * @param const AliasManager& Reference to alias manager.
-     * @param const ConferenceManager& Reference to conference manager.
+     * @param ToViewParser& Reference to network packets grammar parser.
+     * @param AliasManager& Reference to alias manager.
+     * @param ConferenceManager& Reference to conference manager.
      * @param const Config& Reference to config class.
      */
-    DialogManager(const ToViewParser&, const AliasManager&, const ConferenceManager&, const Config&);
+    DialogManager( ToViewParser&, AliasManager&, ConferenceManager&, const Config&);
+
+    /**
+     * Copy constructor needed by boost::threads
+     * it just copy all references from one object to the other
+     */
+    DialogManager(DialogManager&);
 
     /**
      * Send message to given IPv6 address or alias.
@@ -71,8 +81,9 @@ protected:
      * Method dispatches incoming connections.
      * Runs new thread and enters infinity loop handling client's requests.
      * @param const Socket::Server::ClientIncomeSocket& Reference to incame socket.
+     * @return boost::thread Thread created to handle dispathcer actions.
      */
-    void dispatchIncomingSocket(const Socket::ServerSocket::ClientIncomeSocket&);
+    boost::thread dispatchIncomingSocket(const Socket::ServerSocket::ClientIncomeSocket&);
 
     /**
      * Unordered map to store association IPv6 address -> Dialog.
@@ -82,17 +93,17 @@ protected:
     /**
      * Reference to incoming network packets grammar parser.
      */
-    const ToViewParser& toViewParser;
+    ToViewParser& toViewParser;
 
     /**
      * Reference to alias manager
      */
-    const AliasManager& aliasManager;
+    AliasManager& aliasManager;
 
     /**
      * Reference to conference manager
      */
-    const ConferenceManager& conferenceManager;
+    ConferenceManager& conferenceManager;
 
     /**
      * Reference to config
@@ -106,15 +117,31 @@ protected:
 
     /**
      * Variable set to true, when server is in working state (listening and ready for incoming clients), or false when it should stop accepting clients.
+     * boost thread_specific_ptr used because of possibility of multi-thread usage of startServer() which uses this.
      */
-    bool working;
+    boost::thread_specific_ptr<bool> working;
+
+    struct dispatcher
+    {
+        const Socket::ServerSocket::ClientIncomeSocket& incomeSocket;
+        DialogManager& dialogManager;
+
+        dispatcher(const Socket::ServerSocket::ClientIncomeSocket&,DialogManager&);
+        void operator()();//const Socket::ServerSocket::ClientIncomeSocket*,DialogManager&); // MBO passing DialogManager reference to dispatcher could be wrong thing, but in this case, we need too much components of DialogManager, that would be uncomfortable to pass all of them by arguments. Shared memory is mutex-protected inside this method. All of the operations inside should be mutex-protected because of passing reference to above object.
+    };
 
 private:
+
+    typedef boost::unique_lock< boost::shared_mutex > WriteLock;
+    typedef boost::shared_lock< boost::shared_mutex >  ReadLock;
+
     /**
      * Send message to given socket.
      * Method is invoked by sendTo(const Glib::ustring&), when grammar parser demand or on user action.
      */
     void sendTo(const Socket::Conversable&) const;
+
+    boost::shared_mutex mutexLock; // mutex to cope with readers-writers problem on dialogMap
 };
 
 #endif

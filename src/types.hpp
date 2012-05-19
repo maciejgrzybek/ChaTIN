@@ -4,10 +4,32 @@
 #include <glibmm/ustring.h>
 #include "Exception.hpp"
 #include <functional>
+#include <boost/function.hpp>
 #include <string>
+
+class ChatWindow;
+typedef boost::function<void(ChatWindow*)> Action;
+
 namespace ChaTIN
 {
+
+
 class IPv6;
+
+/*FIXME Implement before any other functionality*/
+/*class TabId 
+{
+    void getType()    const = 0;
+    TPtr createTab()  const = 0;
+    bool operator==() const = 0;
+}*/
+
+class LogName : public Glib::ustring 
+{
+    public:
+    LogName(const Glib::ustring&);
+};
+
 /**
  * Class created to gain types controll from language
  * It is string but it can be used only in some contexts
@@ -22,6 +44,7 @@ public:
      * Copy from IPv6 adress its valid alias anyway
      */
     Alias(const IPv6&);
+    Alias(const Glib::ustring&);
 };
 
 /**
@@ -32,9 +55,16 @@ class IPv6 : public Glib::ustring
 {
     /**
      * Just cast to IPv6 if Alias is IP adress
-     * @throw WrongAddressException Exception thronw when alias is not valid IPv6 adress.
+     * @throw WrongAddressException Exception thrown when alias is not valid IPv6 adress.
      */
     IPv6(const Alias&) throw(Socket::WrongAddressException);
+public:
+    /**
+     * Constructs IPv6 from given IPv6 string.
+     * @param const std::string& Reference to string containing IP.
+     * @throw WrongAddressException Exception thrown when alias is not valid IPv6 adress.
+     */
+    IPv6(const std::string&) throw(Socket::WrongAddressException);
 };
 
 /**
@@ -46,12 +76,23 @@ struct ConferenceId
 {
     IPv6          ownerip;
     Glib::ustring name;
-    bool operator==(const ConferenceId& r) const
-    {
-        return (ownerip == r.ownerip) && (name == r.name);
-    }
+    bool operator==(const ConferenceId& r) const;
 };
+
+/**
+ * This struct agregate information about incoming alias with 
+ * the massage which came from him.
+ */
+struct IncomingMassage
+{
+    Glib::ustring msg;
+    Alias alias;  
+public:
+    IncomingMassage( const Alias& alias, const Glib::ustring& msg );    
+};
+
 } /* namespace ChaTIN */
+
 namespace std
 {
 
@@ -69,15 +110,6 @@ struct hash<ChaTIN::IPv6 const>
 };
 
 template <>
-struct equal_to<ChaTIN::ConferenceId>
-{
-    bool operator()(const ChaTIN::ConferenceId& l,const ChaTIN::ConferenceId& r) const
-    {
-        return (l.ownerip == r.ownerip) && (l.name == r.name);
-    }
-};
-
-template <>
 struct hash<ChaTIN::ConferenceId>
 {
 /*
@@ -91,15 +123,16 @@ size_t operator()(const ChaTIN::ConferenceId& v) const
 {
     hash<std::string> hashf;
     size_t resultHash;
-    std::string owneripString = v.ownerip.c_str();
-    std::string nameString = v.name.c_str();
+    std::string owneripString = v.ownerip;
+    std::string nameString = v.name;
     resultHash = hashf(owneripString) ^ hashf(nameString);
     return resultHash;
 }
 
-}; /* namespace std */
+};
 
-}
+} /* namespace std */
+
 
 
 #endif

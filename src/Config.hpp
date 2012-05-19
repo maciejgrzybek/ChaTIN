@@ -5,13 +5,14 @@
 #include <boost/variant.hpp>
 #include <boost/function.hpp>
 #include <boost/lexical_cast.hpp>
-#define TIXML_USE_STL 
+#ifndef TIXML_USE_STL
+#define TIXML_USE_STL
+#endif 
 #include <tinyxml.h>
 #include <tinystr.h>
 #include "Exception.hpp"
 #include "XMLException.hpp"
 #include <string>
-#include <map>
 
 class Config
 {
@@ -48,10 +49,17 @@ public:
     template<class T>
     T getValue(const std::string& key) const
     {
-        OptionsMap::const_iterator iter = m_messages.find(key);
-        if(iter == m_messages.end())
+        OptionsMap::const_iterator iter = config.find(key);
+        if(iter == config.end())
             throw XML::ValueNotExistsException(key);
-        return boost::get<T>(iter->second);//m_messages[key]);
+        return boost::get<T>(iter->second);
+    }
+
+    template<class T>
+    T getValue(const char* key) const
+    {
+        std::string str(key);
+        return getValue<T>(str);
     }
 
 protected:
@@ -67,9 +75,9 @@ protected:
      * I.e. fromStringToTypeVariableMap["int"]("12"); will cast string "12" into int type, by given function (which uses boost::lexical_cast).
      * Consider moving this map static.
      */
-    std::map<const std::string, CastFunction> fromStringToTypeVariableMap;
+    std::unordered_map<std::string, CastFunction> fromStringToTypeVariableMap;
 
-    OptionsMap m_messages;
+    OptionsMap config;
 
 };
 

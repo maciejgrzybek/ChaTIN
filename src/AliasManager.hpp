@@ -4,6 +4,7 @@
 
 #include <glibmm/ustring.h>
 #include <boost/bimap.hpp>
+#include <boost/optional.hpp>
 #include <iostream>
 #include <map>
 #include "DBDriver.hpp"
@@ -30,13 +31,21 @@ class AliasManager
     /* subscriptions data (2) */
     std::map<ChaTIN::Alias, SubPhase> subscriptions;
     const DBDriver& db;
-    DialogManager& sender;
+    bool sendReady;
+    boost::optional<DialogManager&> sender;
 
 public:
     /**
      * Default construtctor reading existing aliases from given DBDriver
      */
-    AliasManager( const DBDriver&, DialogManager& );
+    AliasManager( const DBDriver& );
+
+    /**
+     * Allow to set dialog manager after some actions.
+     * Before calling this method AliasManager cannot do many things
+     * (everything that need to send sth)
+     */
+    void setDialogManager( DialogManager& sender_ );
 
     /**
      * Gets alias from given ip
@@ -62,53 +71,56 @@ public:
      * @throw AliasAlreadyExistsException - when alias name is in use
      * @throw IPAlreadyHasAliasException - when ip has alias    
      */
-    void registerAlias( const ChaTIN::Alias& alias, const ChaTIN::IPv6& ip, bool trySubscribe = true );
+    void registerAlias( const ChaTIN::Alias&, const ChaTIN::IPv6&, bool trySubscribe = true );
     
     /**
      * Removes alias given by ip adress
      * @param const ChaTIN::Alias& IPv6 adress to delete from alias list
      * @throw AliasDoesNotExistsException - when alias wansnt find
      */
-    void deleteAliasByIP( const ChaTIN::IPv6& ip );
+    void deleteAliasByIP(const ChaTIN::IPv6&);
     
     /*
      * Removes alias given by its name
      * @param const ChaTIN::Alias& alias to find
      * @throw AliasDoesNotExistsException - when alias wansnt find
      */
-    void deleteAliasByAlias( const ChaTIN::Alias& alias );
+    void deleteAliasByAlias(const ChaTIN::Alias&);
 
     /**
      * Send information to adress that you want to subscribe 
-     * If you are in REQUESTED then just call acceptSub
+     * If you are in REQUESTED state then just call acceptSub
      * @param const ChaTIN::Alias& Alias to request
      * @throw AliasNotConnected - if alias client ist connected right now
      * @throw AliasAlreadyFullSubscribed - if alias is on FULL phase with you
+     * @throw NoDialogManagerGivenException - if it try to send sth but dialogManager isnt set yet
      */
-    void requestSub( const ChaTIN::Alias& alias ); 
+    void requestSub(const ChaTIN::Alias&); 
 
     /**
-     * If you are in REQUESTED then send Accept and go to FULL
+     * If you are in REQUESTED state then send Accept and go to FULL
      * @param const ChaTIN::Alias& Alias to accept
      * @throw YouAreNotRequested - when alias client didnt send you request
      * @throw AliasNotConnected - if alias client ist connected right now
+     * @throw NoDialogManagerGivenException - if it try to send sth but dialogManager isnt set yet
      */
-    void acceptSub( const ChaTIN::Alias& alias );
+    void acceptSub(const ChaTIN::Alias&);
 
     /**
      * If you are in REQUESTED then send Reject and go to REJECTED
      * @param const ChaTIN::Alias& alias to reject
      * @throw YouAreNotRequested - when alias client didnt send you request
      * @throw AliasNotConnected - if alias client ist connected right now
+     * @throw NoDialogManagerGivenException - if it try to send sth but dialogManager isnt set yet
      */
-    void rejectSub( const ChaTIN::Alias& alias );
+    void rejectSub(const ChaTIN::Alias&);
 
     /**
      * Call if reject package came from alias
      * goes to REJECTED phase
      * @param const ChaTIN::Alias& alias which rejected you
      */
-    void wasRejected( const ChaTIN::Alias& alias );
+    void wasRejected(const ChaTIN::Alias&);
 
     /**
      * Call if accept package came from alias
@@ -116,16 +128,16 @@ public:
      * otherwise dont do anything
      * @param const ChaTIN::Alias& alias which send accept to you 
      */
-    void wasAccepted( const ChaTIN::Alias& alias );
+    void wasAccepted(const ChaTIN::Alias&);
 
     private:
     /**
-     * loads subscriptios vector from DB using DBDriver
+     * loads subscriptions vector from DB using DBDriver
      */
     void loadSubscriptionsFromDB();
 
     /**
-     * save subscriptions vector to DB using DBDriver
+     * saves subscriptions vector to DB using DBDriver
      */
     void saveSubscriptionsToDB();
 };

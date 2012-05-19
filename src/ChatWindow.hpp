@@ -3,7 +3,15 @@
 #include <iostream>
 #include <string>
 #include <map>
+#include <set>
 #include <memory>
+#include <boost/function.hpp>
+#include "ChatTab.hpp"
+#include "SafeQueue.hpp"
+#include "Event.hpp"
+#include "FromViewParser.hpp"
+#include "types.hpp"
+
 
 /**
  * Class holding whole GUI in it
@@ -13,13 +21,15 @@
  */
 class ChatWindow : public Gtk::Window
 {
+    SafeQueue<EPtr>& bq;
+    SafeQueue<Action>& aq;
 public: 
     /**
      * Main constructor of window
      * It creates and sets all components it their positions
      * It also register all handlers for Gtk signals.
      */
-    ChatWindow();
+    ChatWindow( SafeQueue<EPtr>&, SafeQueue<Action>& );
     /**
      * For now it does not do anything because 
      * all object are being released by smart poionters
@@ -37,21 +47,6 @@ protected:
             FriendData();
             Gtk::TreeModelColumn<Glib::ustring> alias; 
             Gtk::TreeModelColumn<Glib::ustring> fullAlias;
-    };
-
-    /**
-     * Class for holding separation between view-controll and view
-     * It contains  fullAlias of tab as well as it is Widget
-     * @author: Andrzej Fiedukowicz
-     */
-    class ChatTab : public Gtk::TextView
-    {
-        public:
-            ChatTab(Glib::ustring fullAlias);
-            Glib::ustring getFullAlias();   
-
-        private:
-            Glib::ustring fullAlias;
     };
 
     /* SIGNAL HANDLERS */
@@ -92,13 +87,19 @@ protected:
      */
     Glib::ustring cutAlias( Glib::ustring alias );
 
+public:
     /* GUI Actions */
     
     /**
      * Method opening dialog tab or swiching to existing one
      * @param Glib::ustring name of tab
      */
-    void openDialogTab( Glib::ustring alias );
+    void openDialogTab( TPtr tab, bool changeTab = true );
+
+    /**
+     * Check for actions and do if they are there
+     */
+    bool idle();
 
     /**
      * Adds position to friend list which will have given name
@@ -115,13 +116,22 @@ protected:
 
 
     /**
+     * Shows incoming massage.
+     * If there is no card connected to given alias/id/string it creates new one
+     */
+    void showIncomingMessageL( ChaTIN::LogName, Glib::ustring );
+    void showIncomingMessageA( ChaTIN::Alias, Glib::ustring, bool incoming = true );
+    void showIncomingMessageC( ChaTIN::ConferenceId, Glib::ustring );
+
+
+    /**
      * Appends text to chatBox in current tab
      * @param Glib::ustring text to append
      */
-    void appendTextToCurrentTab( Glib::ustring text );
+    void appendTextToTab( TPtr tab, Glib::ustring text );
 
 
-    private:
+private:
     /* INITIALIZATION */
 
     /**
@@ -154,7 +164,7 @@ protected:
     FriendData friends;
     Gtk::Button sendButton;
     Gtk::Entry chatField;
-    std::shared_ptr<ChatTab> logBox;
+    TPtr logBox;
     Gtk::TreeView friendList;
     Gtk::HBox mainBox;
     Gtk::VBox rightBox;    
@@ -164,7 +174,7 @@ protected:
     Glib::RefPtr<Gtk::TextBuffer> chatBoxBuffer;
     Glib::RefPtr<Gtk::TreeStore>  friendListModel;
     Glib::ustring selName;
-    std::shared_ptr<ChatTab> selectedTab;
-    std::map<Glib::ustring, std::shared_ptr<ChatTab> > dialogBoxes;   //Glib::RefPtr cannot be used here
-                                                                            //becouse it hasnt operator*
+    ChatTab* selectedTab;
+    std::set< TPtr > dialogBoxes;   //Glib::RefPtr cannot be used here
+                                    //becouse it hasnt operator*
 };

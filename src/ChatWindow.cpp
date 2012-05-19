@@ -1,7 +1,9 @@
 #include "ChatWindow.hpp"
+#include "ChatTabFactory.hpp"
 #include <cassert>
 
-ChatWindow::ChatWindow() : sendButton("Send")
+ChatWindow::ChatWindow( SafeQueue<EPtr>& bq, SafeQueue<Action>& aq) 
+    : sendButton("Send"), bq(bq), aq(aq)
 {
     set_title("ChatTIN");
     set_default_size(600,400);
@@ -28,32 +30,11 @@ ChatWindow::FriendData::FriendData()
 
 void ChatWindow::textInHandle()
 {
-    if( chatField.get_text() != "" )
-    {
-        if( chatField.get_text()[0] != '/' )
-        {
-            appendTextToCurrentTab("Wyslano: "+chatField.get_text()+"\n");
-            chatField.set_text("");
-        }
-        else
-        {
-            /* command interpretation here */
-            if(chatField.get_text() == "/exit")
-                exit(0);
-            if(chatField.get_text() == "/close")
-            {
-                closeCurrentTab();
-            }
-            if(chatField.get_text().substr(0,5) == "/open" )
-            {
-                Glib::ustring toOpen = chatField.get_text().substr(6); 
-                if(validateAlias(toOpen))
-                {
-                    openDialogTab(toOpen);
-                }
-            }
-        }
-    }
+    assert("Selected tab cannot be NULL" && selectedTab != NULL);
+    EPtr event = selectedTab->createEvent( chatField.get_text() );
+    assert("Event cannot be NULL" && event != EPtr(NULL));
+    bq.push(event);
+    chatField.set_text("");
 }
 
 Glib::ustring ChatWindow::cutAlias( Glib::ustring alias )
@@ -68,38 +49,47 @@ bool ChatWindow::validateAlias( Glib::ustring )
 }
 
 void ChatWindow::friendPickHandle(const Gtk::TreeModel::Path& path, Gtk::TreeViewColumn* /*column*/)
-{
+{    
+    /*
     Gtk::TreeModel::iterator iter = friendListModel->get_iter(path);
     if(iter)
     {
         openDialogTab((*iter)[friends.fullAlias]);
-    } 
+    }*/ 
 }
 
 
-void ChatWindow::openDialogTab( Glib::ustring alias )
+void ChatWindow::openDialogTab( TPtr tab, bool changeTab )
 {
-    if( dialogBoxes.find(alias) == dialogBoxes.end() )
+    if( dialogBoxes.find(tab) == dialogBoxes.end() )
     {
         /*create page if it is necessary*/            
-        dialogBoxes[alias] = std::shared_ptr<ChatTab>(new ChatTab(alias));    
-        chatTabs.insert_page(*dialogBoxes[alias], cutAlias(alias), 1);
+        dialogBoxes.insert(tab);    
+        chatTabs.insert_page(*tab, cutAlias(tab->getFullAlias()), 1);
         show_all_children();
     }
-    chatTabs.set_current_page(chatTabs.page_num(*dialogBoxes[alias]));
+    if( changeTab )
+        chatTabs.set_current_page(chatTabs.page_num(*tab));
+}
+
+bool ChatWindow::idle()
+{
+    if( !aq.empty() )
+    {
+        aq.front()(this); //try_front...
+        aq.pop();
+    }
+    return true;
 }
 
 void ChatWindow::switchTabHandle( GtkNotebookPage* /*page*/, guint page_num )
 {
     if(page_num!=0)
     {
-        selectedTab = dialogBoxes[
-                static_cast<ChatTab*>(chatTabs.get_nth_page(page_num))->getFullAlias()
-        ];    
-        selName = selectedTab->getFullAlias();
-
+        selectedTab = static_cast<ChatTab*>(chatTabs.get_nth_page(page_num));
         chatBoxBuffer = selectedTab->get_buffer();
-        appendTextToCurrentTab("Teraz piszesz do: "+selName+"\n");
+
+        //appendTextToCurrentTab("Teraz piszesz do: "+selName+"\n");
         selectedTab->set_editable(false);
     }
     else
@@ -120,26 +110,67 @@ void ChatWindow::addFriend( Glib::ustring name )
 
 void ChatWindow::closeCurrentTab()
 {
-    if( selName != "LOG" )
+    //FIXME it shouldnt be current anyway
+}
+
+template<class InputIterator, class T>
+InputIterator myfind( InputIterator first, InputIterator last, const T& value)
+{
+    for( ; first!=last; first++) if(**first==value) break;
+    return first;
+}
+
+void ChatWindow::showIncomingMessageL( ChaTIN::LogName name, Glib::ustring message )
+{
+    TPtr tab;
+    std::set<TPtr>::iterator i =  myfind(dialogBoxes.begin(), dialogBoxes.end(), name);
+    //std::set<TPtr>::iterator i = dialogBoxes.begin();
+    if( i == dialogBoxes.end() )
     {
-        Glib::ustring toRemove = selName;
-        chatTabs.remove_page(*selectedTab);
-        dialogBoxes.erase(toRemove);
-        selectedTab = NULL;
-        selName = "LOG";
-        chatTabs.set_current_page(0);
+        tab = TPtr( new ChatTabLog(name) );
+        openDialogTab( tab, false );
     }
     else
     {
-        exit(0);
+        tab = *i;
     }
+    Glib::ustring toShow = "[LOG] "+message+"\n";
+    appendTextToTab( tab, toShow );
 }
 
-void ChatWindow::appendTextToCurrentTab( Glib::ustring text )
+void ChatWindow::showIncomingMessageA( ChaTIN::Alias alias, Glib::ustring message, bool incoming )
 {
-    chatBoxBuffer->insert(chatBoxBuffer->end(), text);
-    Gtk::TextIter iter = chatBoxBuffer->end();
-    selectedTab->scroll_to_iter(iter,0.0);
+    TPtr tab;
+    std::set<TPtr>::iterator i = myfind(dialogBoxes.begin(), dialogBoxes.end(), alias);
+    if( i == dialogBoxes.end() )
+    {       
+        tab = TPtr( new ChatTabDialog(alias) );
+        openDialogTab( tab, false );
+    }
+    else
+    {
+        tab = *i;
+    }
+    
+    Glib::ustring toShow;
+    if( incoming )
+        toShow = alias+" >> "+message+"\n";
+    else
+        toShow = "ME ----> "+message+"\n";
+    appendTextToTab( tab, toShow );
+}
+
+void ChatWindow::showIncomingMessageC( ChaTIN::ConferenceId, Glib::ustring message )
+{
+    //FIXME
+}
+
+void ChatWindow::appendTextToTab( TPtr tab, Glib::ustring text )
+{
+    Glib::RefPtr<Gtk::TextBuffer> buffer = tab->get_buffer();
+    buffer->insert(buffer->end(), text);
+    Gtk::TextIter iter = buffer->end();
+    tab->scroll_to_iter(iter,0.0);
 }
 
 void ChatWindow::initializeFriends()
@@ -156,6 +187,7 @@ void ChatWindow::registerSignals()
     friendList.signal_row_activated().connect(sigc::mem_fun(*this, &ChatWindow::friendPickHandle));
     chatTabs.signal_switch_page().connect(sigc::mem_fun(*this, &ChatWindow::switchTabHandle));    
     chatField.signal_activate().connect(sigc::mem_fun(*this, &ChatWindow::textInHandle));
+    Glib::signal_timeout().connect( sigc::mem_fun(*this, &ChatWindow::idle), 50 );
 }
 
 void ChatWindow::createInterface()
@@ -182,26 +214,17 @@ void ChatWindow::buildTreeModel()
 
 void ChatWindow::initializeTabs()
 {
-    logBox = std::shared_ptr<ChatTab>( new ChatTab("LOG") );
+    logBox = TPtr( new ChatTabLog(ChaTIN::LogName("LOG")) );//ChatTabFactory::create(Glib::ustring("LOG"));
     chatTabs.set_scrollable();
+
     selName = logBox->getFullAlias(); //fist seleceted tab
+
     chatTabs.insert_page(*logBox, cutAlias(selName), 0);
-    selectedTab = logBox;
+    selectedTab = &*logBox;
     chatBoxBuffer = logBox->get_buffer(); //select LOG TextView as default text buffer
     logBox->set_editable(false);
     logBox->set_can_focus(false);
     chatTabs.set_can_focus(false);
 }
 
-ChatWindow::ChatTab::ChatTab( 
-        Glib::ustring fullAlias )
-    : fullAlias(fullAlias)
-{
-}
-
-
-Glib::ustring ChatWindow::ChatTab::getFullAlias()
-{
-    return fullAlias;
-}
 

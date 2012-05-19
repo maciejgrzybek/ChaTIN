@@ -1,8 +1,14 @@
 #include "DialogManager.hpp"
 
-DialogManager::DialogManager(const ToViewParser& toViewParser, const AliasManager& aliasManager, const ConferenceManager& conferenceManager, const Config&) : toViewParser(toViewParser), aliasManager(aliasManager), conferenceManager(conferenceManager), config(config), working(false)
+DialogManager::DialogManager(ToViewParser& toViewParser, AliasManager& aliasManager, ConferenceManager& conferenceManager, const Config& config_) : toViewParser(toViewParser), aliasManager(aliasManager), conferenceManager(conferenceManager), config(config_), serverSocket(NULL)
 {
+    working.reset(new bool(false));
 }
+
+DialogManager::DialogManager( DialogManager& dm )
+    : toViewParser(dm.toViewParser), aliasManager(dm.aliasManager),
+      conferenceManager(dm.conferenceManager), config(dm.config)
+{}
 
 void DialogManager::sendTo(const ChaTIN::Alias& alias, const Glib::ustring& message) throw(Socket::SendFailureException)
 {
@@ -23,30 +29,38 @@ void DialogManager::sendTo(const ChaTIN::ConferenceId& conferenceId, const Glib:
 
 const Dialog& DialogManager::getDialog(const ChaTIN::IPv6& ip)
 {
-    int port = config.getValue<int>("port");
-    std::unordered_map<const ChaTIN::IPv6,const Dialog*>::const_iterator iter = dialogMap.find(ip);
+    std::unordered_map<const ChaTIN::IPv6,const Dialog*>::const_iterator iter;
+    int port = config.getValue<int>("clientPort");
+    {
+        ReadLock lock(mutexLock); // lock for readers
+        iter = dialogMap.find(ip);
+    } // lock no more needed
     if(iter == dialogMap.end()) // if no dialog found
     {
+        WriteLock lock(mutexLock); // lock for insertion
         dialogMap[ip] = new Dialog(ip,port); // create new one and assign to map of IPs.
-    }
-    return *(dialogMap[ip]); //MBO
+    } // now uniqueLock is destroyed and others can read
+    ReadLock lock(mutexLock); // lock for reading
+    const Dialog& result = *(dialogMap[ip]); // MBO
+    return result;
 }
 
 void DialogManager::startServer() throw(Socket::ResolveException,Socket::WrongPortException)
 {
     if(serverSocket == NULL)
     {
-        std::string host = config.getValue<std::string>("host");
-        unsigned int port = config.getValue<int>("port");
+        std::string host = config.getValue<std::string>("serverHost");
+        unsigned int port = config.getValue<int>("serverPort");
         unsigned int backlog = config.getValue<int>("backlog");
         serverSocket = new Socket::ServerSocket(host,port,backlog);
     }
     serverSocket->listen();
-    Socket::ServerSocket::ClientIncomeSocket* incomeSocket;
-    working = true;
-    while(working)
+    Socket::ServerSocket::ClientIncomeSocket* incomeSocket = NULL;
+    working.reset(new bool(true));
+    while(*working)
     {
         incomeSocket = serverSocket->pickClient(); // can hang up here when no client to pick is available
+        assert("incomeSocket can not be NULL" && incomeSocket != NULL);
         dispatchIncomingSocket(*incomeSocket);
     }
 }
@@ -56,7 +70,37 @@ void DialogManager::operator()() throw(Socket::ResolveException,Socket::WrongPor
     startServer();
 }
 
-void DialogManager::dispatchIncomingSocket(const Socket::ServerSocket::ClientIncomeSocket& incomeSocket)
+DialogManager::dispatcher::dispatcher(const Socket::ServerSocket::ClientIncomeSocket& incomeSocket_, DialogManager& dialogManager_) : incomeSocket(incomeSocket_), dialogManager(dialogManager_)
+{}
+
+boost::thread DialogManager::dispatchIncomingSocket(const Socket::ServerSocket::ClientIncomeSocket& incomeSocket)
 {
-    //FIXME implement this
+    dispatcher dispatcherCall(incomeSocket,*this);
+    return boost::thread(dispatcherCall);//,&incomeSocket,boost::ref(*this)); // we assign pointer, because it's dynamically created, so the memory scope is the same in all threads.
+
+}
+
+void DialogManager::dispatcher::operator()()//const Socket::ServerSocket::ClientIncomeSocket* incomeSocket, DialogManager& dialogManager)
+{
+    ChaTIN::IPv6 ip = incomeSocket.getHostAddress();
+    Dialog* dialog = new Dialog(&incomeSocket);
+
+    {
+        WriteLock lock(dialogManager.mutexLock); // lock for insertion
+        dialogManager.dialogMap[ip] = dialog;
+    } // let others read data I already put in map
+
+    while(1)//*(dialogManager.working))
+    {
+        try
+        {
+            std::string receivedMessage = dialog->receive(); // can hang up here
+            dialogManager.toViewParser.doCommand(ip,receivedMessage); // send received message to parser
+        }
+        catch(Socket::ReceiveFailureException& e)
+        {
+            std::cout << "Something went wrong on receive." << std::endl;
+            std::cout << e.what() << std::endl;
+        }
+    }
 }

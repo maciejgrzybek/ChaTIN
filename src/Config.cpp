@@ -3,9 +3,9 @@
 Config::Config(const std::string& fileName) throw(FileOpenException)
 {
     // Initialization of fromStringToTypeVariableMap (lambda functions).
-    fromStringToTypeVariableMap["int"] = [](const std::string& input){ return SupportedTypesVariant(boost::lexical_cast<int>(input));};
-    fromStringToTypeVariableMap["char"] = [](const std::string& input){ return SupportedTypesVariant(boost::lexical_cast<char>(input));};
-    fromStringToTypeVariableMap["string"] = [](const std::string& input){ return SupportedTypesVariant(boost::lexical_cast<std::string>(input));};
+    fromStringToTypeVariableMap[std::string("int")] = [](const std::string& input){ return SupportedTypesVariant(boost::lexical_cast<int>(input));};
+    fromStringToTypeVariableMap[std::string("char")] = [](const std::string& input){ return SupportedTypesVariant(boost::lexical_cast<char>(input));};
+    fromStringToTypeVariableMap[std::string("string")] = [](const std::string& input){ return SupportedTypesVariant(boost::lexical_cast<std::string>(input));};
 
     loadFile(fileName);
 }
@@ -38,7 +38,7 @@ void Config::loadFile(const std::string& fileName) throw(FileOpenException,DataP
 
     // <configuration>
 	{
-		m_messages.clear(); // trash existing table
+		config.clear(); // trash existing table
 
 		pElem=hRoot.FirstChild().Element();
 		for(; pElem; pElem=pElem->NextSiblingElement())
@@ -57,9 +57,9 @@ void Config::loadFile(const std::string& fileName) throw(FileOpenException,DataP
             }
 			if (pKey.length() > 0 && pText.length() > 0)
 			{
-				m_messages[pAttr] = value;
+			    config[pAttr] = value;
 			}
-		}
+        }
 	}
 
 }
