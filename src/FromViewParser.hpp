@@ -57,6 +57,12 @@ class FromViewParser
     void doCommand( const ChaTIN::LogName& name, const Glib::ustring& input );
 
     /**
+     * Does support all general commands like open/close/addfriend etc.
+     * @return true if the input has without context
+     */
+    bool tryParseGeneral( const Glib::ustring& input );
+
+    /**
      * Just handle all events from bq 
      */
     void operator()();
