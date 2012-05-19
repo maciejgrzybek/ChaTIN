@@ -103,5 +103,11 @@ void DialogManager::dispatcher::operator()()//const Socket::ServerSocket::Client
             std::cout << "Something went wrong on receive." << std::endl;
             std::cout << e.what() << std::endl;
         }
+        catch(Socket::NotConnectedException&)
+        {
+            // FIXME add quit_message packet building
+            //dialogManager.toViewParser.doCommand(ip,PACKET_WITH_QUIT_MESSAGE);
+            std::cout << "Client closed connection." << std::endl;
+        }
     }
 }
