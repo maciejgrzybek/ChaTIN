@@ -5,7 +5,7 @@
 Dialog::Dialog(const ChaTIN::IPv6& ipAddress, const std::string& interface, const unsigned int port) throw(Socket::ConnectionFailureException) : conversationSocket(new Socket::ClientSocket())
 {
     std::string ip = ipAddress;
-    ip += interface;
+    ip += "%" + interface;
     ((Socket::ClientSocket*)(conversationSocket))->connect(ip,port);
 }
 
