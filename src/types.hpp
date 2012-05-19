@@ -15,6 +15,14 @@ namespace ChaTIN
 
 class IPv6;
 
+/*FIXME Implement before any other functionality*/
+class TabId 
+{
+    void getType()    const = 0;
+    TPtr createTab()  const = 0;
+    bool operator==() const = 0;
+}
+
 class LogName : public Glib::ustring 
 {
     public:

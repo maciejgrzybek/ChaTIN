@@ -69,18 +69,21 @@ void FromViewParser::doCommand( const ChaTIN::LogName& name, const Glib::ustring
 
 bool tryParseGeneral( const Glib::ustring& input )
 {
-    if( isInputCommand( input ) )
+    if( !isInputCommand( input ) )
+        return false;
+
+    if( input.substr(1,5) == "open " )
     {
-        if( input.substr(1,5) == "open " )
-        {
-            Glib::ustring toOpen = input.substr(6);
-            //FIXME Check if alias is valid
-            TPtr tab = TPtr( new  ChatTabDialog( ChaTIN::Alias( toOpen ) ) );
-            //FIXME ALWAYS OPENING NEW ONE 
-            aq.push( boost::bind(&ChatWindow::openDialogTab, _1, tab, true ) );    
-        }
-        //ANALYZE COMMAND
+        Glib::ustring toOpen = input.substr(6);
+        //FIXME Check if alias is valid
+        TPtr tab = TPtr( new  ChatTabDialog( ChaTIN::Alias( toOpen ) ) );
+        //FIXME ALWAYS OPENING NEW ONE 
+        aq.push( boost::bind(&ChatWindow::openDialogTab, _1, tab, true ) );    
+        return true;
     }
+    //ANALYZE COMMAND
+
+    return false;
 }
 
 void FromViewParser::operator()()
