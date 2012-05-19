@@ -7,13 +7,13 @@
 
 ToViewParser::ToViewParser( SafeQueue<ChaTIN::IncomingMassage>& q, SafeQueue<Action>& aq )
     : q(q), aq(aq)
-{}
-
-void ToViewParser::doCommand( const ChaTIN::Alias& alias, const Glib::ustring& msg )
 {
-    //just invoke QueueAdder thread
-    //boost::thread adderThread(QueueAdder<ChaTIN::IncomingMassage>(ChaTIN::IncomingMassage(alias, msg),q));
-    q.push(ChaTIN::IncomingMassage(alias,msg)); // FIXME: can be vulnerable of out of memory when SafeQueue is full and we try to push to it.
+   actions["msg"]=&ToViewParser::incomingDialogMsg;
+}
+
+void ToViewParser::doCommand( const ChaTIN::IPv6& ip, const Glib::ustring& msg )
+{
+    q.push(ChaTIN::IncomingMassage(ip,msg)); // FIXME: can be vulnerable of out of memory when SafeQueue is full and we try to push to it.
     // In this case, thread which called doCommand will hang up.
 }
 
@@ -27,6 +27,11 @@ void ToViewParser::operator()()
     }
 }
 
+void ToViewParser::incomingDialogMsg( const ChaTIN::IPv6& ip, const Glib::ustring& msg, const otherAttributes&)
+{
+    TIPtr incomeAlias(new ChaTIN::Alias(ip));
+    aq.push( boost::bind(&ChatWindow::showIncomingMessage, _1, incomeAlias, msg, true ));
+}
 
 void ToViewParser::parse( const ChaTIN::IncomingMassage& income )
 {
@@ -63,7 +68,7 @@ void ToViewParser::parse( const ChaTIN::IncomingMassage& income )
                     current = msgNode->IterateChildren(current)->ToElement(); //Wow! Just like in NWScript
                 }
                 
-                iter->second(this, income.alias, msgText, otherAtt);
+                iter->second(this, income.ip, msgText, otherAtt);
             }
             else
             {
@@ -77,8 +82,5 @@ void ToViewParser::parse( const ChaTIN::IncomingMassage& income )
         //FIXME
         //THROW CannotParseMassageException
     }
-    TIPtr incomeAlias(new ChaTIN::Alias(income.alias));
-    aq.push( boost::bind(&ChatWindow::showIncomingMessage, _1, incomeAlias, msgText, true ));
-    //DO PARSING (no gramar yet)
 }
 

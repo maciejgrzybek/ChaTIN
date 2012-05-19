@@ -30,12 +30,11 @@ public:
      *      - gets const Glib::ustring& as second argument (massage text)
      *      - gets const otherAtributes as third  argument (additional information map: name->str_value)
      */
-    typedef boost::function<void ( ToViewParser*, const ChaTIN::Alias&, const Glib::ustring&, const otherAttributes& ) > inActionFun;
-    //FIXME ^ it shoud start with uppercase
+    typedef boost::function<void ( ToViewParser*, const ChaTIN::IPv6&, const Glib::ustring&, const otherAttributes& ) > InActionFun;
 
 private:    
     // map msg_type -> callback (boost::function)
-    std::map< Glib::ustring, inActionFun > actions;
+    std::map< Glib::ustring, InActionFun > actions;
 
 public:
     /**
@@ -50,7 +49,7 @@ public:
      * @param const Glib::ustring& msg directly what came from Socket::Socket 
      * @throw CannotParseMassageException if parser cannot understand that
      */
-    void doCommand( const ChaTIN::Alias& alias, const Glib::ustring& msg );
+    void doCommand( const ChaTIN::IPv6& ip, const Glib::ustring& msg );
     
     /**
      * Main loop of ToViewParser, build to run as a thread
@@ -65,4 +64,8 @@ private:
      * @throw CannotParseMassageExcpeion if parser cannot understand income
      */
     void parse( const ChaTIN::IncomingMassage& msg );
+
+
+    /**COMMNADS**/
+    void incomingDialogMsg( const ChaTIN::IPv6&, const Glib::ustring&, const otherAttributes& );
 };

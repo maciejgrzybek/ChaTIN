@@ -80,8 +80,8 @@ namespace ChaTIN
 
 
 
-    IncomingMassage::IncomingMassage( const ChaTIN::Alias& alias, const Glib::ustring& msg )
-        : alias(alias), msg(msg)
+    IncomingMassage::IncomingMassage( const ChaTIN::IPv6& ip, const Glib::ustring& msg )
+        : ip(ip), msg(msg)
     {}
 
 }; /*namespace ChaTIN*/

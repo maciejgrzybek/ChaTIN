@@ -62,8 +62,8 @@ public:
     Alias(const IPv6&);
     Alias(const Glib::ustring&);
     bool operator==( const Alias& ) const;
-    virtual TabIdType getType()    const;
-    virtual TPtr createTab()  const;
+    virtual TabIdType getType() const;
+    virtual TPtr createTab() const;
     virtual bool operator==( const TabId& ) const;
 };
 
@@ -92,8 +92,8 @@ struct ConferenceId : public TabId
     IPv6          ownerip;
     Glib::ustring name;
     bool operator==(const ConferenceId& r) const;
-    virtual TabIdType getType()    const;
-    virtual TPtr createTab()  const;
+    virtual TabIdType getType() const;
+    virtual TPtr createTab() const;
     virtual bool operator==( const TabId& ) const;
 };
 
@@ -104,9 +104,9 @@ struct ConferenceId : public TabId
 struct IncomingMassage
 {
     Glib::ustring msg;
-    Alias alias;  
+    IPv6 ip;  
 public:
-    IncomingMassage( const Alias& alias, const Glib::ustring& msg );    
+    IncomingMassage( const IPv6& ip, const Glib::ustring& msg );    
 };
 
 } /* namespace ChaTIN */
