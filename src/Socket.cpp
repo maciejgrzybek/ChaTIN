@@ -18,6 +18,9 @@ namespace Socket
     {
     }
 
+    Conversable::Conversable(int sock) : Socket(sock)
+    {}
+
     Conversable::~Conversable()
     {
     }
@@ -142,7 +145,25 @@ namespace Socket
             throw WrongAddressException(address,errno);
         hostAddress.sin6_addr = byteAddress;
     }
-    
+
+    std::string Conversable::receive() const throw(ReceiveFailureException,NotConnectedException)
+    {
+        char buffer[Conversable::buffer_size + 1];
+        memset(buffer,'\0',Conversable::buffer_size + 1); // initialization of incomming messages buffer.
+        int nread = ::recv(sockfd,buffer,sizeof(buffer),0);
+        if(nread == -1)
+            throw ReceiveFailureException(sockfd);
+        if(nread == 0)
+            throw NotConnectedException();
+        return std::string(buffer); 
+    }
+
+    void Conversable::send(const std::string& message) const throw(SendFailureException)
+    {
+        if(::send(sockfd,message.c_str(),message.length(),0) == -1)
+            throw SendFailureException(errno);
+    }
+
     ServerSocket::ServerSocket(const std::string& address, const unsigned int port, const unsigned int backlog, enum BlockingType blockingType) throw(ResolveException, WrongPortException) : backlog(backlog)
     {
         getBindedSocket(address, port);
@@ -193,7 +214,7 @@ namespace Socket
         return new ClientIncomeSocket(clientSocket);
     }
 
-    ServerSocket::ClientIncomeSocket::ClientIncomeSocket(int sock) : Socket(sock)
+    ServerSocket::ClientIncomeSocket::ClientIncomeSocket(int sock) : Conversable(sock)
     {
     }
 
@@ -202,13 +223,15 @@ namespace Socket
         ::send(sockfd,messageBuffer.c_str(),messageBuffer.length(),0);
     }
 
-    std::string ServerSocket::ClientIncomeSocket::receive() const throw(ReceiveFailureException)
+    std::string ServerSocket::ClientIncomeSocket::receive() const throw(ReceiveFailureException,NotConnectedException)
     {
         char buffer[ServerSocket::ClientIncomeSocket::buffer_size + 1];
         memset(buffer,'\0',ServerSocket::ClientIncomeSocket::buffer_size + 1); // initialization of incomming messages buffer.
-        int nread = recv(sockfd,buffer,sizeof(buffer),0);
+        int nread = ::recv(sockfd,buffer,sizeof(buffer),0);
         if(nread == -1)
             throw ReceiveFailureException(sockfd);
+        if(nread == 0)
+            throw NotConnectedException();
         return std::string(buffer);
     }
 
@@ -241,22 +264,6 @@ namespace Socket
             
             throw ConnectionFailureException(errno); 
         }
-    }
-
-    void ClientSocket::send(const std::string& message) const throw(SendFailureException)
-    {
-        if(::send(sockfd,message.c_str(),message.length(),0) == -1)
-            throw SendFailureException(errno);
-    }
-
-    std::string ClientSocket::receive() const throw(ReceiveFailureException)
-    {
-        char buffer[ClientSocket::buffer_size];
-        memset(buffer,'\0',ClientSocket::buffer_size);
-        int nread = recv(sockfd,buffer,sizeof(buffer),0);
-        if(nread == -1)
-            throw ReceiveFailureException(sockfd);
-        return std::string(buffer);
     }
 
 }; // namespace socket

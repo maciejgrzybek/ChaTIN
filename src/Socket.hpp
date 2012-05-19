@@ -11,27 +11,6 @@
 namespace Socket
 {
 
-class Conversable
-{
-public:
-    /**
-     * Send data to socket.
-     * @param const std::string& Reference to string containing data to send.
-     * @throw SendFailureException Exception thrown when send was not successful. Details about it's reason is stored in exception object.
-     */
-     virtual void send(const std::string&) const throw(SendFailureException) = 0;
-
-    /**
-     * Receive data from socket.
-     * @return const std::string String containing received data.
-     */
-     virtual std::string receive() const throw(ReceiveFailureException) = 0;
-
-     virtual ~Conversable();
-protected:
-    Conversable();
-};
-
 /**
  * Class gives abstraction of socket connections.
  */
@@ -117,6 +96,38 @@ protected://@TODO Implement properly getAddressStructure (should copy right stru
 
 };
 
+class Conversable : public Socket
+{
+public:
+     virtual ~Conversable();
+
+     /**
+      * Size of buffer to receive message to.
+      * If message would be larger than this amount, this won't be lost.
+      * It will be divided into parts.
+      */
+     static const unsigned int buffer_size = 1024;
+
+    /**
+     * Send data to socket.
+     * @param const std::string& Reference to string containing data to send.
+     * @throw SendFailureException Exception thrown when send was not successful. Details about it's reason is stored in exception object.
+     */
+     virtual void send(const std::string&) const throw(SendFailureException);
+
+    /**
+     * Receive data from server.
+     * @return const std::string String containing received data.
+     * @throw ReceiveFailureException Exception is thrown when socket received error on receiving data. More detailed info is stored inside thrown exception.
+     * @throw NotConnectedException Exception is thrown when receive is invoked without earlier connection being established.
+     */
+    virtual std::string receive() const throw(ReceiveFailureException,NotConnectedException);
+
+protected:
+    Conversable();
+    Conversable(int);
+};
+
 class ServerSocket : public Socket
 {
 public:
@@ -145,16 +156,9 @@ public:
      */
     bool isClientEnqueued() const throw(SelectFailureException);
     
-    class ClientIncomeSocket : public Socket, public Conversable
+    class ClientIncomeSocket : public Conversable
     {
     public:
-        /**
-         * Size of buffer to receive message to.
-         * If message would be larger than this amount, this won't be lost. It will
-		 * be divided into parts.
-         */
-        static const unsigned int buffer_size = 1024;
-
         /**
          * Constructor.
          * @param int Descriptor of socket handled by main server socket.
@@ -171,7 +175,7 @@ public:
          * Receive data from socket.
          * @return const std::string String containing received data.
          */
-        std::string receive() const throw(ReceiveFailureException);
+        std::string receive() const throw(ReceiveFailureException,NotConnectedException);
     };
 
     /**
@@ -185,17 +189,9 @@ protected:
     unsigned int backlog;
 };
 
-class ClientSocket : public Socket, public Conversable
+class ClientSocket : public Conversable
 {
 public:
-
-    /**
-     * Size of buffer to receive message to.
-     * If message would be larger than this amount, this won't be lost. It will 
-	 * be divided into parts.
-     */
-    static const unsigned int buffer_size = 1024;
-
     /**
      * Constructor of ClientSocket. Creates client socket, ready to connect to remote host. It binds on given IP address.
      * @param std::string& Reference to string of local address to bind (example format: 2001:500:88:200::8). Most common case: you want use :: (let system guess network interface we need).
@@ -214,18 +210,6 @@ public:
      * @throw ConnectionFailureException Exception is thrown when connect failed. Details of connection problem are included in thrown exception class.
      */
     void connect(const std::string&, const unsigned int) throw(ConnectionFailureException);
-    /**
-     * Send data to server.
-     * @param const std::string& Reference to string containing data to send.
-     * @throw NotConnectedException Exception is thrown when send is invoked without earlier connection being established.
-     */
-    void send(const std::string&) const throw(SendFailureException);
-    /**
-     * Receive data from server.
-     * @return const std::string String containing received data.
-     * @throw NotConnectedException Exception is thrown when receive is invoked without earlier connection being established.
-     */
-    std::string receive() const throw(ReceiveFailureException);
 };
 
 }; // namespace Socket
