@@ -30,6 +30,9 @@ void ToViewParser::operator()()
 
 void ToViewParser::parse( const ChaTIN::IncomingMassage& income )
 {
+    if(income.msg == "")
+        return;
+
     Glib::ustring msgText;
     Glib::ustring typeName;
     otherAttributes otherAtt;    
@@ -74,8 +77,8 @@ void ToViewParser::parse( const ChaTIN::IncomingMassage& income )
         //FIXME
         //THROW CannotParseMassageException
     }
-    
-    aq.push( boost::bind(&ChatWindow::showIncomingMessageA, _1, income.alias, msgText, true ));
+    TIPtr incomeAlias(new ChaTIN::Alias(income.alias));
+    aq.push( boost::bind(&ChatWindow::showIncomingMessage, _1, incomeAlias, msgText, true ));
     //DO PARSING (no gramar yet)
 }
 

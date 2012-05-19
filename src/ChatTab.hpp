@@ -49,10 +49,7 @@ class ChatTab : public Gtk::TextView
         // TODO it can just return bind to doCommand prepared for FormViewParser
         //          with first argument binded. To have the call in ChatWindow:
         //      fromViewParser.(selectedTab->getDoCommand())(chatField.get_text());
-
-        virtual bool operator==( const ChaTIN::LogName&      ) const = 0;
-        virtual bool operator==( const ChaTIN::Alias&        ) const = 0;
-        virtual bool operator==( const ChaTIN::ConferenceId& ) const = 0;
+        virtual bool operator==( const ChaTIN::TabId&        ) const = 0;
 };
 
 /**
@@ -67,9 +64,7 @@ class ChatTabDialog : public ChatTab
         const Glib::ustring& getFullAlias() const;
         ChatTabType getType() const;
         virtual EPtr createEvent( const Glib::ustring&  ) const;
-        virtual bool operator==( const ChaTIN::LogName&        ) const;
-        virtual bool operator==( const ChaTIN::Alias&        ) const;
-        virtual bool operator==( const ChaTIN::ConferenceId& ) const;
+        virtual bool operator==( const ChaTIN::TabId&        ) const;
 };
 
 /**
@@ -84,9 +79,7 @@ class ChatTabConference : public ChatTab
         const Glib::ustring& getFullAlias() const;
         ChatTabType getType() const;
         virtual EPtr createEvent( const Glib::ustring& ) const;
-        virtual bool operator==( const ChaTIN::LogName&        ) const;
-        virtual bool operator==( const ChaTIN::Alias&        ) const;
-        virtual bool operator==( const ChaTIN::ConferenceId& ) const;
+        virtual bool operator==( const ChaTIN::TabId&        ) const;
 };
 
 /**
@@ -101,8 +94,6 @@ class ChatTabLog : public ChatTab
         const Glib::ustring& getFullAlias() const;
         ChatTabType getType() const;
         virtual EPtr createEvent( const Glib::ustring& ) const;
-        virtual bool operator==( const ChaTIN::LogName&        ) const;
-        virtual bool operator==( const ChaTIN::Alias&        ) const;
-        virtual bool operator==( const ChaTIN::ConferenceId& ) const;
+        virtual bool operator==( const ChaTIN::TabId&        ) const;
 };
 

@@ -19,20 +19,10 @@ EPtr ChatTabDialog::createEvent( const Glib::ustring& text ) const
     return EPtr( new EventDialog( alias, text ) );
 }
 
-bool ChatTabDialog::operator==( const ChaTIN::LogName&     ) const
+bool ChatTabDialog::operator==( const ChaTIN::TabId& toCmp ) const
 {
-    return false;
+    return alias==toCmp;
 }
-bool ChatTabDialog::operator==( const ChaTIN::Alias& alias ) const
-{
-    return this->alias == alias;
-}
-bool ChatTabDialog::operator==( const ChaTIN::ConferenceId& ) const
-{
-   return false;
-}
-
-
 
 ChatTabConference::ChatTabConference( const ChaTIN::ConferenceId& name )
     : name(name)
@@ -53,20 +43,10 @@ EPtr ChatTabConference::createEvent( const Glib::ustring& text ) const
     return EPtr( new EventConference( name, text ) );
 }
 
-bool ChatTabConference::operator==( const ChaTIN::LogName&        ) const
+bool ChatTabConference::operator==( const ChaTIN::TabId& toCmp ) const
 {
-    return false;
+    return name==toCmp;
 }
-bool ChatTabConference::operator==( const ChaTIN::Alias&        ) const
-{
-    return false;
-}
-bool ChatTabConference::operator==( const ChaTIN::ConferenceId& name ) const
-{
-    return this->name == name;
-}
-
-
 
 ChatTabLog::ChatTabLog( const ChaTIN::LogName& name )
     : name(name)
@@ -86,18 +66,8 @@ EPtr ChatTabLog::createEvent( const Glib::ustring& text ) const
 {
     return EPtr( new EventLog( name,text ) );
 }
-
-bool ChatTabLog::operator==( const ChaTIN::LogName& name) const
+bool ChatTabLog::operator==( const ChaTIN::TabId& toCmp ) const
 {
-    return this->name == name;
+    return name==toCmp;
 }
-bool ChatTabLog::operator==( const ChaTIN::Alias&        ) const
-{
-    return false;
-}
-bool ChatTabLog::operator==( const ChaTIN::ConferenceId& ) const
-{
-    return false;
-}
-
 

@@ -58,18 +58,40 @@ void ChatWindow::friendPickHandle(const Gtk::TreeModel::Path& path, Gtk::TreeVie
     }*/ 
 }
 
-
-void ChatWindow::openDialogTab( TPtr tab, bool changeTab )
+TPtr ChatWindow::unsafeOpenTab( TIPtr tabId, bool changeTab )
 {
-    if( dialogBoxes.find(tab) == dialogBoxes.end() )
-    {
-        /*create page if it is necessary*/            
-        dialogBoxes.insert(tab);    
-        chatTabs.insert_page(*tab, cutAlias(tab->getFullAlias()), 1);
-        show_all_children();
-    }
+    TPtr tab = tabId->createTab();
+    dialogBoxes.insert(tab);    
+    chatTabs.insert_page(*tab, cutAlias(tab->getFullAlias()), 1);
+    show_all_children();
+
     if( changeTab )
-        chatTabs.set_current_page(chatTabs.page_num(*tab));
+        chatTabs.set_current_page(chatTabs.page_num(*tab));   
+
+    return tab;
+}
+
+template<class InputIterator, class T>
+InputIterator myfind( InputIterator first, InputIterator last, const T& value)
+{
+    for( ; first!=last; first++) if(**first==*value) break;
+    return first;
+}
+
+
+std::pair<bool, TPtr> ChatWindow::isTabExist( TIPtr tabId )
+{
+    std::set<TPtr>::iterator i = myfind(dialogBoxes.begin(), dialogBoxes.end(), tabId);
+    bool result = ( i != dialogBoxes.end() );
+    return std::pair<bool,TPtr>(result, result ? *i : TPtr(NULL) );
+}
+
+TPtr ChatWindow::openTab( TIPtr tabId, bool changeTab )
+{
+    std::pair<bool, TPtr> finder = isTabExist(tabId);
+    if( finder.first == true )
+        return finder.second;
+    return unsafeOpenTab( tabId, false );
 }
 
 bool ChatWindow::idle()
@@ -113,57 +135,19 @@ void ChatWindow::closeCurrentTab()
     //FIXME it shouldnt be current anyway
 }
 
-template<class InputIterator, class T>
-InputIterator myfind( InputIterator first, InputIterator last, const T& value)
+void ChatWindow::showIncomingMessage( TIPtr id, Glib::ustring message, bool incoming )
 {
-    for( ; first!=last; first++) if(**first==value) break;
-    return first;
-}
-
-void ChatWindow::showIncomingMessageL( ChaTIN::LogName name, Glib::ustring message )
-{
-    TPtr tab;
-    std::set<TPtr>::iterator i =  myfind(dialogBoxes.begin(), dialogBoxes.end(), name);
-    //std::set<TPtr>::iterator i = dialogBoxes.begin();
-    if( i == dialogBoxes.end() )
-    {
-        tab = TPtr( new ChatTabLog(name) );
-        openDialogTab( tab, false );
-    }
-    else
-    {
-        tab = *i;
-    }
-    Glib::ustring toShow = "[LOG] "+message+"\n";
-    appendTextToTab( tab, toShow );
-}
-
-void ChatWindow::showIncomingMessageA( ChaTIN::Alias alias, Glib::ustring message, bool incoming )
-{
-    TPtr tab;
-    std::set<TPtr>::iterator i = myfind(dialogBoxes.begin(), dialogBoxes.end(), alias);
-    if( i == dialogBoxes.end() )
-    {       
-        tab = TPtr( new ChatTabDialog(alias) );
-        openDialogTab( tab, false );
-    }
-    else
-    {
-        tab = *i;
-    }
+    TPtr tab = openTab(id, false);
     
     Glib::ustring toShow;
     if( incoming )
-        toShow = alias+" >> "+message+"\n";
+        toShow = tab->getFullAlias()+" >> "+message+"\n";
     else
         toShow = "ME ----> "+message+"\n";
-    appendTextToTab( tab, toShow );
+
+    appendTextToTab( tab, toShow ); //FIXME should be ChatTab method
 }
 
-void ChatWindow::showIncomingMessageC( ChaTIN::ConferenceId, Glib::ustring message )
-{
-    //FIXME
-}
 
 void ChatWindow::appendTextToTab( TPtr tab, Glib::ustring text )
 {

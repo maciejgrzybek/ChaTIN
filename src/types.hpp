@@ -14,6 +14,12 @@ typedef boost::function<void(ChatWindow*)> Action;
 class ChatTab;
 typedef std::shared_ptr<ChatTab> TPtr;
 
+namespace ChaTIN
+{
+class TabId;
+}
+typedef std::shared_ptr<ChaTIN::TabId> TIPtr;
+
 
 namespace ChaTIN
 {

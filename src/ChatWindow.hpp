@@ -85,16 +85,23 @@ protected:
      * @param Glib::ustring alias to cut
      * @return Glib::ustring cutted alias
      */
-    Glib::ustring cutAlias( Glib::ustring alias );
+    Glib::ustring cutAlias( Glib::ustring alias );    
+
+
+    TPtr unsafeOpenTab( TIPtr, bool changeTab = true );
 
 public:
     /* GUI Actions */
     
+    std::pair<bool,TPtr> isTabExist( TIPtr );
+
     /**
      * Method opening dialog tab or swiching to existing one
      * @param Glib::ustring name of tab
      */
-    void openDialogTab( TPtr tab, bool changeTab = true );
+    TPtr openTab( TIPtr, bool changeTab = true );
+
+//    bool doesTabExist( TabId& );
 
     /**
      * Check for actions and do if they are there
@@ -119,9 +126,7 @@ public:
      * Shows incoming massage.
      * If there is no card connected to given alias/id/string it creates new one
      */
-    void showIncomingMessageL( ChaTIN::LogName, Glib::ustring );
-    void showIncomingMessageA( ChaTIN::Alias, Glib::ustring, bool incoming = true );
-    void showIncomingMessageC( ChaTIN::ConferenceId, Glib::ustring );
+    void showIncomingMessage( TIPtr, Glib::ustring, bool incoming = true );
 
 
     /**

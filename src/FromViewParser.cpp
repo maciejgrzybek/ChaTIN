@@ -27,9 +27,9 @@ void FromViewParser::doCommand( const ChaTIN::Alias& alias, const Glib::ustring&
     else
     {
         XMLPackageCreator xml("msg", input);
-        dialogManager.sendTo(alias, xml.getXML());
-        aq.push( boost::bind(&ChatWindow::showIncomingMessageA, _1, alias, input, false ));
-
+        dialogManager.sendTo(alias, xml.getXML());        
+        TIPtr idWrite( new ChaTIN::Alias(alias) );
+        aq.push( boost::bind(&ChatWindow::showIncomingMessage, _1, idWrite, input, false ));
     }
 }
 
@@ -76,9 +76,9 @@ bool FromViewParser::tryParseGeneral( const Glib::ustring& input )
     {
         Glib::ustring toOpen = input.substr(6);
         //FIXME Check if alias is valid
-        TPtr tab = TPtr( new  ChatTabDialog( ChaTIN::Alias( toOpen ) ) );
         //FIXME ALWAYS OPENING NEW ONE 
-        aq.push( boost::bind(&ChatWindow::openDialogTab, _1, tab, true ) );    
+        TIPtr idOpen = TIPtr( new ChaTIN::Alias( toOpen ) );
+        aq.push( boost::bind(&ChatWindow::openTab, _1, idOpen, true ) );    
         return true;
     }
     //ANALYZE COMMAND
