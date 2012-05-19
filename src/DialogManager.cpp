@@ -108,6 +108,12 @@ void DialogManager::dispatcher::operator()()//const Socket::ServerSocket::Client
             // FIXME add quit_message packet building
             //dialogManager.toViewParser.doCommand(ip,PACKET_WITH_QUIT_MESSAGE);
             std::cout << "Client closed connection." << std::endl;
+            break;
         }
     }
+    {
+        WriteLock lock(dialogManager.mutexLock);
+        dialogManager.dialogMap.erase(ip);
+    }
+    delete dialog;
 }

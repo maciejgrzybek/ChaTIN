@@ -13,12 +13,17 @@ Dialog::Dialog(const Socket::Conversable* conversationSocket) : conversationSock
 {
 }
 
-void Dialog::send(const Glib::ustring& message) const throw(Socket::SendFailureException)
+Dialog::~Dialog()
+{
+    delete conversationSocket;
+}
+
+void Dialog::send(const Glib::ustring& message) const throw(Socket::SendFailureException,Socket::NotConnectedException)
 {
     conversationSocket->send(std::string(message.c_str()));
 }
 
-Glib::ustring Dialog::receive() const throw(Socket::ReceiveFailureException)
+Glib::ustring Dialog::receive() const throw(Socket::ReceiveFailureException,Socket::NotConnectedException)
 {
     std::string message = conversationSocket->receive();
     return Glib::ustring(message);

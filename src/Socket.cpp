@@ -11,15 +11,20 @@
 #include <unistd.h>
 #include <cassert>
 
+#include <signal.h>
+
 namespace Socket
 {
 
     Conversable::Conversable()
     {
+        signal(SIGPIPE, SIG_IGN);
     }
 
     Conversable::Conversable(int sock) : Socket(sock)
-    {}
+    {
+        signal(SIGPIPE, SIG_IGN);
+    }
 
     Conversable::~Conversable()
     {

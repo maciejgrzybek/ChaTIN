@@ -32,20 +32,22 @@ public:
      */
     Dialog(const Socket::Conversable*);
 
+    ~Dialog();
+
     /**
      * Method sends message through socket.
      * @param const Glib::ustring& Reference to unicode string to be send through socket.
-	 * @throw SendFailureException Exception throw when send failed. Details are stored in excepion object.
+     * @see Socket::Conversable::send
      */
-    void send(const Glib::ustring&) const throw(Socket::SendFailureException);
+    void send(const Glib::ustring&) const throw(Socket::SendFailureException,Socket::NotConnectedException);
 
     /**
      * Receives unicode message from socket.
      * Depending on implementation of ConversableSocket this method can be hanging up or not.
      * @return Glib::ustring Unicode string received from socket.
-     * @throw ReceiveFailureException Exception thrown when receive failed. Details are stored in exception object.
+     * @see Socket::Conversable::receive
      */
-    Glib::ustring receive() const throw(Socket::ReceiveFailureException);
+    Glib::ustring receive() const throw(Socket::ReceiveFailureException,Socket::NotConnectedException);
 protected:
     const Socket::Conversable* conversationSocket;
 };
