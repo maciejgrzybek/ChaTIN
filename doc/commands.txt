@@ -53,4 +53,6 @@ Komendy użytkownika:
 //raczej nie, bo może występować konflikt nazw na aliasach i nazwach konferenceji
 //ewentualnie osobna wersja dla konferencji i zwykłego dialogu
 
+- /exit
+    Zamyka poprawnie program
     
