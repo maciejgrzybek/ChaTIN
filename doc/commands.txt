@@ -1,52 +1,56 @@
-Komendy u¿ytkownika:
+Komendy uÅ¼ytkownika:
 - /sub IP alias
-    Wysy³a zapytanie o subskrypcjê pod dany adres IP zapisuj¹c go w lokalnej liœcie znajomych pod danym aliasem   
+    WysyÅ‚a zapytanie o subskrypcjÄ™ pod dany adres IP zapisujÄ…c go w lokalnej liÅ›cie znajomych pod danym aliasem   
     
 - /subakc IP alias
-    Akceptuje zawarcie subskrypcji z dan¹ osob¹ zapisuj¹c j¹ jednoczeœcie w swojej liœcie znajomych pod danym aliasem.
+    Akceptuje zawarcie subskrypcji z danÄ… osobÄ… zapisujÄ…c jÄ… jednoczeÅ›cie w swojej liÅ›cie znajomych pod danym aliasem.
     
 - /subdec IP
-    Odrzuca subskrypcjê od osoby o danym adresie IP.
+    Odrzuca subskrypcjÄ™ od osoby o danym adresie IP.
 
 - /ignore IP/alias
-    Dodaje podany adres IP b¹dŸ odpowiedni adres IP przypisany lokalnemu aliasowi do listy osób ignorowanych
+    Dodaje podany adres IP bÄ…dÅº odpowiedni adres IP przypisany lokalnemu aliasowi do listy osÃ³b ignorowanych
     
 - /unignore IP
-    Usuwa z listy osób ignorowanych dany adres IP
+    Usuwa z listy osÃ³b ignorowanych dany adres IP
     
 - /unignoreall
-    Usuwa ca³¹ listê osób ignorowanych
+    Usuwa caÅ‚Ä… listÄ™ osÃ³b ignorowanych
 
 - /mode whitelist/blacklist
-    Prze³¹cza aplikacjê w tryb bi³ej lub czarnej listy. 
-    Bia³a lista - akceptowane s¹ po³¹czenia tylko od zasubskrybowanych adresów.
-    Czarna lista - akceptowane s¹ po³¹czenia od adresów które nie znajduj¹ siê  na liœcie osób ignorowanych.
+    PrzeÅ‚Ä…cza aplikacjÄ™ w tryb biÅ‚ej lub czarnej listy. 
+    BiaÅ‚a lista - akceptowane sÄ… poÅ‚Ä…czenia tylko od zasubskrybowanych adresÃ³w.
+    Czarna lista - akceptowane sÄ… poÅ‚Ä…czenia od adresÃ³w ktÃ³re nie znajdujÄ… siÄ™  na liÅ›cie osÃ³b ignorowanych.
     
 - /save friendlist
-    Zapisuje listê znajomych do pliku.
+    Zapisuje listÄ™ znajomych do pliku.
+//zapisywane w czasie rzeczywistym w bazie danych
     
 - /load friendlist
-    Wczytuje listê znajomych z pliku.
+    Wczytuje listÄ™ znajomych z pliku.
+//ladowane przy starcie z bazy danych
     
 - /open alias/IP
     Otwiera okno do rozmowy z zapisanym lokalnie aliasem lub adresem IP.
-    Gdy okno by³o w tle przenosi je na pierwszy plan.
+    Gdy okno byÅ‚o w tle przenosi je na pierwszy plan.
     
 - /confopen name (list of aliases)
-    Otwiera okno z konferencj¹ o danej nazwie oraz danych jej cz³onkach. 
-    Gdy konferencja ju¿ istnia³a wystarczy podaæ nazwê by prze³¹czyæ j¹ na pierwszy plan.
+    Otwiera okno z konferencjÄ… o danej nazwie oraz danych jej czÅ‚onkach. 
+    Gdy konferencja juÅ¼ istniaÅ‚a wystarczy podaÄ‡ nazwÄ™ by przeÅ‚Ä…czyÄ‡ jÄ… na pierwszy plan.
     
 - /close (alias/IP/name)
-    Zamyka okno z rozmow¹ o danym aliasie lub danym IP lub konferencjê o danej nazwie.
-    Gdy podane bez ¿adnych argumentów zamyka aktualnie otwarte okno.
+    Zamyka okno z rozmowÄ… o danym aliasie lub danym IP lub konferencjÄ™ o danej nazwie.
+    Gdy podane bez Å¼adnych argumentÃ³w zamyka aktualnie otwarte okno.
     
 - /closeall
-    Zamyka wszystkie otwarte okna rozmów i konferencji.
+    Zamyka wszystkie otwarte okna rozmÃ³w i konferencji.
     
 - /clear
-    Czyœci aktualnie otwarte okno z rozmow¹.
+    CzyÅ›ci aktualnie otwarte okno z rozmowÄ….
     
 - /wisp alias/IP/name
-    Wysy³a wiadomoœæ do osoby o danym aliasie lub IP lub konferencji o danej nazwie niezale¿nie od tego jakie okno jest akualnie aktywne.
+    WysyÅ‚a wiadomoÅ›Ä‡ do osoby o danym aliasie lub IP lub konferencji o danej nazwie niezaleÅ¼nie od tego jakie okno jest akualnie aktywne.
+//raczej nie, bo moÅ¼e wystÄ™powaÄ‡ konflikt nazw na aliasach i nazwach konferenceji
+//ewentualnie osobna wersja dla konferencji i zwykÅ‚ego dialogu
 
     
