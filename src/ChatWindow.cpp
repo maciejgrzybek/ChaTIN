@@ -74,6 +74,12 @@ InputIterator myfind( InputIterator first, InputIterator last, const T& value)
     return first;
 }
 
+template<class InputIterator, class T>
+InputIterator pointerFind( InputIterator first, InputIterator last, const T& value)
+{
+    for( ; first!=last; first++) if(&**first==value) break;
+    return first;
+}
 
 std::pair<bool, TPtr> ChatWindow::isTabExist( TIPtr tabId )
 {
@@ -133,7 +139,18 @@ void ChatWindow::addFriend( Glib::ustring name )
 
 void ChatWindow::closeCurrentTab()
 {
-    //FIXME it shouldnt be current anyway
+    if( selectedTab->getType() != LOG )
+    {
+        auto i = pointerFind( dialogBoxes.begin(), dialogBoxes.end(), selectedTab );
+        chatTabs.remove_page(*selectedTab);
+        dialogBoxes.erase(i);
+        selectedTab = &*logBox;
+        chatTabs.set_current_page(0);
+    }
+    else
+    {
+        exit(0);
+    }    
 }
 
 void ChatWindow::showIncomingMessage( TIPtr id, Glib::ustring message, bool incoming )

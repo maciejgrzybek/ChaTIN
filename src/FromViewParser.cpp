@@ -81,6 +81,11 @@ bool FromViewParser::tryParseGeneral( const Glib::ustring& input )
         aq.push( boost::bind(&ChatWindow::openTab, _1, idOpen, true ) );    
         return true;
     }
+
+    if( input.substr(1,5) == "close" )
+    {
+        aq.push( boost::bind(&ChatWindow::closeCurrentTab, _1) );
+    }
     //ANALYZE COMMAND
 
     return false;

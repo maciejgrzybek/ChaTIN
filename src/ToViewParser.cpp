@@ -30,7 +30,7 @@ void ToViewParser::operator()()
 void ToViewParser::incomingDialogMsg( const ChaTIN::IPv6& ip, const Glib::ustring& msg, const otherAttributes&)
 {
     TIPtr incomeAlias(new ChaTIN::Alias(ip));
-    aq.push( boost::bind(&ChatWindow::showIncomingMessage, _1, incomeAlias, msg, true ));
+    aq.push( boost::bind(&ChatWindow::showIncomingMessage, _1, incomeAlias, msg, false ));
 }
 
 void ToViewParser::parse( const ChaTIN::IncomingMassage& income )
