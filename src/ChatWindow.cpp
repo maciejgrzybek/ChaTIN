@@ -96,7 +96,9 @@ TPtr ChatWindow::openTab( TIPtr tabId, bool changeTab )
         result = finder.second;
     else
         result = unsafeOpenTab( tabId );
-    chatTabs.set_current_page(chatTabs.page_num(*result));
+
+    if( changeTab )
+        chatTabs.set_current_page(chatTabs.page_num(*result));
 
     return result;
 }
@@ -118,7 +120,6 @@ void ChatWindow::switchTabHandle( GtkNotebookPage* /*page*/, guint page_num )
         selectedTab = static_cast<ChatTab*>(chatTabs.get_nth_page(page_num));
         chatBoxBuffer = selectedTab->get_buffer();
 
-        //appendTextToCurrentTab("Teraz piszesz do: "+selName+"\n");
         selectedTab->set_editable(false);
     }
     else
