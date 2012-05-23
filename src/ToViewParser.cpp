@@ -32,7 +32,7 @@ void ToViewParser::operator()()
 void ToViewParser::incomingDialogMsg( ChaTIN::IPv6 ip, Glib::ustring msg, otherAttributes)
 {
     TIPtr incomeAlias(new ChaTIN::Alias(ip)); //FIXME aliasManager usage here
-    Glib::ustring alias = *incomeAlias;
+    Glib::ustring alias = (ChaTIN::Alias&)*incomeAlias;
     aq.push( boost::bind(&ChatWindow::showIncomingMessage, _1, incomeAlias,
                                      alias, msg, true ));
 }
