@@ -45,7 +45,14 @@ void FromViewParser::doCommand( const ChaTIN::ConferenceId& name, const Glib::us
     }
     else
     {
-        XMLPackageCreator xml("cmsg", input);
+        unsigned int limit = 256;
+        Glib::ustring text;
+        if( input.size() > limit )
+            text = input.substr(0,limit);
+        else
+            text = input;
+
+        XMLPackageCreator xml("cmsg", text);
         xml["name"] = name.name;
         xml["ownerip"] = name.ownerip;
         const std::vector< ChaTIN::IPv6 >& members = cm.getList( name );

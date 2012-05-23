@@ -32,8 +32,9 @@ void ChatWindow::textInHandle()
 {
     if( chatField.get_text() == "" )
         return;
+    Glib::ustring text = chatField.get_text();
     assert("Selected tab cannot be NULL" && selectedTab != NULL);
-    EPtr event = selectedTab->createEvent( chatField.get_text() );
+    EPtr event = selectedTab->createEvent( text );
     assert("Event cannot be NULL" && event != EPtr(NULL));
     bq.push(event);
     chatField.set_text("");
