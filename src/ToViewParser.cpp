@@ -32,8 +32,9 @@ void ToViewParser::operator()()
 void ToViewParser::incomingDialogMsg( ChaTIN::IPv6 ip, Glib::ustring msg, otherAttributes)
 {
     TIPtr incomeAlias(new ChaTIN::Alias(ip)); //FIXME aliasManager usage here
+    Glib::ustring alias = *incomeAlias;
     aq.push( boost::bind(&ChatWindow::showIncomingMessage, _1, incomeAlias,
-                                     (Glib::ustring&)(*incomeAlias), msg, true ));
+                                     alias, msg, true ));
 }
 
 void ToViewParser::incomingConfMsg( ChaTIN::IPv6 ip, Glib::ustring msg, otherAttributes attr)
@@ -48,9 +49,9 @@ void ToViewParser::incomingConfMsg( ChaTIN::IPv6 ip, Glib::ustring msg, otherAtt
         members.push_back(ChaTIN::IPv6(i->second));
     }
     cm.registerIncomingConference( (ChaTIN::ConferenceId&)(*incomeId), members );
-    TIPtr incomeAlias(new ChaTIN::Alias(ip)); //FIXME aliasManagere usage here
+    Glib::ustring alias = ChaTIN::Alias(ip);
     aq.push( boost::bind(&ChatWindow::showIncomingMessage, _1, incomeId, 
-                                    (Glib::ustring&)(*incomeAlias), msg, true ));
+                                    alias, msg, true ));
 }
 
 void ToViewParser::parse( const ChaTIN::IncomingMassage& income )
@@ -82,12 +83,13 @@ void ToViewParser::parse( const ChaTIN::IncomingMassage& income )
 
                 //now find and save every other children of this massage
                 TiXmlElement* current = msgNode->FirstChildElement();
-                while( current )
+                while( current!=NULL )
                 {
                     otherAtt.insert(std::make_pair(current->Value(),current->GetText()));
-                    current = msgNode->IterateChildren(current)->ToElement(); //Wow! Just like in NWScript
+                    if( msgNode->IterateChildren(current) == NULL )
+                        break; //ugly but simple TODO fix
+                    current = msgNode->IterateChildren(current)->ToElement(); //Wow! Just like in NWScript                    
                 }
-                
                 iter->second(this, income.ip, msgText, otherAtt);
             }
             else
