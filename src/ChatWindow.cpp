@@ -30,6 +30,8 @@ ChatWindow::FriendData::FriendData()
 
 void ChatWindow::textInHandle()
 {
+    if( chatField.get_text() == "" )
+        return;
     assert("Selected tab cannot be NULL" && selectedTab != NULL);
     EPtr event = selectedTab->createEvent( chatField.get_text() );
     assert("Event cannot be NULL" && event != EPtr(NULL));
