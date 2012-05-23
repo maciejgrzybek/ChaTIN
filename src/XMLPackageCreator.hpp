@@ -16,7 +16,7 @@ class XMLPackageCreator
      *  which can be find in xml and can be usefull in some contexts
      *  (eg. conference name for conference income)
      */
-    typedef std::map<Glib::ustring, Glib::ustring> OtherAttributes;
+    typedef std::multimap<Glib::ustring, Glib::ustring> OtherAttributes;
 
     private:
     Glib::ustring type;
@@ -36,6 +36,7 @@ class XMLPackageCreator
      * Accesor to additional field in xml massage
      * @param const Glib::ustring& name - name of field you want access to
      * @return Glib::ustring& reference to field to modyfi
+     * FIXME it works in not obvious way
      */
     Glib::ustring& operator[]( const Glib::ustring& name );
     

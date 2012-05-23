@@ -20,13 +20,13 @@ int main(int argc, char *argv[])
     SafeQueue<ChaTIN::IncomingMassage> toViewParserQueue;
     SafeQueue<EPtr> fromViewParserQueue;
     SafeQueue<Action> actionQueue;
-    ToViewParser toViewParser(toViewParserQueue, actionQueue);
     const Config config;
     ConferenceManager conferenceManager;
     AliasManager aliasManager( db );
+    ToViewParser toViewParser(conferenceManager, toViewParserQueue, actionQueue);
     DialogManager dialogManager( toViewParser, aliasManager, conferenceManager, config);
     aliasManager.setDialogManager( dialogManager );
-    FromViewParser fromViewParser( dialogManager, fromViewParserQueue, actionQueue );
+    FromViewParser fromViewParser( dialogManager, conferenceManager, fromViewParserQueue, actionQueue );
     ChatWindow win( fromViewParserQueue, actionQueue );
     fromViewParser.setView( &win );
 

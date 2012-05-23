@@ -1,4 +1,5 @@
 #include "FromViewParser.hpp"
+#include "ConferenceManager.hpp"
 #include "XMLPackageCreator.hpp"
 #include "SafeQueue.hpp"
 #include "ChatTab.hpp"
@@ -6,8 +7,8 @@
 #include <boost/bind.hpp>
 #include <boost/function.hpp>
 
-FromViewParser::FromViewParser( DialogManager& dialogManager, SafeQueue<EPtr>& bq, SafeQueue<Action>& aq )
-    : dialogManager(dialogManager), bq(bq), aq(aq)
+FromViewParser::FromViewParser( DialogManager& dialogManager, ConferenceManager& cm, SafeQueue<EPtr>& bq, SafeQueue<Action>& aq )
+    : dialogManager(dialogManager), cm(cm), bq(bq), aq(aq)
 {}
 
 void FromViewParser::setView( ChatWindow* cw )
@@ -29,7 +30,7 @@ void FromViewParser::doCommand( const ChaTIN::Alias& alias, const Glib::ustring&
         XMLPackageCreator xml("msg", input);
         dialogManager.sendTo(alias, xml.getXML());        
         TIPtr idWrite( new ChaTIN::Alias(alias) );
-        aq.push( boost::bind(&ChatWindow::showIncomingMessage, _1, idWrite, input, false ));
+        aq.push( boost::bind(&ChatWindow::showIncomingMessage, _1, idWrite, "", input, false ));
     }
 }
 
@@ -47,6 +48,10 @@ void FromViewParser::doCommand( const ChaTIN::ConferenceId& name, const Glib::us
         XMLPackageCreator xml("cmsg", input);
         xml["name"] = name.name;
         xml["ownerip"] = name.ownerip;
+        const std::vector< ChaTIN::IPv6 >& members = cm.getList( name );
+        for( auto& member : members )
+            xml["memberip"] = (Glib::ustring)member;
+        std::cout << xml.getXML() << std::endl;
         dialogManager.sendTo(name, xml.getXML());
     }
 }
@@ -85,8 +90,27 @@ bool FromViewParser::tryParseGeneral( const Glib::ustring& input )
     if( input.substr(1,5) == "close" )
     {
         aq.push( boost::bind(&ChatWindow::closeCurrentTab, _1) );
+        return true;
     }
-    //ANALYZE COMMAND
+    //ANALYZE COMMAN
+    
+    if( input.substr(1,9) == "confopen " )
+    {
+        std::vector<Glib::ustring> params = Glib::Regex::split_simple(" ", input.substr(10));
+        std::vector<ChaTIN::IPv6> members;
+        if(params.size()<3)
+        {
+            //FIXME throw invalidCommandException
+            return true;
+        }
+        TIPtr idOpen( new ChaTIN::ConferenceId( ChaTIN::IPv6(params[1]), params[0] )); //FIXME put valid myIp
+        for( int i = 1; i < params.size(); ++i )
+        {
+            members.push_back(ChaTIN::IPv6(params[i]));
+        }
+        cm.addConference( (ChaTIN::ConferenceId&)*idOpen, members );
+        aq.push( boost::bind( &ChatWindow::openTab, _1, idOpen, true ) );
+    }
 
     return false;
 }

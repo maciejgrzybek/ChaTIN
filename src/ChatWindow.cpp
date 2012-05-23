@@ -154,13 +154,13 @@ void ChatWindow::closeCurrentTab()
     }    
 }
 
-void ChatWindow::showIncomingMessage( TIPtr id, Glib::ustring message, bool incoming )
+void ChatWindow::showIncomingMessage( TIPtr id, Glib::ustring author, Glib::ustring message, bool incoming )
 {
     TPtr tab = openTab(id, false);
     
     Glib::ustring toShow;
     if( incoming )
-        toShow = tab->getFullAlias()+" >> "+message+"\n";
+        toShow = author+" >> "+message+"\n";
     else
         toShow = "ME ----> "+message+"\n";
 

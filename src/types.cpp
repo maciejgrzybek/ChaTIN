@@ -58,6 +58,10 @@ namespace ChaTIN
             throw Socket::WrongAddressException(ip,0);
     }
 
+    ConferenceId::ConferenceId( const IPv6& ownerip, const Glib::ustring& name )
+        : ownerip(ownerip), name(name)
+    {}
+
     bool ConferenceId::operator==( const ConferenceId& r ) const
     {
         return ( ownerip == r.ownerip ) && (name == r.name );

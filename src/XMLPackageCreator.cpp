@@ -8,7 +8,7 @@ XMLPackageCreator::XMLPackageCreator( const Glib::ustring& type, const Glib::ust
     
 Glib::ustring& XMLPackageCreator::operator[]( const Glib::ustring& name )
 {
-    return other[name];
+    return (*other.insert(std::make_pair(name,""))).second;
 }
     
 Glib::ustring XMLPackageCreator::getXML()

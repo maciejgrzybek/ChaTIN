@@ -9,6 +9,7 @@
 #include "XMLPackageCreator.hpp"
 
 class DialogManager;
+class ConferenceManager;
 
 /**
  * Parser of packages coming from inet
@@ -17,6 +18,7 @@ class ToViewParser
 {
     SafeQueue<ChaTIN::IncomingMassage>& q; //queue for all stuff
     SafeQueue<Action>& aq;
+    ConferenceManager& cm;
 
 public:
     //FIXME i should use full version everywhere, but its only for now
@@ -30,7 +32,7 @@ public:
      *      - gets const Glib::ustring& as second argument (massage text)
      *      - gets const otherAtributes as third  argument (additional information map: name->str_value)
      */
-    typedef boost::function<void ( ToViewParser*, const ChaTIN::IPv6&, const Glib::ustring&, const otherAttributes& ) > InActionFun;
+    typedef boost::function<void ( ToViewParser*, ChaTIN::IPv6, Glib::ustring, otherAttributes ) > InActionFun;
 
 private:    
     // map msg_type -> callback (boost::function)
@@ -41,7 +43,7 @@ public:
      * Constructor taking queue reference to comunicate with rest of the world 
      * @param SafeQueue<ChaTIN::IncomingMassage>& q queue to communicate with world
      */
-    ToViewParser( SafeQueue<ChaTIN::IncomingMassage>& q, SafeQueue<Action>& aq );
+    ToViewParser( ConferenceManager&, SafeQueue<ChaTIN::IncomingMassage>& q, SafeQueue<Action>& aq );
 
     /**
      * Put a masssage with Incoming alias to the queue
@@ -67,5 +69,6 @@ private:
 
 
     /**COMMNADS**/
-    void incomingDialogMsg( const ChaTIN::IPv6&, const Glib::ustring&, const otherAttributes& );
+    void incomingDialogMsg( ChaTIN::IPv6, Glib::ustring, otherAttributes );
+    void incomingConfMsg( ChaTIN::IPv6, Glib::ustring, otherAttributes );
 };

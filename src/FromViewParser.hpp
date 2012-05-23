@@ -8,6 +8,7 @@
 
 class ChatWindow;
 class DialogManager;
+class ConferenceManager;
 
 /**
  * Parser class converting user input into method calls
@@ -15,6 +16,7 @@ class DialogManager;
 class FromViewParser
 {
     DialogManager& dialogManager;
+    ConferenceManager& cm;
     SafeQueue<EPtr>& bq;
     SafeQueue<Action>& aq;
     ChatWindow* cw;
@@ -25,7 +27,7 @@ class FromViewParser
      * Simple constructor giving paser reference to DialogManager
      * @param DialogManager& reference to the dialogManager to use in parser.
      */
-    FromViewParser( DialogManager&, SafeQueue<EPtr>&, SafeQueue<Action>& );
+    FromViewParser( DialogManager&, ConferenceManager&, SafeQueue<EPtr>&, SafeQueue<Action>& );
 
     void setView( ChatWindow* );
 

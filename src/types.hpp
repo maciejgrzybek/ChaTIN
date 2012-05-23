@@ -91,6 +91,7 @@ struct ConferenceId : public TabId
 {
     IPv6          ownerip;
     Glib::ustring name;
+    ConferenceId( const IPv6&, const Glib::ustring& );
     bool operator==(const ConferenceId& r) const;
     virtual TabIdType getType() const;
     virtual TPtr createTab() const;

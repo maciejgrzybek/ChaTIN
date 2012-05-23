@@ -126,7 +126,7 @@ public:
      * Shows incoming massage.
      * If there is no card connected to given alias/id/string it creates new one
      */
-    void showIncomingMessage( TIPtr, Glib::ustring, bool incoming = true );
+    void showIncomingMessage( TIPtr, Glib::ustring, Glib::ustring, bool incoming = true );
 
 
     /**
