@@ -1,0 +1,6 @@
+CREATE TABLE `group` ( `id` INTEGER NOT NULL, `name` TEXT NOT NULL, PRIMARY KEY(`id`), UNIQUE(`name`) );
+CREATE TABLE `alias` ( `ip` TEXT NOT NULL, `alias` TEXT NOT NULL, `groupId` INTEGER NOT NULL, PRIMARY KEY(`ip`), UNIQUE(`alias`), FOREIGN KEY(`groupId`) REFERENCES `group`(id) );
+CREATE TABLE `message` ( `id` INTEGER NOT NULL, `content` TEXT NOT NULL, `date` INTEGER NOT NULL, `ip` TEXT, `isOutgoing` INTEGER NOT NULL, `conference_ownerIp` TEXT, `conferenceName` TEXT,  PRIMARY KEY(`id`), FOREIGN KEY(`conference_ownerIp`) REFERENCES `conference`(`ownerIp`), FOREIGN KEY(`conferenceName`) REFERENCES `conference`(`name`) );
+CREATE TABLE `subscription` ( `ip` TEXT NOT NULL, `state` INTEGER NOT NULL, `date` INTEGER NOT NULL, PRIMARY KEY(`ip`) );
+CREATE TABLE `conference` ( `ownerIp` TEXT NOT NULL, `name` TEXT NOT NULL, `date` INTEGER NOT NULL, PRIMARY KEY(`ownerIp`,`name`) );
+CREATE TABLE `conferenceMember` ( `ip` TEXT NOT NULL, `conference_ownerIp` TEXT NOT NULL, `conference_name` TEXT NOT NULL, PRIMARY KEY(`ip`,`conference_ownerIp`, `conference_name`), FOREIGN KEY(`conference_ownerIp`) REFERENCES `conference`(`ownerIp`), FOREIGN KEY(`conference_name`) REFERENCES `conference`(`name`) );
