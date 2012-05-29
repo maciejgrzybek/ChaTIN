@@ -16,16 +16,17 @@ class Group
 {
 public:
 
-  dbo::collection< dbo::ptr<Alias> > aliases;
-
   template<class Act>
   void persist(Act& a)
   {
+    dbo::field(a, id, "id");
+    dbo::field(a, name, "name");
     dbo::hasMany(a, aliases, dbo::ManyToOne, "groupId");
   }
 private:
     int id;
     std::string name;
+    dbo::collection< dbo::ptr<Alias> > aliases;
 };
 
 } // namespace Schema

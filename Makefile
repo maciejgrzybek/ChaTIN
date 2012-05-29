@@ -4,7 +4,7 @@ GLIBI=`pkg-config glibmm-2.4 --cflags`
 GLIBL=`pkg-config glibmm-2.4 --libs`
 GTKI=`pkg-config gtkmm-2.4 --cflags`
 GTKL=`pkg-config gtkmm-2.4 --libs`
-LFLAGS=-ltinyxml -lboost_thread -lpthread
+LFLAGS=-ltinyxml -lboost_thread -lpthread -lwt -lwtdbo -lwtdbosqlite3
 
 all: obj/ChatWindow.o obj/main.o obj/Socket.o obj/AliasManager.o obj/ConferenceManager.o obj/Dialog.o obj/ToViewParser.o obj/DialogManager.o obj/Config.o obj/types.o obj/XMLException.o obj/ConferenceException.o obj/Exception.o obj/FromViewParser.o obj/XMLPackageCreator.o obj/ChatTab.o obj/Event.o obj/DBDriver.o
 	g++ $^ $(GEN) $(GTKL) $(LFLAGS) -o bin/ChaTIN
@@ -42,11 +42,20 @@ obj/ChatTab.o: src/ChatTab.cpp src/ChatTab.hpp
 	g++ src/ChatTab.cpp -c $(GEN) $(GTKI) -o $@
 obj/Event.o: src/Event.cpp src/Event.hpp
 	g++ src/Event.cpp -c $(GEN) $(GTKI) -o $@
-obj/DBDriver.o: obj/SchemaAlias.o src/DB/DBDriver.cpp src/DB/DBDriver.hpp
+obj/DBDriver.o: obj/SchemaAlias.o obj/SchemaGroup.o obj/SchemaMessage.o obj/SchemaConference.o obj/SchemaConferenceMember.o obj/SchemaSubscription.o src/DB/DBDriver.cpp src/DB/DBDriver.hpp
 	g++ src/DB/DBDriver.cpp -c $(GEN) $(GTKI) -o $@
-obj/SchemaAlias.o: obj/SchemaGroup.o src/DB/Alias.hpp
-	g++ src/DB/Alias.hpp -c $(GEN) $(GTKI) -o $@
+obj/SchemaAlias.o: src/DB/Alias.hpp
+	g++ src/DB/Alias.hpp -c $(GEN) -o $@
 obj/SchemaGroup.o: src/DB/Group.hpp
+	g++ src/DB/Group.hpp -c $(GEN) -o $@
+obj/SchemaMessage.o: src/DB/Message.hpp
+	g++ src/DB/Message.hpp -c $(GEN) -o $@
+obj/SchemaConference.o: src/DB/Conference.hpp
+	g++ src/DB/Conference.hpp -c $(GEN) -o $@
+obj/SchemaConferenceMember.o: src/DB/ConferenceMember.hpp
+	g++ src/DB/ConferenceMember.hpp -c $(GEN) -o $@
+obj/SchemaSubscription.o: src/DB/Subscription.hpp
+	g++ src/DB/Subscription.hpp -c $(GEN) -o $@
 clean:
 	rm obj/*.o
 debug: GEN += -DDEBUG -Wall -Wextra -g3

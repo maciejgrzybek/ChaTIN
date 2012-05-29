@@ -1,10 +1,8 @@
-#ifndef SCHEMA_ALIAS_HPP
-#define SCHEMA_ALIAS_HPP
+#ifndef SCHEMA_SUBSCRIPTION_HPP
+#define SCHEMA_SUBSCRIPTION_HPP
 
 #include <Wt/Dbo/Dbo>
 #include <string>
-
-#include "Group.hpp"
 
 namespace dbo = Wt::Dbo;
 
@@ -13,20 +11,20 @@ namespace DB
 namespace Schema
 {
 
-class Alias
+class Subscription
 {
 public:
     template<class Act>
     void persist(Act& a)
     {
-        dbo::field(a, ip,"ip");
-        dbo::field(a, alias, "alias");
-        dbo::belongsTo(a, group, "groupId");
+        dbo::field(a, ip, "ip");
+        dbo::field(a, state, "state");
+        dbo::field(a, date, "date");
     }
 private:
     std::string ip;
-    std::string alias;
-    dbo::ptr<Group> group;
+    int state;
+    int date;
 
 };
 
