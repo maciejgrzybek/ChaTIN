@@ -4,6 +4,19 @@ namespace dbo = Wt::Dbo;
 
 using namespace DB;
 
+DBDriver* DBDriver::getInstance()
+{
+    if(instance == NULL)
+    {
+        boost::mutex::scoped_lock lock(DBDriver::instanceLock);
+        if(instance == NULL)
+        {
+            instance = new DBDriver();
+        }
+    }
+    return instance;
+}
+
 DBDriver::DBDriver()
 {
   dbo::backend::Sqlite3 sqlite3("blog.db");
