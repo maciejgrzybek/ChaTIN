@@ -6,7 +6,7 @@ GTKI=`pkg-config gtkmm-2.4 --cflags`
 GTKL=`pkg-config gtkmm-2.4 --libs`
 LFLAGS=-ltinyxml -lboost_thread -lpthread
 
-all: obj/ChatWindow.o obj/main.o obj/Socket.o obj/AliasManager.o obj/ConferenceManager.o obj/Dialog.o obj/ToViewParser.o obj/DialogManager.o obj/Config.o obj/types.o obj/XMLException.o obj/ConferenceException.o obj/Exception.o obj/FromViewParser.o obj/XMLPackageCreator.o obj/ChatTab.o obj/Event.o
+all: obj/ChatWindow.o obj/main.o obj/Socket.o obj/AliasManager.o obj/ConferenceManager.o obj/Dialog.o obj/ToViewParser.o obj/DialogManager.o obj/Config.o obj/types.o obj/XMLException.o obj/ConferenceException.o obj/Exception.o obj/FromViewParser.o obj/XMLPackageCreator.o obj/ChatTab.o obj/Event.o obj/DBDriver.o
 	g++ $^ $(GEN) $(GTKL) $(LFLAGS) -o bin/ChaTIN
 obj/main.o: src/main.cpp src/ChatWindow.hpp
 	g++ src/main.cpp -c $(GEN) $(GTKI) -o $@
@@ -42,6 +42,11 @@ obj/ChatTab.o: src/ChatTab.cpp src/ChatTab.hpp
 	g++ src/ChatTab.cpp -c $(GEN) $(GTKI) -o $@
 obj/Event.o: src/Event.cpp src/Event.hpp
 	g++ src/Event.cpp -c $(GEN) $(GTKI) -o $@
+obj/DBDriver.o: obj/SchemaAlias.o src/DB/DBDriver.cpp src/DB/DBDriver.hpp
+	g++ src/DB/DBDriver.cpp -c $(GEN) $(GTKI) -o $@
+obj/SchemaAlias.o: obj/SchemaGroup.o src/DB/Alias.hpp
+	g++ src/DB/Alias.hpp -c $(GEN) $(GTKI) -o $@
+obj/SchemaGroup.o: src/DB/Group.hpp
 clean:
 	rm obj/*.o
 debug: GEN += -DDEBUG -Wall -Wextra -g3

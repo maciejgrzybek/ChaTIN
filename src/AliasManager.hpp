@@ -7,7 +7,7 @@
 #include <boost/optional.hpp>
 #include <iostream>
 #include <map>
-#include "DBDriver.hpp"
+#include "DB/DBDriver.hpp"
 #include "DialogManager.hpp"
 #include "types.hpp"
 
