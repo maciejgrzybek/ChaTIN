@@ -105,7 +105,7 @@ public:
      * @throw NoDialogManagerGivenException - if it try to send sth but dialogManager isnt set yet
      */
     void acceptSub(const ChaTIN::IPv6&);
-
+    
     /**
      * If you are in REQUESTED then send Reject and go to REJECTED
      * @param const ChaTIN::IPv6& alias to reject
@@ -114,6 +114,13 @@ public:
      * @throw NoDialogManagerGivenException - if it try to send sth but dialogManager isnt set yet
      */
     void rejectSub(const ChaTIN::IPv6&);
+
+
+    /**
+     * Call if request package came from ip
+     * if not in REJECTED goto FULL
+     */
+    void wasRequested(const ChaTIN::IPv6&);
 
     /**
      * Call if reject package came from alias
@@ -124,7 +131,7 @@ public:
 
     /**
      * Call if accept package came from alias
-     * if you was in ONE_SIDED go to FULL
+     * if you was in REQUESTED go to FULL
      * otherwise dont do anything
      * @param const ChaTIN::IPv6& alias which send accept to you 
      */

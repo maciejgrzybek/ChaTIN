@@ -53,7 +53,7 @@ void AliasManager::registerAlias(
     dictionary.insert( BiStringMap::value_type( alias, ip ) );
     if( trySubscribe )
     {
-        requestSub( alias );
+        requestSub( ip );
     }
 }
 
@@ -87,6 +87,7 @@ void AliasManager::deleteAliasByAlias( const ChaTIN::Alias& alias )
 
 void AliasManager::requestSub( const ChaTIN::IPv6& alias )
 {
+    //FIXME do it like in rejectSub
     if( subscriptions[alias] == REQUESTED )
     {
         acceptSub(alias);
@@ -103,6 +104,7 @@ void AliasManager::requestSub( const ChaTIN::IPv6& alias )
 
 void AliasManager::acceptSub( const ChaTIN::IPv6& alias )
 {
+    //FIXME do it like in rejectSub
     if( subscriptions[alias] == REQUESTED )
     {
         if( !sender ) ; //FIXME throw NoDialogManagerGivenException
@@ -120,23 +122,38 @@ void AliasManager::acceptSub( const ChaTIN::IPv6& alias )
 
 void AliasManager::rejectSub( const ChaTIN::IPv6& alias )
 {
-    if( subscriptions[alias] == REQUESTED )
+    if( subscriptions.find(alias) == subscriptions.end()
+        || subscriptions[alias] != REQUESTED )
     {
-        if( !sender ) ; //FIXME throw NoDialogManagerGivenException
-        XMLPackageCreator xml("idky","");
-        sender->sendTo( alias, xml.getXML() );
-                                        //FIXME try catch - whaat if he is off AliasNotConnectedException
-        subscriptions[alias] = REJECTED;
-    }
-    else
-    {
+        
        //FIXME
        //THROW  YouAreNotRequestedException
-    }    
+        return;
+    }
+    if( !sender ) ; //FIXME throw NoDialogManagerGivenException
+    XMLPackageCreator xml("idky","");
+    sender->sendTo( alias, xml.getXML() );
+    //FIXME try catch - whaat if he is off AliasNotConnectedException
+    subscriptions[alias] = REJECTED;
+}
+
+void AliasManager::wasRequested(const ChaTIN::IPv6& ip )
+{
+    if( subscriptions.find(ip) == subscriptions.end() )
+    {
+        subscriptions[ip] = REQUESTED;
+        return;
+    }
+    if( subscriptions[ip] == ONE_SIDED )
+    {
+        subscriptions[ip] = FULL;    
+        return;
+    }
 }
 
 void AliasManager::wasRejected( const ChaTIN::IPv6& alias )
 { 
+    //FIXME check if exists
     if( subscriptions[alias] == ONE_SIDED )
     {
         subscriptions[alias] = REJECTED;
@@ -145,6 +162,7 @@ void AliasManager::wasRejected( const ChaTIN::IPv6& alias )
 
 void AliasManager::wasAccepted( const ChaTIN::IPv6& alias )
 {
+    //FIXME check if exists
     if( subscriptions[alias] == ONE_SIDED )
     {
         subscriptions[alias] = FULL;
