@@ -4,6 +4,9 @@ namespace dbo = Wt::Dbo;
 
 using namespace DB;
 
+boost::mutex DBDriver::instanceLock;
+DBDriver* DBDriver::instance = NULL;
+
 DBDriver* DBDriver::getInstance()
 {
     if(instance == NULL)

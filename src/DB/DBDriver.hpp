@@ -30,8 +30,6 @@ private:
 
 };
 
-boost::mutex DBDriver::instanceLock;
-DBDriver* DBDriver::instance = NULL;
 
 } // namespace DB
 

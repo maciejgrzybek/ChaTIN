@@ -2,7 +2,7 @@
 #include "XMLPackageCreator.hpp"
 #include "Socket.hpp"
 
-AliasManager::AliasManager( const DBDriver& db ) 
+AliasManager::AliasManager( const DB::DBDriver& db ) 
     : db(db)
 {
     loadSubscriptionsFromDB();

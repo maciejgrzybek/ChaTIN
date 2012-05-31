@@ -1,7 +1,7 @@
 #include <boost/thread.hpp>
 #include "FromViewParser.hpp"
 #include "ChatWindow.hpp"
-#include "DBDriver.hpp"
+#include "DB/DBDriver.hpp"
 #include "ToViewParser.hpp"
 #include "SafeQueue.hpp"
 #include "Config.hpp"
@@ -16,13 +16,13 @@ int main(int argc, char *argv[])
 {
     //create objects
     Gtk::Main kit(argc, argv);
-    DBDriver db;
+    DB::DBDriver* db = DB::DBDriver::getInstance();
     SafeQueue<ChaTIN::IncomingMassage> toViewParserQueue;
     SafeQueue<EPtr> fromViewParserQueue;
     SafeQueue<Action> actionQueue;
     const Config config;
     ConferenceManager conferenceManager;
-    AliasManager aliasManager( db );
+    AliasManager aliasManager( *db );
     ToViewParser toViewParser(conferenceManager, toViewParserQueue, actionQueue);
     DialogManager dialogManager( toViewParser, aliasManager, conferenceManager, config);
     aliasManager.setDialogManager( dialogManager );
