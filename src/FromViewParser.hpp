@@ -5,10 +5,12 @@
 #include "SafeQueue.hpp"
 #include "Event.hpp"
 #include "ChatWindow.hpp"
+#include "AliasManager.hpp"
 
 class ChatWindow;
 class DialogManager;
 class ConferenceManager;
+class AliasManager;
 
 /**
  * Parser class converting user input into method calls
@@ -16,6 +18,7 @@ class ConferenceManager;
 class FromViewParser
 {
     DialogManager& dialogManager;
+    AliasManager& aliasManager;
     ConferenceManager& cm;
     SafeQueue<EPtr>& bq;
     SafeQueue<Action>& aq;
@@ -27,7 +30,7 @@ class FromViewParser
      * Simple constructor giving paser reference to DialogManager
      * @param DialogManager& reference to the dialogManager to use in parser.
      */
-    FromViewParser( DialogManager&, ConferenceManager&, SafeQueue<EPtr>&, SafeQueue<Action>& );
+    FromViewParser( DialogManager&, AliasManager&, ConferenceManager&, SafeQueue<EPtr>&, SafeQueue<Action>& );
 
     void setView( ChatWindow* );
 

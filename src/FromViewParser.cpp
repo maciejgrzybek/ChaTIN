@@ -7,8 +7,8 @@
 #include <boost/bind.hpp>
 #include <boost/function.hpp>
 
-FromViewParser::FromViewParser( DialogManager& dialogManager, ConferenceManager& cm, SafeQueue<EPtr>& bq, SafeQueue<Action>& aq )
-    : dialogManager(dialogManager), cm(cm), bq(bq), aq(aq)
+FromViewParser::FromViewParser( DialogManager& dialogManager, AliasManager& aliasManager, ConferenceManager& cm, SafeQueue<EPtr>& bq, SafeQueue<Action>& aq )
+    : dialogManager(dialogManager), aliasManager(aliasManager), cm(cm), bq(bq), aq(aq)
 {}
 
 void FromViewParser::setView( ChatWindow* cw )
@@ -107,7 +107,7 @@ bool FromViewParser::tryParseGeneral( const Glib::ustring& input )
         std::vector<ChaTIN::IPv6> members;
         if(params.size()<3)
         {
-            //FIXME throw invalidCommandException
+            //FIXME throw invalidCommandParamsException
             return true;
         }
         TIPtr idOpen( new ChaTIN::ConferenceId( ChaTIN::IPv6(params[1]), params[0] )); //FIXME put valid myIp
@@ -117,6 +117,19 @@ bool FromViewParser::tryParseGeneral( const Glib::ustring& input )
         }
         cm.addConference( (ChaTIN::ConferenceId&)*idOpen, members );
         aq.push( boost::bind( &ChatWindow::openTab, _1, idOpen, true ) );
+    }
+
+    if( input.substr(1,6) == "alias ")
+    {
+        std::vector<Glib::ustring> params = Glib::Regex::split_simple(" ", input.substr(7));
+        if( params.size() != 2 )
+        {
+            //FIXME throw invalicCommandParamsException
+            return true;
+        }
+        ChaTIN::Alias alias(params[0]);
+        ChaTIN::IPv6 ip(params[1]);
+        aliasManager.registerAlias( alias, ip, true );
     }
 
     return false;
