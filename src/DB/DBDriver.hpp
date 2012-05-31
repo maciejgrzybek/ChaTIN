@@ -23,6 +23,9 @@ class DBDriver
 {
 public:
     static DBDriver* getInstance();
+
+    void store(Schema::Alias&);
+
     /**
      * Method returns aliases collection.
      * @return Aliases Collection of aliases stored in database.

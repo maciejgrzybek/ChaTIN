@@ -32,6 +32,12 @@ DBDriver::DBDriver() : sqlite3("chatin.db")
   session.createTables();
 }
 
+void DBDriver::store(Schema::Alias& alias)
+{
+    ::dbo::ptr<Schema::Alias> a(&alias);
+    session.add(a);
+}
+
 Aliases DBDriver::getAliases()
 {
     return session.find<DB::Schema::Alias>();
