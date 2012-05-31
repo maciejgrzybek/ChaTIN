@@ -4,6 +4,7 @@
 #include <Wt/Dbo/Dbo>
 #include <string>
 
+#include "Message.hpp"
 #include "../types.hpp"
 
 namespace dbo = Wt::Dbo;
@@ -19,10 +20,16 @@ class ConferenceMember;
 class Conference
 {
 public:
+
+    std::string getName() const
+    {
+        return name;
+    }
+
     template<class Act>
     void persist(Act& a)
     {
-        dbo::field(a, id, "id");
+        //dbo::field(a, id, "id");
         dbo::field(a, ownerIp, "ownerIp");
         dbo::field(a, name, "name");
         dbo::field(a, date, "date");
@@ -30,7 +37,7 @@ public:
         dbo::hasMany(a, members, dbo::ManyToOne, "conferenceId");
     }
 private:
-    int id;
+    //int id;
     std::string ownerIp;
     std::string name;
     int date;

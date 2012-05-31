@@ -19,7 +19,7 @@ public:
     template<class Act>
     void persist(Act& a)
     {
-        dbo::field(a, ip,"ip");
+        dbo::id(a, ip, "ip");
         dbo::field(a, alias, "alias");
         dbo::belongsTo(a, group, "groupId");
     }
@@ -32,5 +32,25 @@ private:
 
 } // namespace Schema
 } // namespace DB
+
+namespace Wt
+{
+    namespace Dbo
+    {
+
+        template<>
+        struct dbo_traits<DB::Schema::Alias> : public dbo_default_traits
+        {
+            typedef std::string IdType;
+
+            static IdType invalidId() {
+                return std::string();
+            }
+
+            static const char *surrogateIdField() { return 0; }
+        };
+
+    }
+}
 
 #endif

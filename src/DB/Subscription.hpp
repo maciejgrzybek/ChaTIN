@@ -17,7 +17,7 @@ public:
     template<class Act>
     void persist(Act& a)
     {
-        dbo::field(a, ip, "ip");
+        dbo::id(a, ip, "ip");
         dbo::field(a, state, "state");
         dbo::field(a, date, "date");
     }

@@ -14,13 +14,15 @@ namespace DB
 namespace Schema
 {
 
+class Conference;
+
 class Message
 {
 public:
     template<class Act>
     void persist(Act& a)
     {
-        dbo::field(a, id, "id");
+//        dbo::field(a, id, "id");
         dbo::field(a, content, "content");
         dbo::field(a, date, "date");
         dbo::field(a, ip, "ip");
@@ -28,7 +30,7 @@ public:
         dbo::belongsTo(a, conference, "conferenceId");
     }
 private:
-    int id;
+//    int id;
     std::string content;
     int date;
     std::string ip;

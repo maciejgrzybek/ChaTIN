@@ -19,12 +19,12 @@ public:
   template<class Act>
   void persist(Act& a)
   {
-    dbo::field(a, id, "id");
+    //dbo::field(a, id, "id");
     dbo::field(a, name, "name");
     dbo::hasMany(a, aliases, dbo::ManyToOne, "groupId");
   }
 private:
-    int id;
+    //int id;
     std::string name;
     dbo::collection< dbo::ptr<Alias> > aliases;
 };
