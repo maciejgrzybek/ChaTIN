@@ -6,11 +6,14 @@
 #endif
 #include <tinyxml.h>
 
-ToViewParser::ToViewParser( ConferenceManager& cm, SafeQueue<ChaTIN::IncomingMassage>& q, SafeQueue<Action>& aq )
-    : cm(cm), q(q), aq(aq)
+ToViewParser::ToViewParser( AliasManager& am, ConferenceManager& cm, SafeQueue<ChaTIN::IncomingMassage>& q, SafeQueue<Action>& aq )
+    : am(am), cm(cm), q(q), aq(aq)
 {
     actions[ "msg"  ] = &ToViewParser::incomingDialogMsg;
     actions[ "cmsg" ] = &ToViewParser::incomingConfMsg;
+    actions[ "iky"  ] = &ToViewParser::incomingSubRequest;
+    actions[ "ikya" ] = &ToViewParser::incomingAcceptSub;
+    actions[ "idky" ] = &ToViewParser::incomingRejectSub;
 }
 
 void ToViewParser::doCommand( const ChaTIN::IPv6& ip, const Glib::ustring& msg )
@@ -52,6 +55,21 @@ void ToViewParser::incomingConfMsg( ChaTIN::IPv6 ip, Glib::ustring msg, otherAtt
     Glib::ustring alias = ChaTIN::Alias(ip);
     aq.push( boost::bind(&ChatWindow::showIncomingMessage, _1, incomeId, 
                                     alias, msg, true ));
+}
+
+void ToViewParser::incomingSubRequest( ChaTIN::IPv6 ip, Glib::ustring, otherAttributes )
+{
+    am.wasRequested( ip );
+}
+
+void ToViewParser::incomingAcceptSub( ChaTIN::IPv6 ip, Glib::ustring, otherAttributes )
+{
+    am.wasAccepted( ip );
+}
+
+void ToViewParser::incomingRejectSub( ChaTIN::IPv6 ip, Glib::ustring, otherAttributes )
+{
+    am.wasRejected( ip );
 }
 
 void ToViewParser::parse( const ChaTIN::IncomingMassage& income )

@@ -23,7 +23,7 @@ int main(int argc, char *argv[])
     const Config config;
     ConferenceManager conferenceManager;
     AliasManager aliasManager( *db );
-    ToViewParser toViewParser(conferenceManager, toViewParserQueue, actionQueue);
+    ToViewParser toViewParser( aliasManager, conferenceManager, toViewParserQueue, actionQueue);
     DialogManager dialogManager( toViewParser, aliasManager, conferenceManager, config);
     aliasManager.setDialogManager( dialogManager );
     FromViewParser fromViewParser( dialogManager, aliasManager, conferenceManager, fromViewParserQueue, actionQueue );

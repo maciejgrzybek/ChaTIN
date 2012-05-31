@@ -7,6 +7,7 @@
 #include "SafeQueue.hpp"
 #include "QueueAdder.hpp"
 #include "XMLPackageCreator.hpp"
+#include "AliasManager.hpp"
 
 class DialogManager;
 class ConferenceManager;
@@ -18,7 +19,9 @@ class ToViewParser
 {
     SafeQueue<ChaTIN::IncomingMassage>& q; //queue for all stuff
     SafeQueue<Action>& aq;
+    AliasManager& am;
     ConferenceManager& cm;
+    
 
 public:
     //FIXME i should use full version everywhere, but its only for now
@@ -43,7 +46,7 @@ public:
      * Constructor taking queue reference to comunicate with rest of the world 
      * @param SafeQueue<ChaTIN::IncomingMassage>& q queue to communicate with world
      */
-    ToViewParser( ConferenceManager&, SafeQueue<ChaTIN::IncomingMassage>& q, SafeQueue<Action>& aq );
+    ToViewParser( AliasManager&, ConferenceManager&, SafeQueue<ChaTIN::IncomingMassage>& q, SafeQueue<Action>& aq );
 
     /**
      * Put a masssage with Incoming alias to the queue
@@ -71,4 +74,7 @@ private:
     /**COMMNADS**/
     void incomingDialogMsg( ChaTIN::IPv6, Glib::ustring, otherAttributes );
     void incomingConfMsg( ChaTIN::IPv6, Glib::ustring, otherAttributes );
+    void incomingSubRequest( ChaTIN::IPv6, Glib::ustring, otherAttributes );
+    void incomingAcceptSub( ChaTIN::IPv6, Glib::ustring, otherAttributes );
+    void incomingRejectSub( ChaTIN::IPv6, Glib::ustring, otherAttributes );
 };
