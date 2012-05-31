@@ -6,6 +6,8 @@
 
 #include "Group.hpp"
 
+#include "../types.hpp"
+
 namespace dbo = Wt::Dbo;
 
 namespace DB
@@ -16,6 +18,25 @@ namespace Schema
 class Alias
 {
 public:
+    Alias() : alias(), ip(), group()
+    {}
+
+    Alias(ChaTIN::Alias alias_, ChaTIN::IPv6 ipv6) : alias(alias_), ip(ipv6)
+    {}
+
+    Alias(ChaTIN::Alias alias_, ChaTIN::IPv6 ipv6, Group group_) : alias(alias_), ip(ipv6), group(&group_)
+    {}
+
+    ChaTIN::Alias getAlias() const
+    {
+        return ChaTIN::Alias((Glib::ustring)alias);
+    }
+    
+    ChaTIN::IPv6 getIP() const
+    {
+        return ChaTIN::IPv6(ip);
+    }
+
     template<class Act>
     void persist(Act& a)
     {
