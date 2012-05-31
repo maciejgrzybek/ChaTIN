@@ -117,11 +117,12 @@ bool FromViewParser::tryParseGeneral( const Glib::ustring& input )
         }
         cm.addConference( (ChaTIN::ConferenceId&)*idOpen, members );
         aq.push( boost::bind( &ChatWindow::openTab, _1, idOpen, true ) );
+        return true;
     }
 
-    if( input.substr(1,6) == "alias ")
+    if( input.substr(1,9) == "addalias ")
     {
-        std::vector<Glib::ustring> params = Glib::Regex::split_simple(" ", input.substr(7));
+        std::vector<Glib::ustring> params = Glib::Regex::split_simple(" ", input.substr(10));
         if( params.size() != 2 )
         {
             //FIXME throw invalicCommandParamsException
@@ -130,6 +131,28 @@ bool FromViewParser::tryParseGeneral( const Glib::ustring& input )
         ChaTIN::Alias alias(params[0]);
         ChaTIN::IPv6 ip(params[1]);
         aliasManager.registerAlias( alias, ip, true );
+        return true;
+    }
+
+    if( input.substr(1,4) == "sub " )
+    {
+        ChaTIN::IPv6 ip( input.substr(5) );
+        aliasManager.requestSub( ip );
+        return true;
+    }
+
+    if( input.substr(1,7) == "subakc " )
+    {
+        ChaTIN::IPv6 ip( input.substr(8) );
+        aliasManager.acceptSub( ip );
+        return true;
+    }
+
+    if( input.substr(1,7) == "subdec " )
+    {
+        ChaTIN::IPv6 ip( input.substr(8) );
+        aliasManager.rejectSub( ip );
+        return true;
     }
 
     return false;
