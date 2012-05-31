@@ -1,7 +1,5 @@
 #include "DBDriver.hpp"
 
-namespace dbo = Wt::Dbo;
-
 using namespace DB;
 
 boost::mutex DBDriver::instanceLock;
@@ -20,10 +18,8 @@ DBDriver* DBDriver::getInstance()
     return instance;
 }
 
-DBDriver::DBDriver()
+DBDriver::DBDriver() : sqlite3("chatin.db")
 {
-  dbo::backend::Sqlite3 sqlite3("blog.db");
-  dbo::Session session;
   session.setConnection(sqlite3);
   session.mapClass<Schema::Alias>("alias");
   session.mapClass<Schema::Group>("group");
@@ -34,4 +30,9 @@ DBDriver::DBDriver()
 
   // Create tables if don't exist. Otherwise - nothing happens.
   session.createTables();
+}
+
+Aliases DBDriver::getAliases()
+{
+    return session.find<DB::Schema::Alias>();
 }

@@ -2,7 +2,7 @@
 #include "XMLPackageCreator.hpp"
 #include "Socket.hpp"
 
-AliasManager::AliasManager( const DB::DBDriver& db ) 
+AliasManager::AliasManager( DB::DBDriver& db ) 
     : db(db)
 {
     loadSubscriptionsFromDB();
@@ -153,7 +153,9 @@ void AliasManager::wasAccepted( const ChaTIN::Alias& alias )
 
 void AliasManager::loadSubscriptionsFromDB()
 {
-    //FIXME - when DBDriver interface is known
+    DB::Aliases aliases;
+    aliases = db.getAliases();
+    //FIXME iterate throught aliases and put each alias in bimap.
 }
 
 void AliasManager::saveSubscriptionsToDB()

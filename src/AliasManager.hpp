@@ -30,7 +30,7 @@ class AliasManager
     BiStringMap dictionary;
     /* subscriptions data (2) */
     std::map<ChaTIN::Alias, SubPhase> subscriptions;
-    const DB::DBDriver& db;
+    DB::DBDriver& db;
     bool sendReady;
     boost::optional<DialogManager&> sender;
 
@@ -38,7 +38,7 @@ public:
     /**
      * Default construtctor reading existing aliases from given DBDriver
      */
-    AliasManager( const DB::DBDriver& );
+    AliasManager( DB::DBDriver& );
 
     /**
      * Allow to set dialog manager after some actions.
