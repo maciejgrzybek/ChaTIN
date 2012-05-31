@@ -173,10 +173,21 @@ void AliasManager::loadSubscriptionsFromDB()
 {
     DB::Aliases aliases;
     aliases = db.getAliases();
-    //FIXME iterate throught aliases and put each alias in bimap.
+    // TODO shouldn't bimap be erased before insertions?
+    DB::Aliases::const_iterator endIter = aliases.end();
+    for(DB::Aliases::const_iterator iter = aliases.begin();iter != endIter; ++iter)
+    {
+        typedef BiStringMap::value_type pos;
+        dictionary.insert(pos((*iter)->getAlias(),(*iter)->getIP()));
+    }
 }
 
 void AliasManager::saveSubscriptionsToDB()
 {
-    //FIXME - when DBDriver interface is know
+    BiStringMap::const_iterator endIter = dictionary.end();
+    for(BiStringMap::const_iterator iter = dictionary.begin(); iter != endIter; ++iter)
+    {
+        DB::Schema::Alias alias(iter->left,iter->right);
+        db.store(alias);
+    }
 }
