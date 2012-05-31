@@ -29,7 +29,7 @@ class AliasManager
     /* aliases bimap (1) */
     BiStringMap dictionary;
     /* subscriptions data (2) */
-    std::map<ChaTIN::Alias, SubPhase> subscriptions;
+    std::map<ChaTIN::IPv6, SubPhase> subscriptions;
     DB::DBDriver& db;
     bool sendReady;
     boost::optional<DialogManager&> sender;
@@ -90,45 +90,45 @@ public:
     /**
      * Send information to adress that you want to subscribe 
      * If you are in REQUESTED state then just call acceptSub
-     * @param const ChaTIN::Alias& Alias to request
+     * @param const ChaTIN::IPv6& Alias to request
      * @throw AliasNotConnected - if alias client ist connected right now
      * @throw AliasAlreadyFullSubscribed - if alias is on FULL phase with you
      * @throw NoDialogManagerGivenException - if it try to send sth but dialogManager isnt set yet
      */
-    void requestSub(const ChaTIN::Alias&); 
+    void requestSub(const ChaTIN::IPv6&); 
 
     /**
      * If you are in REQUESTED state then send Accept and go to FULL
-     * @param const ChaTIN::Alias& Alias to accept
+     * @param const ChaTIN::IPv6& Alias to accept
      * @throw YouAreNotRequested - when alias client didnt send you request
      * @throw AliasNotConnected - if alias client ist connected right now
      * @throw NoDialogManagerGivenException - if it try to send sth but dialogManager isnt set yet
      */
-    void acceptSub(const ChaTIN::Alias&);
+    void acceptSub(const ChaTIN::IPv6&);
 
     /**
      * If you are in REQUESTED then send Reject and go to REJECTED
-     * @param const ChaTIN::Alias& alias to reject
+     * @param const ChaTIN::IPv6& alias to reject
      * @throw YouAreNotRequested - when alias client didnt send you request
      * @throw AliasNotConnected - if alias client ist connected right now
      * @throw NoDialogManagerGivenException - if it try to send sth but dialogManager isnt set yet
      */
-    void rejectSub(const ChaTIN::Alias&);
+    void rejectSub(const ChaTIN::IPv6&);
 
     /**
      * Call if reject package came from alias
      * goes to REJECTED phase
-     * @param const ChaTIN::Alias& alias which rejected you
+     * @param const ChaTIN::IPv6& alias which rejected you
      */
-    void wasRejected(const ChaTIN::Alias&);
+    void wasRejected(const ChaTIN::IPv6&);
 
     /**
      * Call if accept package came from alias
      * if you was in ONE_SIDED go to FULL
      * otherwise dont do anything
-     * @param const ChaTIN::Alias& alias which send accept to you 
+     * @param const ChaTIN::IPv6& alias which send accept to you 
      */
-    void wasAccepted(const ChaTIN::Alias&);
+    void wasAccepted(const ChaTIN::IPv6&);
 
     private:
     /**

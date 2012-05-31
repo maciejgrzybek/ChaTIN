@@ -85,7 +85,7 @@ void AliasManager::deleteAliasByAlias( const ChaTIN::Alias& alias )
     }        
 }
 
-void AliasManager::requestSub( const ChaTIN::Alias& alias )
+void AliasManager::requestSub( const ChaTIN::IPv6& alias )
 {
     if( subscriptions[alias] == REQUESTED )
     {
@@ -101,7 +101,7 @@ void AliasManager::requestSub( const ChaTIN::Alias& alias )
     }
 }
 
-void AliasManager::acceptSub( const ChaTIN::Alias& alias )
+void AliasManager::acceptSub( const ChaTIN::IPv6& alias )
 {
     if( subscriptions[alias] == REQUESTED )
     {
@@ -118,7 +118,7 @@ void AliasManager::acceptSub( const ChaTIN::Alias& alias )
     }    
 }
 
-void AliasManager::rejectSub( const ChaTIN::Alias& alias )
+void AliasManager::rejectSub( const ChaTIN::IPv6& alias )
 {
     if( subscriptions[alias] == REQUESTED )
     {
@@ -135,7 +135,7 @@ void AliasManager::rejectSub( const ChaTIN::Alias& alias )
     }    
 }
 
-void AliasManager::wasRejected( const ChaTIN::Alias& alias )
+void AliasManager::wasRejected( const ChaTIN::IPv6& alias )
 { 
     if( subscriptions[alias] == ONE_SIDED )
     {
@@ -143,7 +143,7 @@ void AliasManager::wasRejected( const ChaTIN::Alias& alias )
     }
 }
 
-void AliasManager::wasAccepted( const ChaTIN::Alias& alias )
+void AliasManager::wasAccepted( const ChaTIN::IPv6& alias )
 {
     if( subscriptions[alias] == ONE_SIDED )
     {
