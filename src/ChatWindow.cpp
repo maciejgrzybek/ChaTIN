@@ -3,7 +3,7 @@
 #include <cassert>
 
 ChatWindow::ChatWindow( SafeQueue<EPtr>& bq, SafeQueue<Action>& aq) 
-    : sendButton("Send"), bq(bq), aq(aq)
+    :  bq(bq), aq(aq), sendButton("Send")
 {
     set_title("ChatTIN");
     set_default_size(600,400);

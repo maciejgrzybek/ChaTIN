@@ -104,8 +104,8 @@ struct ConferenceId : public TabId
  */
 struct IncomingMassage
 {
-    Glib::ustring msg;
     IPv6 ip;  
+    Glib::ustring msg;
 public:
     IncomingMassage( const IPv6& ip, const Glib::ustring& msg );    
 };
