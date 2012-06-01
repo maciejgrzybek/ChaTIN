@@ -18,13 +18,13 @@ namespace Schema
 class Alias
 {
 public:
-    Alias() : alias(), ip(), group()
+    Alias() : ip(), alias(), group()
     {}
 
-    Alias(ChaTIN::Alias alias_, ChaTIN::IPv6 ipv6) : alias(alias_), ip(ipv6)
+    Alias(ChaTIN::Alias alias_, ChaTIN::IPv6 ipv6) : ip(ipv6), alias(alias_)
     {}
 
-    Alias(ChaTIN::Alias alias_, ChaTIN::IPv6 ipv6, Group group_) : alias(alias_), ip(ipv6), group(&group_)
+    Alias(ChaTIN::Alias alias_, ChaTIN::IPv6 ipv6, Group group_) : ip(ipv6), alias(alias_), group(&group_)
     {}
 
     ChaTIN::Alias getAlias() const

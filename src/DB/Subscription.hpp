@@ -31,4 +31,25 @@ private:
 } // namespace Schema
 } // namespace DB
 
+namespace Wt
+{
+    namespace Dbo
+    {
+
+        template<>
+        struct dbo_traits<DB::Schema::Subscription> : public dbo_default_traits
+        {
+            typedef std::string IdType;
+
+            static IdType invalidId() {
+                return std::string();
+            }
+
+            static const char *surrogateIdField() { return 0; }
+        };
+
+    }
+}
+
+
 #endif
