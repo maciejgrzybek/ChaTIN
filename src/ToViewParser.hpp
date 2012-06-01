@@ -17,10 +17,10 @@ class ConferenceManager;
  */
 class ToViewParser
 {
-    SafeQueue<ChaTIN::IncomingMassage>& q; //queue for all stuff
-    SafeQueue<Action>& aq;
     AliasManager& am;
     ConferenceManager& cm;
+    SafeQueue<ChaTIN::IncomingMassage>& q; //queue for all stuff
+    SafeQueue<Action>& aq;
     
 
 public:
