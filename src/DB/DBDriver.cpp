@@ -48,8 +48,32 @@ void DBDriver::store(Schema::Alias& alias)
     session.add(a);
 }
 
+void DBDriver::store(Schema::Subscription& sub)
+{
+    ::dbo::ptr<Schema::Subscription> s(&sub);
+    session.add(s);
+}
+
 Aliases DBDriver::getAliases()
 {
     dbo::Transaction transaction(session);
     return session.find<DB::Schema::Alias>();
+}
+
+Subscriptions DBDriver::getSubscriptions()
+{
+    dbo::Transaction transaction(session);
+    return session.find<DB::Schema::Subscription>();
+}
+
+void DBDriver::startTransaction()
+{
+    transaction_ = std::shared_ptr<dbo::Transaction>(new dbo::Transaction(session));
+}
+
+void DBDriver::endTransaction(bool politelty)
+{
+    if(politelty)
+        transaction_->commit();
+    transaction_.reset();
 }

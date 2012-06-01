@@ -14,17 +14,31 @@ namespace Schema
 class Subscription
 {
 public:
+    Subscription() : ip_(), state_(0)
+    {}
+    Subscription(std::string ip, int state) : ip_(ip), state_(state)
+    {}
+    std::string getIP() const
+    {
+        return ip_;
+    }
+
+    int getState() const
+    {
+        return state_;
+    }
+
     template<class Act>
     void persist(Act& a)
     {
-        dbo::id(a, ip, "ip");
-        dbo::field(a, state, "state");
-        dbo::field(a, date, "date");
+        dbo::id(a, ip_, "ip");
+        dbo::field(a, state_, "state");
+        dbo::field(a, date_, "date");
     }
 private:
-    std::string ip;
-    int state;
-    int date;
+    std::string ip_;
+    int state_;
+    int date_;
 
 };
 

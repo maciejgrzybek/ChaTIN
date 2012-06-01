@@ -42,7 +42,7 @@ ChaTIN::IPv6 AliasManager::getIP( const ChaTIN::Alias& alias ) const
         else
         {
             //FIXME 
-            //THROW AliasDoesNotExistExeption
+            //THROW AliasDoesNotExistException
         }    
     }
 }
@@ -94,7 +94,10 @@ void AliasManager::requestSub( const ChaTIN::IPv6& alias )
     }
     else
     {
-        if( !sender ) ; //FIXME throw NoDialogManagerGivenException
+        if(!sender)
+        {
+            //FIXME throw NoDialogManagerGivenException
+        }
         XMLPackageCreator xml("iky","");
         sender->sendTo( alias , xml.getXML() );
                                         //FIXME try catch - what if he is off AliasNotConnectedException
@@ -107,7 +110,10 @@ void AliasManager::acceptSub( const ChaTIN::IPv6& alias )
     //FIXME do it like in rejectSub
     if( subscriptions[alias] == REQUESTED )
     {
-        if( !sender ) ; //FIXME throw NoDialogManagerGivenException
+        if(!sender)
+        {
+            //FIXME throw NoDialogManagerGivenException
+        }
         XMLPackageCreator xml("ikya","");
         sender->sendTo( alias , xml.getXML() );
                                         //FIXME try catch - whaat if he is off AliasNotConnectedException
@@ -130,7 +136,10 @@ void AliasManager::rejectSub( const ChaTIN::IPv6& alias )
        //THROW  YouAreNotRequestedException
         return;
     }
-    if( !sender ) ; //FIXME throw NoDialogManagerGivenException
+    if(!sender)
+    {
+        //FIXME throw NoDialogManagerGivenException
+    }
     XMLPackageCreator xml("idky","");
     sender->sendTo( alias, xml.getXML() );
     //FIXME try catch - whaat if he is off AliasNotConnectedException
@@ -171,6 +180,7 @@ void AliasManager::wasAccepted( const ChaTIN::IPv6& alias )
 
 void AliasManager::loadSubscriptionsFromDB()
 {
+    // get aliases
     DB::Aliases aliases;
     aliases = db.getAliases();
     // TODO shouldn't bimap be erased before insertions?
@@ -180,14 +190,34 @@ void AliasManager::loadSubscriptionsFromDB()
         typedef BiStringMap::value_type pos;
         dictionary.insert(pos((*iter)->getAlias(),(*iter)->getIP()));
     }
+
+    // get subscriptions
+    DB::Subscriptions subs;
+    subs = db.getSubscriptions();
+    DB::Subscriptions::const_iterator endIt = subs.end();
+    for(DB::Subscriptions::const_iterator iter = subs.begin();
+        iter != endIt; ++iter)
+    {
+        subscriptions[(*iter)->getIP()] = static_cast<SubPhase>((*iter)->getState());
+    }
 }
 
 void AliasManager::saveSubscriptionsToDB()
 {
+    // save aliases
     BiStringMap::const_iterator endIter = dictionary.end();
     for(BiStringMap::const_iterator iter = dictionary.begin(); iter != endIter; ++iter)
     {
         DB::Schema::Alias alias(iter->left,iter->right);
         db.store(alias);
+    }
+
+    // save subscriptions
+    std::map<ChaTIN::IPv6, SubPhase>::const_iterator endIt = subscriptions.end();
+    for(std::map<ChaTIN::IPv6, SubPhase>::const_iterator iter = subscriptions.begin();
+        iter != endIt; ++iter)
+    {
+        DB::Schema::Subscription sub(static_cast<std::string>(iter->first),iter->second);
+        db.store(sub);
     }
 }
