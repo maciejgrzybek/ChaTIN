@@ -72,6 +72,7 @@ void AliasManager::registerAlias(
     {
         requestSub( ip );
     }
+    saveSubscriptionsToDB();
 }
 
 void AliasManager::deleteAliasByIP( const ChaTIN::IPv6& ip )
