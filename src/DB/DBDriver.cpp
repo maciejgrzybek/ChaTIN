@@ -57,23 +57,48 @@ void DBDriver::store(Schema::Subscription& sub)
 Aliases DBDriver::getAliases()
 {
     dbo::Transaction transaction(session);
-    return session.find<DB::Schema::Alias>();
+    dbo::collection< dbo::ptr<DB::Schema::Alias> > aliases
+                = session.find<DB::Schema::Alias>();
+    std::vector< dbo::ptr<DB::Schema::Alias> > aliasesVec;
+    dbo::collection< dbo::ptr<DB::Schema::Alias> >::const_iterator
+                                    iter = aliases.begin();
+    dbo::collection< dbo::ptr<DB::Schema::Alias> >::const_iterator
+                                    endIter = aliases.end();
+    for(;iter != endIter;++iter)
+    {
+        aliasesVec.push_back(*iter);
+    }
+    return aliasesVec;
 }
 
 Subscriptions DBDriver::getSubscriptions()
 {
     dbo::Transaction transaction(session);
-    return session.find<DB::Schema::Subscription>();
+    dbo::collection< dbo::ptr<DB::Schema::Subscription> > subs
+                = session.find<DB::Schema::Subscription>();
+    std::vector< dbo::ptr<DB::Schema::Subscription> > subsVec;
+    dbo::collection< dbo::ptr<DB::Schema::Subscription> >::const_iterator
+                                    iter = subs.begin();
+    dbo::collection< dbo::ptr<DB::Schema::Subscription> >::const_iterator
+                                    endIter = subs.end();
+    for(;iter != endIter;++iter)
+    {
+        subsVec.push_back(*iter);
+    }
+    return subsVec;
 }
 
-void DBDriver::startTransaction()
+int DBDriver::startTransaction()
 {
-    transaction_ = std::shared_ptr<dbo::Transaction>(new dbo::Transaction(session));
+    transactions_.push_back(std::shared_ptr<dbo::Transaction>(new dbo::Transaction(session)));
+    return transactions_.size()-1;
 }
 
-void DBDriver::endTransaction(bool politelty)
+void DBDriver::endTransaction(int id,bool politelty)
 {
     if(politelty)
-        transaction_->commit();
-    transaction_.reset();
+        transactions_[id]->commit();
+
+    transactions_[id].reset();
 }
+

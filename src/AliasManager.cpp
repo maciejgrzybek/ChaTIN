@@ -200,8 +200,8 @@ void AliasManager::loadSubscriptionsFromDB()
 {
     // get aliases
     DB::Aliases aliases;
-    db.startTransaction();
-    aliases = db.getAliases();
+    aliases = db.getAliases(); // there is transaction inside implementation
+                               // of DB::DBDriver::getAliases()
     // TODO shouldn't bimap be erased before insertions?
     DB::Aliases::const_iterator endIter = aliases.end();
     for(DB::Aliases::const_iterator iter = aliases.begin();iter != endIter; ++iter)
@@ -209,11 +209,9 @@ void AliasManager::loadSubscriptionsFromDB()
         typedef BiStringMap::value_type pos;
         dictionary.insert(pos((*iter)->getAlias(),(*iter)->getIP()));
     }
-    db.endTransaction();
 
     // get subscriptions
     DB::Subscriptions subs;
-    db.startTransaction();
     subs = db.getSubscriptions();
     DB::Subscriptions::const_iterator endIt = subs.end();
     for(DB::Subscriptions::const_iterator iter = subs.begin();
@@ -221,12 +219,11 @@ void AliasManager::loadSubscriptionsFromDB()
     {
         subscriptions[(*iter)->getIP()] = static_cast<SubPhase>((*iter)->getState());
     }
-    db.endTransaction();
 }
 
 void AliasManager::saveSubscriptionsToDB()
 {
-    db.startTransaction();
+    int transid = db.startTransaction();
     // save aliases
     BiStringMap::const_iterator endIter = dictionary.end();
     for(BiStringMap::const_iterator iter = dictionary.begin(); iter != endIter; ++iter)
@@ -234,9 +231,9 @@ void AliasManager::saveSubscriptionsToDB()
         DB::Schema::Alias alias(iter->left,iter->right);
         db.store(alias);
     }
-    db.endTransaction();
+    db.endTransaction(transid);
 
-    db.startTransaction();
+    transid = db.startTransaction();
     // save subscriptions
     std::map<ChaTIN::IPv6, SubPhase>::const_iterator endIt = subscriptions.end();
     for(std::map<ChaTIN::IPv6, SubPhase>::const_iterator iter = subscriptions.begin();
@@ -245,5 +242,5 @@ void AliasManager::saveSubscriptionsToDB()
         DB::Schema::Subscription sub(static_cast<std::string>(iter->first),iter->second);
         db.store(sub);
     }
-    db.endTransaction();
+    db.endTransaction(transid);
 }

@@ -6,6 +6,7 @@
 #include <Wt/Dbo/backend/Sqlite3>
 
 #include <memory>
+#include <vector>
 
 #include "Alias.hpp"
 #include "Group.hpp"
@@ -19,8 +20,8 @@ namespace dbo = Wt::Dbo;
 namespace DB
 {
 
-typedef dbo::collection< dbo::ptr<DB::Schema::Alias> > Aliases;
-typedef dbo::collection< dbo::ptr<DB::Schema::Subscription> > Subscriptions;
+typedef std::vector<dbo::ptr<DB::Schema::Alias> > Aliases;
+typedef std::vector<dbo::ptr<DB::Schema::Subscription> > Subscriptions;
 
 class DBDriver
 {
@@ -29,14 +30,16 @@ public:
 
     /**
      * Begins transaction.
+     * @return int Transaction id.
      */
-    void startTransaction();
+    int startTransaction();
 
     /**
      * Ends transaction.
+     * @param int Transaction id to close.
      * @param bool If true, commits changes, otherwise rollbacks.
      */
-    void endTransaction(bool = true);
+    void endTransaction(int,bool = true);
 
     /**
      * Stores given Alias in database.
@@ -53,17 +56,12 @@ public:
     /**
      * Method returns aliases collection.
      * @return Aliases Collection of aliases stored in database.
-     * TODO:
-     * Could be better solution, with wrapper on dbo::colection,
-     * to ensure encapsulation.
      */
     Aliases getAliases();
 
     /**
      * Method returns subscriptions collection.
      * @return Subscriptions Collection of subscriptions stored in database.
-     * TODO:
-     * @see getAliases()
      */
     Subscriptions getSubscriptions();
 private:
@@ -74,8 +72,8 @@ private:
 
     dbo::backend::Sqlite3 sqlite3;
     dbo::Session session;
-
-    std::shared_ptr<dbo::Transaction> transaction_;
+public:
+    std::vector<std::shared_ptr<dbo::Transaction> > transactions_;
 
     static DBDriver* instance;
     static boost::mutex instanceLock;
