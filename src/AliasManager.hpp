@@ -2,18 +2,17 @@
 #ifndef _ALIAS_MANAGER_HPP_
 #define _ALIAS_MANAGER_HPP_
 
-#include <glibmm/ustring.h>
 #include <boost/bimap.hpp>
 #include <boost/optional.hpp>
 #include <iostream>
 #include <map>
+#include <set>
 #include "DB/DBDriver.hpp"
 #include "DialogManager.hpp"
 #include "types.hpp"
 
-enum SubPhase { REQUESTED, ONE_SIDED, REJECTED, FULL };
-
 class DialogManager;
+
 
 /**
  * Class used to two things:
@@ -46,6 +45,13 @@ public:
      * (everything that need to send sth)
      */
     void setDialogManager( DialogManager& sender_ );
+
+    /**
+     * Return list of registred aliases.
+     * The list does not contains any kind of knowledge about IPs
+     * @return std::set<friendRow> list of registred aliases
+     */
+    std::set<FriendRow> getAliasList();
 
     /**
      * Gets alias from given ip

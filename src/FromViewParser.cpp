@@ -28,7 +28,9 @@ void FromViewParser::doCommand( const ChaTIN::Alias& alias, const Glib::ustring&
     else
     {
         XMLPackageCreator xml("msg", input);
+        std::cout << "PRZED WYSLANIEM" ;
         dialogManager.sendTo(alias, xml.getXML());        
+        std::cout << "PO WYSŁANIU";
         TIPtr idWrite( new ChaTIN::Alias(alias) );
         aq.push( boost::bind(&ChatWindow::showIncomingMessage, _1, idWrite, "", input, false ));
     }
@@ -88,7 +90,6 @@ bool FromViewParser::tryParseGeneral( const Glib::ustring& input )
     {
         Glib::ustring toOpen = input.substr(6);
         //FIXME Check if alias is valid
-        //FIXME ALWAYS OPENING NEW ONE 
         TIPtr idOpen = TIPtr( new ChaTIN::Alias( toOpen ) );
         aq.push( boost::bind(&ChatWindow::openTab, _1, idOpen, true ) );    
         return true;
@@ -130,7 +131,8 @@ bool FromViewParser::tryParseGeneral( const Glib::ustring& input )
         }
         ChaTIN::Alias alias(params[0]);
         ChaTIN::IPv6 ip(params[1]);
-        aliasManager.registerAlias( alias, ip, true );
+        aliasManager.registerAlias( alias, ip, false );
+        aq.push( boost::bind( &ChatWindow::initializeFriends, _1, aliasManager.getAliasList() ) );
         return true;
     }
 
@@ -155,6 +157,11 @@ bool FromViewParser::tryParseGeneral( const Glib::ustring& input )
         return true;
     }
 
+    if( input.substr(1,4) == "load" )
+    {
+        aq.push( boost::bind( &ChatWindow::initializeFriends, _1, aliasManager.getAliasList() ) );
+    }
+
     return false;
 }
 
@@ -162,12 +169,20 @@ void FromViewParser::operator()()
 {
     for(;;)
     {
-        bq.front()->doCommand(*this);
+        try
+        {
+            bq.front()->doCommand(*this);
+        }
+        catch( std::exception e )
+        {     
+            TIPtr logId = TIPtr( new ChaTIN::LogName("LOG") );
+            aq.push( boost::bind(&ChatWindow::showIncomingMessage, _1, logId, "ERROR: ", e.what(), true ));
+        }
         bq.pop();
     }
 }
   
 bool FromViewParser::isInputCommand( const Glib::ustring& input )
-{ 
-     return input[0]=='/';
+{         
+     return input.size() > 0 && input[0]=='/';
 }   

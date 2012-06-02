@@ -12,7 +12,6 @@
 #include "FromViewParser.hpp"
 #include "types.hpp"
 
-
 /**
  * Class holding whole GUI in it
  * It uses gtkmm to create simple window for chating
@@ -45,8 +44,10 @@ protected:
     {
         public:
             FriendData();
-            Gtk::TreeModelColumn<Glib::ustring> alias; 
-            Gtk::TreeModelColumn<Glib::ustring> fullAlias;
+            Gtk::TreeModelColumn<ChaTIN::Alias> alias;
+            Gtk::TreeModelColumn<Glib::ustring> aliasShow;
+            Gtk::TreeModelColumn<SubPhase> phase;
+            Gtk::TreeModelColumn<Glib::ustring> phaseShow;
     };
 
     /* SIGNAL HANDLERS */
@@ -112,7 +113,7 @@ public:
      * Adds position to friend list which will have given name
      * @param Glib::ustring name of friend
      */
-    void addFriend( Glib::ustring name );
+    void addFriend( FriendRow row );
 
     /**
      * Method witch will close current tab and destroy it TextView 
@@ -136,14 +137,13 @@ public:
     void appendTextToTab( TPtr tab, Glib::ustring text );
 
 
-private:
-    /* INITIALIZATION */
-
     /**
      * Loads friends list (adds friends to the list by calling addFriend)
      */
-    void initializeFriends();
-    
+    void initializeFriends( std::set<FriendRow> );
+
+private:
+    /* INITIALIZATION */    
     /**
      * register signals functions in gtk
      */

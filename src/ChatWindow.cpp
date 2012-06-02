@@ -9,9 +9,8 @@ ChatWindow::ChatWindow( SafeQueue<EPtr>& bq, SafeQueue<Action>& aq)
     set_default_size(600,400);
     set_border_width(10);
 
-    buildTreeModel();    
+    buildTreeModel();
     initializeTabs();
-    initializeFriends();
     registerSignals();
     createInterface();
 
@@ -24,8 +23,10 @@ ChatWindow::~ChatWindow()
 
 ChatWindow::FriendData::FriendData()
 {
+    add(aliasShow);
+    add(phaseShow);
     add(alias);
-    add(fullAlias);
+    add(phase);
 }       
 
 void ChatWindow::textInHandle()
@@ -134,11 +135,13 @@ void ChatWindow::switchTabHandle( GtkNotebookPage* /*page*/, guint page_num )
 }
 
 
-void ChatWindow::addFriend( Glib::ustring name )
+void ChatWindow::addFriend( FriendRow frow )
 {
     Gtk::TreeModel::Row row = *(friendListModel->append());
-    row[friends.alias] = cutAlias(name);
-    row[friends.fullAlias] = name;
+    row[friends.alias] = frow.first;
+    row[friends.phase] = frow.second;
+    row[friends.aliasShow] = frow.first;
+    row[friends.phaseShow] = boost::lexical_cast<std::string>(frow.second);
 }
 
 void ChatWindow::closeCurrentTab()
@@ -179,12 +182,11 @@ void ChatWindow::appendTextToTab( TPtr tab, Glib::ustring text )
     tab->scroll_to_iter(iter,0.0);
 }
 
-void ChatWindow::initializeFriends()
+void ChatWindow::initializeFriends( std::set<FriendRow> friendList )
 {
-    //TODO: const size names
-    addFriend("Janek");
-    addFriend("Maciej");
-    addFriend("Andrzej");
+    friendListModel->clear();
+    for( auto& i : friendList )
+        addFriend(i);
 }
 
 void ChatWindow::registerSignals()
@@ -201,7 +203,7 @@ void ChatWindow::createInterface()
     friendListScroll.add(friendList);
     friendListScroll.set_policy(Gtk::POLICY_NEVER, Gtk::POLICY_AUTOMATIC);
     mainBox.pack_start(friendListScroll, Gtk::PACK_SHRINK);
-    mainBox.pack_start(rightBox);                      
+    mainBox.pack_start(rightBox);
     rightBox.pack_start(chatTabs);
     rightBox.pack_start(bottomBox, Gtk::PACK_SHRINK);
     bottomBox.pack_start(chatField);
@@ -215,7 +217,8 @@ void ChatWindow::buildTreeModel()
     friendList.set_can_focus(false);
     friendListModel = Gtk::TreeStore::create(friends);
     friendList.set_model(friendListModel);
-    friendList.append_column("Znajomi", friends.alias);
+    friendList.append_column("Imie", friends.aliasShow);
+    friendList.append_column("Stan", friends.phaseShow);
 }
 
 void ChatWindow::initializeTabs()

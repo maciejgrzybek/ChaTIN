@@ -17,9 +17,14 @@ typedef std::shared_ptr<ChatTab> TPtr;
 namespace ChaTIN
 {
 class TabId;
+class Alias;
 }
+
 typedef std::shared_ptr<ChaTIN::TabId> TIPtr;
 
+enum SubPhase { REQUESTED, ONE_SIDED, REJECTED, FULL, NONE };
+enum Status { ONLINE, OFFLINE, DK };
+typedef std::pair<ChaTIN::Alias, SubPhase> FriendRow;
 
 namespace ChaTIN
 {
@@ -59,8 +64,10 @@ public:
     /**
      * Copy from IPv6 adress its valid alias anyway
      */
+    Alias();
     Alias(const IPv6&);
     Alias(const Glib::ustring&);
+    virtual ~Alias();
     bool operator==( const Alias& ) const;
     virtual TabIdType getType() const;
     virtual TPtr createTab() const;

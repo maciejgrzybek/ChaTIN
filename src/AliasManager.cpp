@@ -13,6 +13,29 @@ void AliasManager::setDialogManager( DialogManager& sender_ )
     sender = sender_;
 }
 
+std::set<FriendRow> AliasManager::getAliasList()
+{
+    std::set<FriendRow> result;
+
+    //REGISTERED ALIASES
+    for( auto& i : dictionary.left )
+    {
+        result.insert( std::make_pair( i.first, NONE ) );
+    }
+
+    //REGISTERED SUBS
+    for( auto& i : subscriptions)
+    {
+        ChaTIN::Alias alias = getAlias(i.first);
+        auto it = result.find(std::make_pair(alias,NONE));
+        if( it != result.end() )
+            result.erase(it);
+
+        result.insert( std::make_pair( alias, i.second ));
+    }
+    return result;
+}
+
 ChaTIN::Alias AliasManager::getAlias( const ChaTIN::IPv6& ip ) const
 {
     /*BiStringMap::right_iterator*/auto iter = dictionary.right.find( ip );
@@ -33,18 +56,12 @@ ChaTIN::IPv6 AliasManager::getIP( const ChaTIN::Alias& alias ) const
     {
         return iter->second; 
     }
-    else
+    if( Socket::Socket::isValidIP( alias ) )
     {
-        if( Socket::Socket::isValidIP( alias ) )
-        {
-            return ChaTIN::IPv6(std::string(alias));
-        }
-        else
-        {
-            //FIXME 
-            //THROW AliasDoesNotExistException
-        }    
+        return ChaTIN::IPv6(std::string(alias));
     }
+    //FIXME 
+    //THROW AliasDoesNotExistException  
 }
 
 void AliasManager::registerAlias( 

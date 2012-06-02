@@ -26,10 +26,14 @@ namespace ChaTIN
     {
         return getType()==toCmp.getType() && *this==(const LogName&)toCmp;
     }
-
+    Alias::Alias() : Glib::ustring("invalid")
+    {}
     Alias::Alias( const IPv6& ip ) : Glib::ustring( static_cast<Glib::ustring>(ip) )
     {}
     Alias::Alias( const Glib::ustring& alias ) : Glib::ustring(alias)
+    {}
+
+    Alias::~Alias()
     {}
 
     TabIdType Alias::getType() const
