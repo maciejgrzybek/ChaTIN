@@ -16,7 +16,7 @@ obj/Socket.o: src/Socket.cpp src/Socket.hpp
 	g++ src/Socket.cpp -c $(GEN) $(GLIBI) -o $@
 obj/Exception.o: src/Exception.cpp src/Exception.hpp
 	g++ src/Exception.cpp -c $(GEN) $(GLIBI) -o $@
-obj/AliasManager.o: src/AliasManager.cpp src/AliasManager.hpp
+obj/AliasManager.o: obj/DBDriver.o src/AliasManager.cpp src/AliasManager.hpp
 	g++ src/AliasManager.cpp -c $(GEN) $(GTKI)  -o $@
 obj/ConferenceManager.o: src/ConferenceManager.cpp src/ConferenceManager.hpp
 	g++ src/ConferenceManager.cpp -c $(GEN) -o $@
