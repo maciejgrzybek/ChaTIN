@@ -60,16 +60,19 @@ void ToViewParser::incomingConfMsg( ChaTIN::IPv6 ip, Glib::ustring msg, otherAtt
 void ToViewParser::incomingSubRequest( ChaTIN::IPv6 ip, Glib::ustring, otherAttributes )
 {
     am.wasRequested( ip );
+    aq.push( boost::bind( &ChatWindow::initializeFriends, _1, am.getAliasList() ) );
 }
 
 void ToViewParser::incomingAcceptSub( ChaTIN::IPv6 ip, Glib::ustring, otherAttributes )
 {
     am.wasAccepted( ip );
+    aq.push( boost::bind( &ChatWindow::initializeFriends, _1, am.getAliasList() ) );
 }
 
 void ToViewParser::incomingRejectSub( ChaTIN::IPv6 ip, Glib::ustring, otherAttributes )
 {
     am.wasRejected( ip );
+    aq.push( boost::bind( &ChatWindow::initializeFriends, _1, am.getAliasList() ) );
 }
 
 void ToViewParser::parse( const ChaTIN::IncomingMassage& income )

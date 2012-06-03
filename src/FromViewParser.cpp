@@ -147,6 +147,7 @@ bool FromViewParser::tryParseGeneral( const Glib::ustring& input )
     {        
         ChaTIN::IPv6 ip( aliasManager.getIP( ChaTIN::Alias( input.substr(5) ) ) );
         aliasManager.requestSub( ip );
+        aq.push( boost::bind( &ChatWindow::initializeFriends, _1, aliasManager.getAliasList() ) );
         return true;
     }
 
@@ -154,6 +155,7 @@ bool FromViewParser::tryParseGeneral( const Glib::ustring& input )
     {
         ChaTIN::IPv6 ip( aliasManager.getIP( ChaTIN::Alias( input.substr(8) ) ) );
         aliasManager.acceptSub( ip );
+        aq.push( boost::bind( &ChatWindow::initializeFriends, _1, aliasManager.getAliasList() ) );
         return true;
     }
 
@@ -161,12 +163,14 @@ bool FromViewParser::tryParseGeneral( const Glib::ustring& input )
     {
         ChaTIN::IPv6 ip( aliasManager.getIP( ChaTIN::Alias( input.substr(8) ) ) );
         aliasManager.rejectSub( ip );
+        aq.push( boost::bind( &ChatWindow::initializeFriends, _1, aliasManager.getAliasList() ) );
         return true;
     }
 
     if( input.substr(1,4) == "load" )
     {
         aq.push( boost::bind( &ChatWindow::initializeFriends, _1, aliasManager.getAliasList() ) );
+        return true;
     }
 
     return false;
