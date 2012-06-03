@@ -144,22 +144,22 @@ bool FromViewParser::tryParseGeneral( const Glib::ustring& input )
     }
 
     if( input.substr(1,4) == "sub " )
-    {
-        ChaTIN::IPv6 ip( input.substr(5) );
+    {        
+        ChaTIN::IPv6 ip( aliasManager.getIP( ChaTIN::Alias( input.substr(5) ) ) );
         aliasManager.requestSub( ip );
         return true;
     }
 
     if( input.substr(1,7) == "subakc " )
     {
-        ChaTIN::IPv6 ip( input.substr(8) );
+        ChaTIN::IPv6 ip( aliasManager.getIP( ChaTIN::Alias( input.substr(8) ) ) );
         aliasManager.acceptSub( ip );
         return true;
     }
 
     if( input.substr(1,7) == "subdec " )
     {
-        ChaTIN::IPv6 ip( input.substr(8) );
+        ChaTIN::IPv6 ip( aliasManager.getIP( ChaTIN::Alias( input.substr(8) ) ) );
         aliasManager.rejectSub( ip );
         return true;
     }

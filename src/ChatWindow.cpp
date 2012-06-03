@@ -166,6 +166,27 @@ void ChatWindow::closeCurrentTab()
     }    
 }
 
+Glib::ustring shortText( Glib::ustring in, std::size_t limit )
+{
+    if( in.size()<=limit ) 
+        return in;    
+
+    Glib::ustring result = "";
+    std::size_t size = in.size();    
+    for( std::size_t i = 0; size>0; ++i, size-=limit )
+    {
+        std::size_t s = size>limit ? limit : size;
+        try{
+            result += in.substr(i*limit, s)+"\n";
+        }
+        catch(...)
+        {
+            break;
+        }
+    }
+    return result;
+}
+
 void ChatWindow::showIncomingMessage( TIPtr id, Glib::ustring author, Glib::ustring message, bool incoming )
 {
     TPtr tab = openTab(id, false);
@@ -176,6 +197,7 @@ void ChatWindow::showIncomingMessage( TIPtr id, Glib::ustring author, Glib::ustr
     else
         toShow = "ME ----> "+message+"\n";
 
+    toShow = shortText( toShow, 80 );
     appendTextToTab( tab, toShow ); //FIXME should be ChatTab method
 }
 
