@@ -85,7 +85,7 @@ private:
     dbo::backend::Sqlite3 sqlite3;
     dbo::Session session;
 public:
-    std::vector</*std::shared_ptr<*/dbo::Transaction* /*> */> transactions_;
+    std::vector<std::shared_ptr<dbo::Transaction> > transactions_;
 
     static DBDriver* instance;
     static boost::mutex instanceLock;

@@ -104,7 +104,7 @@ Subscriptions DBDriver::getSubscriptions()
 
 int DBDriver::startTransaction()
 {
-    transactions_.push_back(/*std::shared_ptr<dbo::Transaction>(*/new dbo::Transaction(session));//);
+    transactions_.push_back(std::shared_ptr<dbo::Transaction>(new dbo::Transaction(session)));
     return transactions_.size()-1;
 }
 
@@ -112,7 +112,6 @@ void DBDriver::endTransaction(int id,bool politelty)
 {
     if(politelty && transactions_[id]->isActive())
         transactions_[id]->commit();
-    /*else
-        transactions_[id].reset();*/
+    transactions_[id].reset();
 }
 
