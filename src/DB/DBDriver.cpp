@@ -42,16 +42,30 @@ DBDriver::DBDriver() : sqlite3("chatin.db")
   }
 }
 
-void DBDriver::store(Schema::Alias& alias)
+void DBDriver::store(Schema::Alias* alias)
 {
-    ::dbo::ptr<Schema::Alias> a(&alias);
-    session.add(a);
+    int transid = startTransaction();
+    session.add(alias);
+    endTransaction(transid);
 }
 
-void DBDriver::store(Schema::Subscription& sub)
+void DBDriver::store(Schema::Subscription* sub)
 {
-    ::dbo::ptr<Schema::Subscription> s(&sub);
-    session.add(s);
+    int transid = startTransaction();
+    session.add(sub);
+    endTransaction(transid);
+}
+
+void DBDriver::deleteAlias(const ChaTIN::IPv6& ip)
+{
+    const char* ip_c = ip.c_str();
+    dbo::ptr<Schema::Alias> toRemove = session.find<Schema::Alias>().where("ip = ?").bind(ip_c);
+}
+
+void DBDriver::deleteAlias(const ChaTIN::Alias& alias)
+{
+    const char* alias_c = alias.c_str();
+    dbo::ptr<Schema::Alias> toRemove = session.find<Schema::Alias>().where("alias = ?").bind(alias_c);
 }
 
 Aliases DBDriver::getAliases()
@@ -90,15 +104,15 @@ Subscriptions DBDriver::getSubscriptions()
 
 int DBDriver::startTransaction()
 {
-    transactions_.push_back(std::shared_ptr<dbo::Transaction>(new dbo::Transaction(session)));
+    transactions_.push_back(/*std::shared_ptr<dbo::Transaction>(*/new dbo::Transaction(session));//);
     return transactions_.size()-1;
 }
 
 void DBDriver::endTransaction(int id,bool politelty)
 {
-    if(politelty)
+    if(politelty && transactions_[id]->isActive())
         transactions_[id]->commit();
-
-    transactions_[id].reset();
+    /*else
+        transactions_[id].reset();*/
 }
 

@@ -43,15 +43,27 @@ public:
 
     /**
      * Stores given Alias in database.
-     * @param Schema::Alias& Reference to Alias to store.
+     * @param Schema::Alias& Pointer to Alias to store.
      */
-    void store(Schema::Alias&);
+    void store(Schema::Alias*);
 
     /**
      * Stores given Subscription in database.
-     * @param Schema::Subscription& Reference to Subscription to store.
+     * @param Schema::Subscription* Pointer to Subscription to store.
      */
-    void store(Schema::Subscription&);
+    void store(Schema::Subscription*);
+
+    /**
+     * Removes given alias from database.
+     * @param const ChaTIN::IPv6& Reference to IPv6 of alias to be removed.
+     */
+    void deleteAlias(const ChaTIN::IPv6&);
+
+    /**
+     * Removes given alias from database.
+     * @param const ChaTIN::Alias& Reference to Alias to be removed.
+     */
+    void deleteAlias(const ChaTIN::Alias&);
 
     /**
      * Method returns aliases collection.
@@ -73,7 +85,7 @@ private:
     dbo::backend::Sqlite3 sqlite3;
     dbo::Session session;
 public:
-    std::vector<std::shared_ptr<dbo::Transaction> > transactions_;
+    std::vector</*std::shared_ptr<*/dbo::Transaction* /*> */> transactions_;
 
     static DBDriver* instance;
     static boost::mutex instanceLock;

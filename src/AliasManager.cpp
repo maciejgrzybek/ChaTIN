@@ -72,7 +72,9 @@ void AliasManager::registerAlias(
     {
         requestSub( ip );
     }
-    saveSubscriptionsToDB();
+    DB::Schema::Alias* a = new DB::Schema::Alias(alias,ip);
+    db.store(a);
+//    saveSubscriptionsToDB();
 }
 
 void AliasManager::deleteAliasByIP( const ChaTIN::IPv6& ip )
@@ -81,6 +83,7 @@ void AliasManager::deleteAliasByIP( const ChaTIN::IPv6& ip )
     if(iter!=dictionary.right.end())
     {
         dictionary.right.erase(iter);
+        db.deleteAlias(ip); // FIXME should be surrounded by try+catch
     }
     else
     {
@@ -95,6 +98,7 @@ void AliasManager::deleteAliasByAlias( const ChaTIN::Alias& alias )
     if(iter!=dictionary.left.end())
     {
         dictionary.left.erase(iter);
+        db.deleteAlias(alias); // FIXME should be surrounded by try+catch
     }
     else
     {
@@ -228,7 +232,7 @@ void AliasManager::saveSubscriptionsToDB()
     BiStringMap::const_iterator endIter = dictionary.end();
     for(BiStringMap::const_iterator iter = dictionary.begin(); iter != endIter; ++iter)
     {
-        DB::Schema::Alias alias(iter->left,iter->right);
+        DB::Schema::Alias* alias = new DB::Schema::Alias(iter->left,iter->right);
         db.store(alias);
     }
     db.endTransaction(transid);
@@ -239,7 +243,7 @@ void AliasManager::saveSubscriptionsToDB()
     for(std::map<ChaTIN::IPv6, SubPhase>::const_iterator iter = subscriptions.begin();
         iter != endIt; ++iter)
     {
-        DB::Schema::Subscription sub(static_cast<std::string>(iter->first),iter->second);
+        DB::Schema::Subscription* sub = new DB::Schema::Subscription(static_cast<std::string>(iter->first),iter->second);
         db.store(sub);
     }
     db.endTransaction(transid);
