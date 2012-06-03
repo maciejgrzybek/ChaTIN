@@ -176,15 +176,15 @@ void FromViewParser::operator()()
 {
     for(;;)
     {
-        //try
-        //{
+        try
+        {
             bq.front()->doCommand(*this);
-        //}
-        /*catch( std::exception e )
+        }
+        catch( std::exception& e )
         {     
             TIPtr logId = TIPtr( new ChaTIN::LogName("LOG") );
             aq.push( boost::bind(&ChatWindow::showIncomingMessage, _1, logId, "ERROR: ", e.what(), true ));
-        }*/
+        }
         bq.pop();
     }
 }

@@ -90,6 +90,9 @@ InputIterator pointerFind( InputIterator first, InputIterator last, const T& val
 
 std::pair<bool, TPtr> ChatWindow::isTabExist( TIPtr tabId )
 {
+    if( *tabId == ChaTIN::LogName("LOG") )
+        return std::pair<bool,TPtr>(true, logBox);
+
     std::set<TPtr>::iterator i = myfind(dialogBoxes.begin(), dialogBoxes.end(), tabId);
     bool result = ( i != dialogBoxes.end() );
     return std::pair<bool,TPtr>(result, result ? *i : TPtr(NULL) );
