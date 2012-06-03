@@ -120,7 +120,7 @@ void AliasManager::requestSub( const ChaTIN::IPv6& alias )
         {
             //FIXME throw NoDialogManagerGivenException
         }
-        XMLPackageCreator xml("iky","");
+        XMLPackageCreator xml("iky","Can i subscribe you?");
         sender->sendTo( alias , xml.getXML() );
                                         //FIXME try catch - what if he is off AliasNotConnectedException
         subscriptions[alias] = ONE_SIDED;
@@ -136,7 +136,7 @@ void AliasManager::acceptSub( const ChaTIN::IPv6& alias )
         {
             //FIXME throw NoDialogManagerGivenException
         }
-        XMLPackageCreator xml("ikya","");
+        XMLPackageCreator xml("ikya","Yes you can.");
         sender->sendTo( alias , xml.getXML() );
                                         //FIXME try catch - whaat if he is off AliasNotConnectedException
         subscriptions[alias] = FULL;
@@ -162,7 +162,7 @@ void AliasManager::rejectSub( const ChaTIN::IPv6& alias )
     {
         //FIXME throw NoDialogManagerGivenException
     }
-    XMLPackageCreator xml("idky","");
+    XMLPackageCreator xml("idky","No you can't.");
     sender->sendTo( alias, xml.getXML() );
     //FIXME try catch - whaat if he is off AliasNotConnectedException
     subscriptions[alias] = REJECTED;
