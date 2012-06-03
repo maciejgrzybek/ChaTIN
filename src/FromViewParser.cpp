@@ -3,6 +3,7 @@
 #include "XMLPackageCreator.hpp"
 #include "SafeQueue.hpp"
 #include "ChatTab.hpp"
+#include "Exception.hpp"
 #include <iostream>
 #include <boost/bind.hpp>
 #include <boost/function.hpp>
@@ -28,9 +29,7 @@ void FromViewParser::doCommand( const ChaTIN::Alias& alias, const Glib::ustring&
     else
     {
         XMLPackageCreator xml("msg", input);
-        std::cout << "PRZED WYSLANIEM" ;
         dialogManager.sendTo(alias, xml.getXML());        
-        std::cout << "PO WYSŁANIU";
         TIPtr idWrite( new ChaTIN::Alias(alias) );
         aq.push( boost::bind(&ChatWindow::showIncomingMessage, _1, idWrite, "", input, false ));
     }
@@ -89,8 +88,16 @@ bool FromViewParser::tryParseGeneral( const Glib::ustring& input )
     if( input.substr(1,5) == "open " )
     {
         Glib::ustring toOpen = input.substr(6);
-        //FIXME Check if alias is valid
-        TIPtr idOpen = TIPtr( new ChaTIN::Alias( toOpen ) );
+        TIPtr idOpen;
+        //Choose if he put IP or ALIAS
+        try
+        {
+            idOpen = TIPtr( new ChaTIN::Alias( aliasManager.getAlias( ChaTIN::IPv6(toOpen) ) ) );
+        }
+        catch( Socket::WrongAddressException& e )
+        {
+            idOpen = TIPtr( new ChaTIN::Alias( toOpen ) );
+        }
         aq.push( boost::bind(&ChatWindow::openTab, _1, idOpen, true ) );    
         return true;
     }
@@ -169,15 +176,15 @@ void FromViewParser::operator()()
 {
     for(;;)
     {
-        try
-        {
+        //try
+        //{
             bq.front()->doCommand(*this);
-        }
-        catch( std::exception e )
+        //}
+        /*catch( std::exception e )
         {     
             TIPtr logId = TIPtr( new ChaTIN::LogName("LOG") );
             aq.push( boost::bind(&ChatWindow::showIncomingMessage, _1, logId, "ERROR: ", e.what(), true ));
-        }
+        }*/
         bq.pop();
     }
 }

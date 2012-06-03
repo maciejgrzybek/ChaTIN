@@ -14,6 +14,9 @@ ChatWindow::ChatWindow( SafeQueue<EPtr>& bq, SafeQueue<Action>& aq)
     registerSignals();
     createInterface();
 
+    EPtr event = selectedTab->createEvent("/load");
+    bq.push(event);
+
     set_focus(chatField);
 }
 ChatWindow::~ChatWindow()
@@ -54,12 +57,12 @@ bool ChatWindow::validateAlias( Glib::ustring )
 
 void ChatWindow::friendPickHandle(const Gtk::TreeModel::Path& path, Gtk::TreeViewColumn* /*column*/)
 {    
-    /*
     Gtk::TreeModel::iterator iter = friendListModel->get_iter(path);
     if(iter)
     {
-        openDialogTab((*iter)[friends.fullAlias]);
-    }*/ 
+        TIPtr idOpen(new ChaTIN::Alias(iter->get_value(friends.alias)));
+        openTab(idOpen, true);
+    } 
 }
 
 TPtr ChatWindow::unsafeOpenTab( TIPtr tabId )
