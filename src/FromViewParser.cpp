@@ -112,7 +112,7 @@ bool FromViewParser::tryParseGeneral( const Glib::ustring& input )
             return true;
         }
         TIPtr idOpen( new ChaTIN::ConferenceId( ChaTIN::IPv6(params[1]), params[0] )); //FIXME put valid myIp
-        for( int i = 1; i < params.size(); ++i )
+        for(unsigned int i = 1; i < params.size(); ++i)
         {
             members.push_back(ChaTIN::IPv6(params[i]));
         }
