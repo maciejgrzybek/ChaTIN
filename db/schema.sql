@@ -6,12 +6,14 @@ CREATE TABLE `conference` ( `id` INTEGER NOT NULL, `ownerIp` TEXT NOT NULL, `nam
 CREATE TABLE `conferenceMember` ( `id` INTEGER NOT NULL, `ip` TEXT NOT NULL, `conferenceId` INTEGER NOT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`conferenceId`) REFERENCES `conference`(`id`) );
 
 CREATE TRIGGER alias_unique BEFORE INSERT ON alias
+BEGIN
+SELECT CASE
 WHEN
 (
     SELECT COUNT() as cnt FROM
         (SELECT alias from alias WHERE alias = new.alias)
         WHERE cnt > 0
 )
-BEGIN
-FAIL();
+THEN RAISE(FAIL,'Alias already exists')
+END;
 END;

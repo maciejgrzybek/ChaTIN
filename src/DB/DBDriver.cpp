@@ -35,6 +35,7 @@ DBDriver::DBDriver() : sqlite3("chatin.db")
   try
   {
     session.createTables();
+    session.execute("CREATE TRIGGER alias_unique BEFORE INSERT ON alias BEGIN SELECT CASE WHEN ( SELECT COUNT() as cnt FROM (SELECT alias from alias WHERE alias = new.alias) WHERE cnt > 0 ) THEN RAISE(FAIL,'Alias already exists') END; END;"); // Alias uniqueness trigger creation
   }
   //catch(::dbo::backend::Sqlite3Exception& e)
   catch(Wt::Dbo::Exception&) // TODO should catch Wt::Dbo::backend::Sqlite3Exception
