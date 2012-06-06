@@ -5,8 +5,10 @@ GLIBL=`pkg-config glibmm-2.4 --libs`
 GTKI=`pkg-config gtkmm-2.4 --cflags`
 GTKL=`pkg-config gtkmm-2.4 --libs`
 LFLAGS=-ltinyxml -lboost_thread -lpthread -lwt -lwtdbo -lwtdbosqlite3
+OBJS = obj/ChatWindow.o obj/Socket.o obj/AliasManager.o obj/ConferenceManager.o obj/Dialog.o obj/ToViewParser.o obj/DialogManager.o obj/Config.o obj/types.o obj/XMLException.o obj/ConferenceException.o obj/Exception.o obj/FromViewParser.o obj/XMLPackageCreator.o obj/ChatTab.o obj/Event.o obj/DBDriver.o
 
-all: obj/ChatWindow.o obj/main.o obj/Socket.o obj/AliasManager.o obj/ConferenceManager.o obj/Dialog.o obj/ToViewParser.o obj/DialogManager.o obj/Config.o obj/types.o obj/XMLException.o obj/ConferenceException.o obj/Exception.o obj/FromViewParser.o obj/XMLPackageCreator.o obj/ChatTab.o obj/Event.o obj/DBDriver.o
+
+all: $(OBJS) obj/main.o
 	g++ $^ $(GEN) $(GTKL) $(LFLAGS) -o bin/ChaTIN
 obj/main.o: src/main.cpp src/ChatWindow.hpp
 	g++ src/main.cpp -c $(GEN) $(GTKI) -o $@
@@ -61,3 +63,9 @@ clean:
 debug: GEN += -DDEBUG -Wall -Wextra -g3
 debug: O=0
 debug: all
+
+test: LFLAGS += -lboost_test_exec_monitor
+test: $(OBJS) obj/test.o
+	g++ $^ $(GEN) $(GTKL) $(LFLAGS) -o test/run
+obj/test.o: obj/Socket.o test/SocketTest.cpp
+	g++ test/SocketTest.cpp -c $(GEN) -o $@
