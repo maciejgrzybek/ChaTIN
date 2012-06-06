@@ -38,7 +38,7 @@ BOOST_AUTO_TEST_CASE( communication_test )
 {
     Socket::ServerSocket s1("::1",1026);
     Socket::ClientSocket c1;
-    s1.listen();
+    BOOST_REQUIRE_NO_THROW(s1.listen());
     BOOST_REQUIRE_NO_THROW(c1.connect("::1",1026)); // can't throw, otherwise end of test and failure
     std::string msg = "test message";
     BOOST_REQUIRE_NO_THROW(c1.send(msg)); // if thrown - sending does not work
@@ -48,3 +48,17 @@ BOOST_AUTO_TEST_CASE( communication_test )
     BOOST_CHECK_EQUAL(inCli->receive(),msg);
 }
 
+BOOST_AUTO_TEST_CASE( sending_connectionless_test )
+{
+    Socket::ClientSocket c1;
+    std::string msg = "test message";
+    // send data without being connected
+    BOOST_REQUIRE_THROW(c1.send(msg),Socket::SendFailureException);
+}
+
+BOOST_AUTO_TEST_CASE( receiving_connectionless_test )
+{
+    Socket::ClientSocket c1;
+    // receive without being connected
+    BOOST_REQUIRE_THROW(c1.receive(),Socket::SocketException);
+}
