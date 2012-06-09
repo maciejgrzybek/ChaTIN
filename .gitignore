@@ -1,3 +1,5 @@
 *.o
 doc/*
+bin/*
+!bin/.placeholder
 chatin.db
