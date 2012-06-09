@@ -185,11 +185,13 @@ bool FromViewParser::tryParseGeneral( const Glib::ustring& input )
         TIPtr logId = TIPtr( new ChaTIN::LogName("LOG") );
         aq.push( boost::bind(&ChatWindow::showIncomingMessage, _1, logId, "", helpmsg, true ));
         }
+        return true;
     }
     
     if( input.substr(1,4) == "arch" )
     {
         //FIXME Loading history here
+        return true;
     }
 
     return false;
