@@ -118,6 +118,7 @@ void AliasManager::requestSub( const ChaTIN::IPv6& alias )
     {
         if(!sender)
         {
+            return;
             //FIXME throw NoDialogManagerGivenException
         }
         XMLPackageCreator xml("iky","Can i subscribe you?");
@@ -134,6 +135,7 @@ void AliasManager::acceptSub( const ChaTIN::IPv6& alias )
     {
         if(!sender)
         {
+            return;
             //FIXME throw NoDialogManagerGivenException
         }
         XMLPackageCreator xml("ikya","Yes you can.");
@@ -160,6 +162,7 @@ void AliasManager::rejectSub( const ChaTIN::IPv6& alias )
     }
     if(!sender)
     {
+        return;
         //FIXME throw NoDialogManagerGivenException
     }
     XMLPackageCreator xml("idky","No you can't.");
@@ -170,7 +173,8 @@ void AliasManager::rejectSub( const ChaTIN::IPv6& alias )
 
 void AliasManager::wasRequested(const ChaTIN::IPv6& ip )
 {
-    if( subscriptions.find(ip) == subscriptions.end() )
+    if( subscriptions.find(ip) == subscriptions.end() 
+        || subscriptions[ip] == NONE )
     {
         subscriptions[ip] = REQUESTED;
         return;
