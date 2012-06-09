@@ -1,0 +1,3 @@
+*.o
+doc/*
+chatin.db
