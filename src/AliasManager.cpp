@@ -109,8 +109,8 @@ void AliasManager::deleteAliasByAlias( const ChaTIN::Alias& alias )
 
 void AliasManager::requestSub( const ChaTIN::IPv6& alias )
 {
-    //FIXME do it like in rejectSub
-    if( subscriptions[alias] == REQUESTED )
+    if( subscriptions.find(alias) != subscriptions.end()
+        && subscriptions[alias] == REQUESTED )
     {
         acceptSub(alias);
     }
@@ -130,8 +130,8 @@ void AliasManager::requestSub( const ChaTIN::IPv6& alias )
 
 void AliasManager::acceptSub( const ChaTIN::IPv6& alias )
 {
-    //FIXME do it like in rejectSub
-    if( subscriptions[alias] == REQUESTED )
+    if( subscriptions.find(alias) != subscriptions.end()
+        && subscriptions[alias] == REQUESTED )
     {
         if(!sender)
         {
@@ -188,16 +188,15 @@ void AliasManager::wasRequested(const ChaTIN::IPv6& ip )
 
 void AliasManager::wasRejected( const ChaTIN::IPv6& alias )
 { 
-    //FIXME check if exists
-    if( subscriptions[alias] == ONE_SIDED )
-    {
-        subscriptions[alias] = REJECTED;
-    }
+    subscriptions[alias] = REJECTED;
 }
 
 void AliasManager::wasAccepted( const ChaTIN::IPv6& alias )
 {
-    //FIXME check if exists
+    if( subscriptions.find(alias) == subscriptions.end() )
+    {
+        subscriptions[alias] = REQUESTED;
+    }
     if( subscriptions[alias] == ONE_SIDED )
     {
         subscriptions[alias] = FULL;
