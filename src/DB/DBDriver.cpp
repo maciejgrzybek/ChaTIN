@@ -59,6 +59,14 @@ dbo::ptr<Schema::Subscription> DBDriver::store(Schema::Subscription* sub)
     return result;
 }
 
+dbo::ptr<Schema::Message> DBDriver::store(Schema::Message* sub)
+{
+    int transid = startTransaction();
+    auto result = session.add(sub);
+    endTransaction(transid);
+    return result;
+}
+
 void DBDriver::deleteAlias(const ChaTIN::IPv6& ip)
 {
     const char* ip_c = ip.c_str();
@@ -73,36 +81,44 @@ void DBDriver::deleteAlias(const ChaTIN::Alias& alias)
 
 Aliases DBDriver::getAliases()
 {
+    typedef dbo::collection<dbo::ptr<Schema::Alias> > dbCol;
     dbo::Transaction transaction(session);
-    dbo::collection< dbo::ptr<DB::Schema::Alias> > aliases
-                = session.find<DB::Schema::Alias>();
-    std::vector< dbo::ptr<DB::Schema::Alias> > aliasesVec;
-    dbo::collection< dbo::ptr<DB::Schema::Alias> >::const_iterator
-                                    iter = aliases.begin();
-    dbo::collection< dbo::ptr<DB::Schema::Alias> >::const_iterator
-                                    endIter = aliases.end();
-    for(;iter != endIter;++iter)
+    dbCol col = session.find<Schema::Alias>();
+    dbCol::const_iterator endIter = col.end();
+    Aliases vec;
+    for(dbCol::const_iterator iter = col.begin();iter != endIter; ++iter)
     {
-        aliasesVec.push_back(*iter);
+        vec.push_back(*iter);
     }
-    return aliasesVec;
+    return vec;
 }
 
 Subscriptions DBDriver::getSubscriptions()
 {
+    typedef dbo::collection<dbo::ptr<Schema::Subscription> > dbCol;
     dbo::Transaction transaction(session);
-    dbo::collection< dbo::ptr<DB::Schema::Subscription> > subs
-                = session.find<DB::Schema::Subscription>();
-    std::vector< dbo::ptr<DB::Schema::Subscription> > subsVec;
-    dbo::collection< dbo::ptr<DB::Schema::Subscription> >::const_iterator
-                                    iter = subs.begin();
-    dbo::collection< dbo::ptr<DB::Schema::Subscription> >::const_iterator
-                                    endIter = subs.end();
-    for(;iter != endIter;++iter)
+    dbCol col = session.find<Schema::Subscription>();
+    dbCol::const_iterator endIter = col.end();
+    Subscriptions vec;
+    for(dbCol::const_iterator iter = col.begin();iter != endIter; ++iter)
     {
-        subsVec.push_back(*iter);
+        vec.push_back(*iter);
     }
-    return subsVec;
+    return vec;
+}
+
+Messages DBDriver::getMessages()
+{
+    typedef dbo::collection<dbo::ptr<Schema::Message> > dbCol;
+    dbo::Transaction transaction(session);
+    dbCol col = session.find<Schema::Message>().orderBy("date");
+    dbCol::const_iterator endIter = col.end();
+    Messages vec;
+    for(dbCol::const_iterator iter = col.begin();iter != endIter; ++iter)
+    {
+        vec.push_back(*iter);
+    }
+    return vec;
 }
 
 int DBDriver::startTransaction()

@@ -20,8 +20,9 @@ namespace dbo = Wt::Dbo;
 namespace DB
 {
 
-typedef std::vector<dbo::ptr<DB::Schema::Alias> > Aliases;
-typedef std::vector<dbo::ptr<DB::Schema::Subscription> > Subscriptions;
+typedef std::vector<dbo::ptr<Schema::Alias> > Aliases;
+typedef std::vector<dbo::ptr<Schema::Subscription> > Subscriptions;
+typedef std::vector<dbo::ptr<Schema::Message> >  Messages;
 
 class DBDriver
 {
@@ -56,6 +57,13 @@ public:
     dbo::ptr<Schema::Subscription> store(Schema::Subscription*);
 
     /**
+     * Stores given Message in database.
+     * @param Schema::Message* Pointer to Message to store.
+     * @param dbo::ptr<Schema::Message> dbo pointer for object stored in db
+     */
+    dbo::ptr<Schema::Message> store(Schema::Message*);
+
+    /**
      * Removes given alias from database.
      * @param const ChaTIN::IPv6& Reference to IPv6 of alias to be removed.
      */
@@ -78,6 +86,13 @@ public:
      * @return Subscriptions Collection of subscriptions stored in database.
      */
     Subscriptions getSubscriptions();
+
+    /**
+     * Method returns messages collection in descending order..
+     * @return Messages Collection of messages stored in database.
+     */
+    Messages getMessages();
+
 private:
     /**
      * Opens database and creates tables, if don't exist.

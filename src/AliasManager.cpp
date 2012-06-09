@@ -94,7 +94,7 @@ void AliasManager::deleteAliasByIP(const ChaTIN::IPv6& ip)
 void AliasManager::deleteAliasByAlias(const ChaTIN::Alias& alias)
 {    
     BiStringMap::left_iterator iter = dictionary.left.find(alias);
-    if(iter!=dictionary.left.end())
+    if(iter != dictionary.left.end())
     {
         dictionary.left.erase(iter);
         db.deleteAlias(alias); // FIXME should be surrounded by try+catch
@@ -107,6 +107,7 @@ void AliasManager::deleteAliasByAlias(const ChaTIN::Alias& alias)
 
 void AliasManager::requestSub(const ChaTIN::IPv6& ip)
 {
+    int tid = db.startTransaction(); // transaction to be sure it's saved jsut after addition
     std::map<ChaTIN::IPv6, SubDB>::const_iterator iter = subscriptions.find(ip);
     if(iter != subscriptions.end() && iter->second->getState() == REQUESTED)
     {
@@ -124,6 +125,7 @@ void AliasManager::requestSub(const ChaTIN::IPv6& ip)
                                         //FIXME try catch - what if he is off AliasNotConnectedException
         (iter->second).modify()->setState(ONE_SIDED);
     }
+    db.endTransaction(tid);
 }
 
 void AliasManager::acceptSub(const ChaTIN::IPv6& ip)
@@ -176,17 +178,14 @@ void AliasManager::wasRequested(const ChaTIN::IPv6& ip)
     {
         DB::Schema::Subscription* sub = new DB::Schema::Subscription(ip,REQUESTED);
         subscriptions[ip] = db.store(sub);
-        return;
     }
     else if(iter->second->getState() == NONE)
     {
         (iter->second).modify()->setState(REQUESTED);
-        return;
     }
-    if(iter->second->getState() == ONE_SIDED)
+    else if(iter->second->getState() == ONE_SIDED)
     {
         (iter->second).modify()->setState(FULL);
-        return;
     }
 }
 
