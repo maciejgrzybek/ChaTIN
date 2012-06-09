@@ -28,6 +28,16 @@ class ChatTab : public Gtk::TextView
 {
     public:
         /**
+         * Default constructor - set loaded history to false
+         */
+        ChatTab();
+        
+        /**
+         * Destructor
+         */
+        virtual ~ChatTab();
+
+        /**
          * Return sth that can be used to represent
          * tab by view
          */
@@ -50,6 +60,12 @@ class ChatTab : public Gtk::TextView
         //          with first argument binded. To have the call in ChatWindow:
         //      fromViewParser.(selectedTab->getDoCommand())(chatField.get_text());
         virtual bool operator==( const ChaTIN::TabId&        ) const = 0;
+        
+        bool getHistoryLoaded();
+        void setHistoryLoaded();
+
+    private:        
+        bool historyLoaded;
 };
 
 /**

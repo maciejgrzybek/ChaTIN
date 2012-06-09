@@ -1,5 +1,21 @@
 #include "ChatTab.hpp"
 
+ChatTab::ChatTab() : historyLoaded(false)
+{}
+
+ChatTab::~ChatTab()
+{}
+
+bool ChatTab::getHistoryLoaded()
+{
+    return historyLoaded;
+}
+
+void ChatTab::setHistoryLoaded()
+{
+    historyLoaded = true;
+}
+
 ChatTabDialog::ChatTabDialog( const ChaTIN::Alias& alias )
     : alias(alias)
 {}

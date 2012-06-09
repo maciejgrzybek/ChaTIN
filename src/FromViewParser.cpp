@@ -172,6 +172,20 @@ bool FromViewParser::tryParseGeneral( const Glib::ustring& input )
         aq.push( boost::bind( &ChatWindow::initializeFriends, _1, aliasManager.getAliasList() ) );
         return true;
     }
+    
+    if( input.substr(1,4) == "help" )
+    {
+        Glib::ustring helpmsg = "";
+        helpmsg = "/open Alias/IP - otwiera okno rozmowy z pojedyńczym użytkownikiem";
+        TIPtr logId = TIPtr( new ChaTIN::LogName("LOG") );
+        aq.push( boost::bind(&ChatWindow::showIncomingMessage, _1, logId, "", helpmsg, true ));
+        for(int i = 0; i<20; ++i )
+        {
+        helpmsg = "/confopen OwnerIP (IP)* - otwiera okno konferencji z zadanymi IP";
+        TIPtr logId = TIPtr( new ChaTIN::LogName("LOG") );
+        aq.push( boost::bind(&ChatWindow::showIncomingMessage, _1, logId, "", helpmsg, true ));
+        }
+    }
 
     return false;
 }

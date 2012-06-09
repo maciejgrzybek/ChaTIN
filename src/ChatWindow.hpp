@@ -122,6 +122,11 @@ public:
      */
     void closeCurrentTab();
 
+    /**
+     * Loads history to given tab
+     * It should append all given messages with chronological order 
+     */
+    void loadHistory( TIPtr id, ViewMsgV messages );
 
     /**
      * Shows incoming massage.

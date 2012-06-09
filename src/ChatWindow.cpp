@@ -187,6 +187,28 @@ Glib::ustring shortText( Glib::ustring in, std::size_t limit )
     return result;
 }
 
+void ChatWindow::loadHistory( TIPtr id, ViewMsgV messages )
+{
+    TPtr tab = openTab(id, false);
+    tab->setHistoryLoaded();
+    
+    for( auto& i : messages )
+    {        
+        Glib::ustring toShow;
+        Glib::ustring author = boost::get<0>(i);
+        Glib::ustring message = boost::get<1>(i);
+        bool incoming = boost::get<2>(i);
+
+        if( incoming )
+            toShow = author+" >> "+message+"\n";
+        else
+            toShow = "ME ----> "+message+"\n";
+
+        toShow = shortText( toShow, 80 );
+        appendTextToTab( tab, toShow ); //FIXME should be ChatTab method
+    }
+}
+
 void ChatWindow::showIncomingMessage( TIPtr id, Glib::ustring author, Glib::ustring message, bool incoming )
 {
     TPtr tab = openTab(id, false);

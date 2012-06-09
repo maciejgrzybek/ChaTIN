@@ -5,11 +5,15 @@
 #include "Exception.hpp"
 #include <functional>
 #include <boost/function.hpp>
+#include <boost/tuple/tuple.hpp>
 #include <string>
 #include <memory>
 
 class ChatWindow;
 typedef boost::function<void(ChatWindow*)> Action;
+
+typedef boost::tuple<Glib::ustring, Glib::ustring, bool> ViewMsg;
+typedef std::vector<ViewMsg> ViewMsgV;
 
 class ChatTab;
 typedef std::shared_ptr<ChatTab> TPtr;
