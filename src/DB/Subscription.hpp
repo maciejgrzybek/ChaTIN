@@ -28,6 +28,16 @@ public:
         return state_;
     }
 
+    void setIP(std::string& ip)
+    {
+        ip_ = ip;
+    }
+
+    void setState(int state)
+    {
+        state_ = state;
+    }
+
     template<class Act>
     void persist(Act& a)
     {
