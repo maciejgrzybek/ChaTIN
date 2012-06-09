@@ -24,11 +24,12 @@ class DialogManager;
 class AliasManager
 {
     typedef boost::bimap<ChaTIN::Alias, ChaTIN::IPv6> BiStringMap;
+    typedef dbo::ptr<DB::Schema::Subscription> SubDB;
 
     /* aliases bimap (1) */
     BiStringMap dictionary;
     /* subscriptions data (2) */
-    std::map<ChaTIN::IPv6, SubPhase> subscriptions;
+    std::map<ChaTIN::IPv6, SubDB> subscriptions;
     DB::DBDriver& db;
     bool sendReady;
     boost::optional<DialogManager&> sender;

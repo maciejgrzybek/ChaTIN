@@ -44,14 +44,16 @@ public:
     /**
      * Stores given Alias in database.
      * @param Schema::Alias& Pointer to Alias to store.
+     * @return dbo::ptr<Schema::Alias> dbo pointer for object stored in db
      */
-    void store(Schema::Alias*);
+    dbo::ptr<Schema::Alias> store(Schema::Alias*);
 
     /**
      * Stores given Subscription in database.
      * @param Schema::Subscription* Pointer to Subscription to store.
+     * @param dbo::ptr<Schema::Subscription> dbo pointer for object stored in db
      */
-    void store(Schema::Subscription*);
+    dbo::ptr<Schema::Subscription> store(Schema::Subscription*);
 
     /**
      * Removes given alias from database.

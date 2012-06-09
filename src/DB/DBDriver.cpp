@@ -43,18 +43,20 @@ DBDriver::DBDriver() : sqlite3("chatin.db")
   }
 }
 
-void DBDriver::store(Schema::Alias* alias)
+dbo::ptr<Schema::Alias> DBDriver::store(Schema::Alias* alias)
 {
     int transid = startTransaction();
-    session.add(alias);
+    auto result = session.add(alias);
     endTransaction(transid);
+    return result;
 }
 
-void DBDriver::store(Schema::Subscription* sub)
+dbo::ptr<Schema::Subscription> DBDriver::store(Schema::Subscription* sub)
 {
     int transid = startTransaction();
-    session.add(sub);
+    auto result = session.add(sub);
     endTransaction(transid);
+    return result;
 }
 
 void DBDriver::deleteAlias(const ChaTIN::IPv6& ip)
