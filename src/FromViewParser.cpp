@@ -186,6 +186,11 @@ bool FromViewParser::tryParseGeneral( const Glib::ustring& input )
         aq.push( boost::bind(&ChatWindow::showIncomingMessage, _1, logId, "", helpmsg, true ));
         }
     }
+    
+    if( input.substr(1,4) == "arch" )
+    {
+        //FIXME Loading history here
+    }
 
     return false;
 }
