@@ -107,11 +107,27 @@ Subscriptions DBDriver::getSubscriptions()
     return vec;
 }
 
-Messages DBDriver::getMessages(const std::string& ip)
+Messages DBDriver::getMessages(const ChaTIN::IPv6& ip)
 {
     typedef dbo::collection<dbo::ptr<Schema::Message> > dbCol;
     dbo::Transaction transaction(session);
-    dbCol col = session.find<Schema::Message>().where("ip = ?").bind(ip).orderBy("date");
+    dbCol col = session.find<Schema::Message>().where("ip = ?").bind(ip.c_str()).orderBy("date");
+    dbCol::const_iterator endIter = col.end();
+    Messages vec;
+    for(dbCol::const_iterator iter = col.begin();iter != endIter; ++iter)
+    {
+        vec.push_back(*iter);
+    }
+    return vec;
+}
+
+Messages DBDriver::getMessages(const ChaTIN::ConferenceId& c)
+{
+    typedef dbo::collection<dbo::ptr<Schema::Message> > dbCol;
+    typedef dbo::ptr<Schema::Conference> dbConf;
+
+    dbConf conf = session.find<Schema::Conference>().where("ownerIp = ?").bind(c.ownerip.c_str()).where("name = ?").bind(c.name.c_str());
+    dbCol col = conf->getMessages();
     dbCol::const_iterator endIter = col.end();
     Messages vec;
     for(dbCol::const_iterator iter = col.begin();iter != endIter; ++iter)

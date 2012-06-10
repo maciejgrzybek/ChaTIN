@@ -6,6 +6,7 @@
 
 #include "../types.hpp"
 #include "ConferenceMember.hpp"
+#include "Message.hpp"
 
 namespace dbo = Wt::Dbo;
 
@@ -14,6 +15,7 @@ namespace DB
 namespace Schema
 {
 
+class ConferenceMember;
 class Message;
 
 class Conference
@@ -23,6 +25,11 @@ public:
     std::string getName() const
     {
         return name;
+    }
+
+    dbo::collection< dbo::ptr<Message> > getMessages() const
+    {
+        return messages;
     }
 
     template<class Act>

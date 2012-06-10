@@ -14,6 +14,7 @@
 #include "Subscription.hpp"
 #include "Conference.hpp"
 #include "ConferenceMember.hpp"
+#include "../types.hpp"
 
 namespace dbo = Wt::Dbo;
 
@@ -88,11 +89,18 @@ public:
     Subscriptions getSubscriptions();
 
     /**
-     * Method returns messages collection in descending order..
-     * @param const std::string& IP which is part of conversation
+     * Method returns messages collection in descending order.
+     * @param const ChaTIN::IPv6& IP which is part of conversation
      * @return Messages Collection of messages stored in database.
      */
-    Messages getMessages(const std::string&);
+    Messages getMessages(const ChaTIN::IPv6&);
+
+    /**
+     * Method returns messages collection in descending order.
+     * @param const ChaTIN::ConferenceId& Reference to conference-id to get messages from.
+     * @return Messages Collection of messages stored in database.
+     */
+    Messages getMessages(const ChaTIN::ConferenceId&);
 
 private:
     /**

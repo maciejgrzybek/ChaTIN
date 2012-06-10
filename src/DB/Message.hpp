@@ -14,6 +14,8 @@ namespace DB
 namespace Schema
 {
 
+class Conference;
+
 class Message
 {
 public:
