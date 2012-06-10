@@ -36,9 +36,5 @@ int main(int argc, char *argv[])
     boost::thread fromViewThread( fromViewParser  );
 
     Gtk::Main::run(win);
-    //FIXME: killing window should kill aplication
-    //          but not in a brute way like this (no joins)
-//    toViewThread.join();
-//    dialogThread.join();  
     return 0;
 }

@@ -162,7 +162,7 @@ void ChatWindow::closeCurrentTab()
     }
     else
     {
-        exit(0);
+        Gtk::Main::quit();         
     }    
 }
 
@@ -205,7 +205,7 @@ void ChatWindow::loadHistory( TIPtr id, ViewMsgV messages )
             toShow = "ME ----> "+message+"\n";
 
         toShow = shortText( toShow, 80 );
-        appendTextToTab( tab, toShow ); //FIXME should be ChatTab method
+        appendTextToTab( tab, toShow, false ); //FIXME should be ChatTab method
     }
 }
 
@@ -224,11 +224,13 @@ void ChatWindow::showIncomingMessage( TIPtr id, Glib::ustring author, Glib::ustr
 }
 
 
-void ChatWindow::appendTextToTab( TPtr tab, Glib::ustring text )
+void ChatWindow::appendTextToTab( TPtr tab, Glib::ustring text, bool end )
 {
     Glib::RefPtr<Gtk::TextBuffer> buffer = tab->get_buffer();
     buffer->insert(buffer->end(), text);
     Gtk::TextIter iter = buffer->end();
+    if( end )
+        iter = buffer->begin();
     tab->scroll_to_iter(iter,0.0);
 }
 

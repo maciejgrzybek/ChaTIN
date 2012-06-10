@@ -139,7 +139,7 @@ public:
      * Appends text to chatBox in current tab
      * @param Glib::ustring text to append
      */
-    void appendTextToTab( TPtr tab, Glib::ustring text );
+    void appendTextToTab( TPtr tab, Glib::ustring text, bool end = true );
 
 
     /**
