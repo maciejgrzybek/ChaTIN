@@ -107,11 +107,11 @@ Subscriptions DBDriver::getSubscriptions()
     return vec;
 }
 
-Messages DBDriver::getMessages()
+Messages DBDriver::getMessages(const std::string& ip)
 {
     typedef dbo::collection<dbo::ptr<Schema::Message> > dbCol;
     dbo::Transaction transaction(session);
-    dbCol col = session.find<Schema::Message>().orderBy("date");
+    dbCol col = session.find<Schema::Message>().where("ip = ?").bind(ip).orderBy("date");
     dbCol::const_iterator endIter = col.end();
     Messages vec;
     for(dbCol::const_iterator iter = col.begin();iter != endIter; ++iter)

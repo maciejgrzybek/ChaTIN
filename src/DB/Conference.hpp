@@ -4,8 +4,8 @@
 #include <Wt/Dbo/Dbo>
 #include <string>
 
-#include "Message.hpp"
 #include "../types.hpp"
+#include "ConferenceMember.hpp"
 
 namespace dbo = Wt::Dbo;
 
@@ -15,7 +15,6 @@ namespace Schema
 {
 
 class Message;
-class ConferenceMember;
 
 class Conference
 {

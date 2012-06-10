@@ -89,9 +89,10 @@ public:
 
     /**
      * Method returns messages collection in descending order..
+     * @param const std::string& IP which is part of conversation
      * @return Messages Collection of messages stored in database.
      */
-    Messages getMessages();
+    Messages getMessages(const std::string&);
 
 private:
     /**
