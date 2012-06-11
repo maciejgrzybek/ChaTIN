@@ -136,6 +136,7 @@ void ChatWindow::switchTabHandle( GtkNotebookPage* /*page*/, guint page_num )
     {
         selName = logBox->getFullAlias();
         chatBoxBuffer = logBox->get_buffer();
+        selectedTab = logBox.get();
     }
     chatField.grab_focus(); //Always set focus to chatField
 }
@@ -190,6 +191,8 @@ Glib::ustring shortText( Glib::ustring in, std::size_t limit )
 void ChatWindow::loadHistory( TIPtr id, ViewMsgV messages )
 {
     TPtr tab = openTab(id, false);
+    if(tab->getHistoryLoaded())
+        return;
     tab->setHistoryLoaded();
     
     for( auto& i : messages )
