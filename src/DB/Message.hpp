@@ -3,6 +3,7 @@
 
 #include <Wt/Dbo/Dbo>
 #include <string>
+#include <ctime>
 
 #include "../types.hpp"
 #include "Conference.hpp"
@@ -19,6 +20,12 @@ class Conference;
 class Message
 {
 public:
+    Message( std::string ip, std::string content, bool isOutgoing )
+        : ip_(ip), content_(content), isOutgoing_(isOutgoing), date_(time(NULL))
+    {}
+
+    Message()
+    {}
 
     std::string getContent() const
     {
@@ -70,10 +77,10 @@ public:
         conference_ = conference;
     }
 
-/*    void setConference(Conference* conference)
+    void setConference(Conference* conference)
     {
         conference_ = conference;
-    }*/
+    }
 
     template<class Act>
     void persist(Act& a)

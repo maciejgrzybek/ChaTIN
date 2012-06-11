@@ -30,7 +30,11 @@ class FromViewParser
      * Simple constructor giving paser reference to DialogManager
      * @param DialogManager& reference to the dialogManager to use in parser.
      */
-    FromViewParser( DialogManager&, AliasManager&, ConferenceManager&, SafeQueue<EPtr>&, SafeQueue<Action>& );
+    FromViewParser( DialogManager&, 
+                    AliasManager&, 
+                    ConferenceManager&, 
+                    SafeQueue<EPtr>&, 
+                    SafeQueue<Action>& );
 
     void setView( ChatWindow* );
 

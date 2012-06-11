@@ -4,12 +4,21 @@
 #include "SafeQueue.hpp"
 #include "ChatTab.hpp"
 #include "Exception.hpp"
+#include "types.hpp"
 #include <iostream>
 #include <boost/bind.hpp>
 #include <boost/function.hpp>
 
-FromViewParser::FromViewParser( DialogManager& dialogManager, AliasManager& aliasManager, ConferenceManager& cm, SafeQueue<EPtr>& bq, SafeQueue<Action>& aq )
-    : dialogManager(dialogManager), aliasManager(aliasManager), cm(cm), bq(bq), aq(aq)
+FromViewParser::FromViewParser( DialogManager& dialogManager, 
+                                AliasManager& aliasManager, 
+                                ConferenceManager& cm, 
+                                SafeQueue<EPtr>& bq, 
+                                SafeQueue<Action>& aq )
+    : dialogManager(dialogManager), 
+      aliasManager(aliasManager), 
+      cm(cm), 
+      bq(bq), 
+      aq(aq)
 {}
 
 void FromViewParser::setView( ChatWindow* cw )
@@ -25,6 +34,28 @@ void FromViewParser::doCommand( const ChaTIN::Alias& alias, const Glib::ustring&
         if(tryParseGeneral(input))
             return;
         //ANALYZE COMMAND
+        if( input.substr(1,4) == "arch" )
+        {
+            ViewMsgV messages;
+            DB::Messages m = DB::DBDriver::getInstance()->getMessages( aliasManager.getIP(alias) );
+            for( auto& i : m )
+            {
+                messages.push_back( 
+                    ViewMsg( 
+                        aliasManager.getAlias(ChaTIN::IPv6(i->getIp())),
+                        i->getContent(),
+                        !i->getOutgoing()
+                        ) 
+                );
+            }
+            aq.push( 
+                boost::bind(
+                     &ChatWindow::loadHistory, 
+                     _1, 
+                     TIPtr( new ChaTIN::Alias(alias) ),
+                     messages )
+            ); 
+        }
     }
     else
     {
@@ -32,6 +63,16 @@ void FromViewParser::doCommand( const ChaTIN::Alias& alias, const Glib::ustring&
         dialogManager.sendTo(alias, xml.getXML());        
         TIPtr idWrite( new ChaTIN::Alias(alias) );
         aq.push( boost::bind(&ChatWindow::showIncomingMessage, _1, idWrite, "", input, false ));
+        //From view parser
+
+        //Save message in archive
+        DB::DBDriver::getInstance()->store
+                 (
+                    new DB::Schema::Message(
+                        std::string(aliasManager.getIP(alias)), 
+                        std::string(input),
+                        true )
+                 );
     }
 }
 
@@ -60,8 +101,23 @@ void FromViewParser::doCommand( const ChaTIN::ConferenceId& name, const Glib::us
         for( auto& member : members )
             xml["memberip"] = (Glib::ustring)member;
         std::cout << xml.getXML() << std::endl;
-        dialogManager.sendTo(name, xml.getXML());
-    }
+ 
+       dialogManager.sendTo(name, xml.getXML());
+       //Save message in archive
+       auto arch = new DB::Schema::Message
+                 (
+                    std::string("::1"), 
+                    std::string(input),
+                    true 
+                 );        
+        arch->setConference( 
+                new DB::Schema::Conference(
+                        name.ownerip,
+                        name.name
+                    )            
+        );
+        DB::DBDriver::getInstance()->store(arch);
+   }
 }
 
 void FromViewParser::doCommand( const ChaTIN::LogName& name, const Glib::ustring& input )
@@ -188,12 +244,6 @@ bool FromViewParser::tryParseGeneral( const Glib::ustring& input )
         return true;
     }
     
-    if( input.substr(1,4) == "arch" )
-    {
-        //FIXME Loading history here
-        return true;
-    }
-
     return false;
 }
 
