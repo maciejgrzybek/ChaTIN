@@ -38,6 +38,15 @@ void ToViewParser::incomingDialogMsg( ChaTIN::IPv6 ip, Glib::ustring msg, otherA
     Glib::ustring alias = (ChaTIN::Alias&)*incomeAlias;
     aq.push( boost::bind(&ChatWindow::showIncomingMessage, _1, incomeAlias,
                                      alias, msg, true ));
+
+    //Save message in archive
+    DB::DBDriver::getInstance()->store
+         (
+            new DB::Schema::Message(
+                std::string(ip), 
+                std::string(msg),
+                false )
+         );
 }
 
 void ToViewParser::incomingConfMsg( ChaTIN::IPv6 ip, Glib::ustring msg, otherAttributes attr)

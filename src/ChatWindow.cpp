@@ -230,11 +230,10 @@ void ChatWindow::showIncomingMessage( TIPtr id, Glib::ustring author, Glib::ustr
 void ChatWindow::appendTextToTab( TPtr tab, Glib::ustring text, bool end )
 {
     Glib::RefPtr<Gtk::TextBuffer> buffer = tab->get_buffer();
-    buffer->insert(buffer->end(), text);
-    Gtk::TextIter iter = buffer->end();
-    if( end )
-        iter = buffer->begin();
-    tab->scroll_to_iter(iter,0.0);
+    Gtk::TextIter iter = end ? buffer->end() : buffer->begin();
+    buffer->insert( iter, text);
+    Gtk::TextIter scroll = buffer->begin();
+    tab->scroll_to_iter(scroll,0.0);
 }
 
 void ChatWindow::initializeFriends( std::set<FriendRow> friendList )
