@@ -22,14 +22,44 @@ class Conference
 {
 public:
 
+    std::string getOwnerIp() const
+    {
+        return ownerIp_;
+    }
+
     std::string getName() const
     {
-        return name;
+        return name_;
+    }
+
+    int getDate() const
+    {
+        return date_;
     }
 
     dbo::collection< dbo::ptr<Message> > getMessages() const
     {
-        return messages;
+        return messages_;
+    }
+
+    dbo::collection< dbo::ptr<ConferenceMember> > getMembers() const
+    {
+        return members_;
+    }
+
+    void setOwnerIp(std::string ownerIp)
+    {
+        ownerIp_ = ownerIp;
+    }
+
+    void setName(std::string name)
+    {
+        name_ = name;
+    }
+
+    void setDate(int date)
+    {
+        date_ = date;
     }
 
     template<class Act>
@@ -44,11 +74,11 @@ public:
     }
 private:
     //int id;
-    std::string ownerIp;
-    std::string name;
-    int date;
-    dbo::collection< dbo::ptr<Message> > messages;
-    dbo::collection< dbo::ptr<ConferenceMember> > members;
+    std::string ownerIp_;
+    std::string name_;
+    int date_;
+    dbo::collection< dbo::ptr<Message> > messages_;
+    dbo::collection< dbo::ptr<ConferenceMember> > members_;
 
 };
 
