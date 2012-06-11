@@ -104,7 +104,8 @@ void FromViewParser::doCommand( const ChaTIN::ConferenceId& name, const Glib::us
  
        dialogManager.sendTo(name, xml.getXML());
        //Save message in archive
-       auto arch = new DB::Schema::Message
+       DB::Schema::Message* arch = 
+                new DB::Schema::Message
                  (
                     std::string("::1"), 
                     std::string(input),
@@ -177,7 +178,7 @@ bool FromViewParser::tryParseGeneral( const Glib::ustring& input )
         TIPtr idOpen( new ChaTIN::ConferenceId( ChaTIN::IPv6(params[1]), params[0] )); //FIXME put valid myIp
         for(unsigned int i = 1; i < params.size(); ++i)
         {
-            members.push_back(ChaTIN::IPv6(params[i]));
+            members.push_back(aliasManager.getIP(ChaTIN::Alias(params[i])));
         }
         cm.addConference( (ChaTIN::ConferenceId&)*idOpen, members );
         aq.push( boost::bind( &ChatWindow::openTab, _1, idOpen, true ) );
