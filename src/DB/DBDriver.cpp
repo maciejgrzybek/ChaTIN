@@ -75,6 +75,15 @@ dbo::ptr<Schema::Conference> DBDriver::store(Schema::Conference* conf)
     return result;
 }
 
+dbo::ptr<Schema::ConferenceMember> DBDriver::store(Schema::ConferenceMember* cm)
+{
+    int transid = startTransaction();
+    auto result = session.add(cm);
+    endTransaction(transid);
+    return result;
+}
+
+
 void DBDriver::deleteAlias(const ChaTIN::IPv6& ip)
 {
     const char* ip_c = ip.c_str();
