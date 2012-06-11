@@ -1,5 +1,8 @@
 *.o
 doc/*
+!doc/dbdoc.txt
+!doc/dbdoc.html
+!doc/md.css
 bin/*
 !bin/.placeholder
 chatin.db

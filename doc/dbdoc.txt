@@ -1,0 +1,104 @@
+<head>
+    <title>Dokumentacja koncowa TOrder</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <link rel="Stylesheet" type="text/css" href="md.css">
+</head>
+<body>
+ChaTIN
+======
+Opis bazy danych
+----------------
+**Prowadzący projekt**
+
+* Andrzej Ciemski
+
+**Autorzy**
+
+* Andrzej Fiedukowicz
+* Maciej Grzybek
+
+Etap 0 - opis słowny projektu
+=============================
+W ramach projektu z przedmiotu Technologie Internetowe tworzona jest aplikacja pozwalająca przeprowadzać rozmowy p2p z wykorzystaniem protokołu IPv6, ze wsparciem konferencji.
+Zastosowanie bazy danych sqlite obejmuje:
+
+* Zapisywanie, przechowywanie i wczytywanie historii wiadomości z poszczególnymi użytkownikami
+* Zapisywanie i przechowywanie a także przetwarzanie i zmienianie aktualnego stanu subskrypcji między użytkownikami (protokół subskrypcji jest oparty na maszynie stanowej, której stan przechowywany jest w bazie danych).
+* Zapisywanie powiązania adresów IP z czytelnymi dla użytkownika aliasami (nick). Szybkie odnajdywanie zadanego adresu IP na podstawie aliasu i odwrotnie - aliasu na podstawie adresu IP (przydatne przy implementacji frontendu).
+* Zapisywanie i odtwarzanie informacji związanych z listą uczestników i rozmową konferencyjną, gdzie z - zgodnie ze specyfikacją projektu - rozmowa jest identyfikowana po nazwie i adresie IP jej założyciela.
+
+
+Etap 1 - projekt bazy danych
+============================
+
+Diagram ER (wraz z opisem związków)
+-----------------------------------
+<img src="./er.png">
+
+Opis encji
+----------
+
+### alias ###
+<table>
+<tr><th>nazwa atrybutu</th><th>typ danych</th><th>ograniczenia                          </th><th>opis                                                   </th></tr>
+<tr><td>ip            </td><td>TEXT      </td><td>PK, NN, <a href="./ipv6.html">IPv6</a></td><td>adres ip powiązany z danym aliasem                     </td></tr>
+<tr><td>version       </td><td>INTEGER   </td><td>NN                                    </td><td>identyfikator wersji (optimistic locking)              </td></tr>
+<tr><td>alias         </td><td>TEXT      </td><td>UNIQUE, NN                            </td><td>alias - zrozumiały i ustalony przez człowieka          </td></tr>
+<tr><td>groupId       </td><td>INTEGER   </td><td>FK: group.id                          </td><td>id grupy do której należy alias                        </td></tr>
+</table>
+
+### message ###
+<table>
+<tr><th>nazwa atrybutu</th><th>typ danych</th><th>ograniczenia                          </th><th>opis                                                   </th></tr>
+<tr><td>id            </td><td>INTEGER   </td><td>PK, NN, AUTO INCREAMENT               </td><td>unikalny identyfikator wiadomości                      </td></tr>
+<tr><td>version       </td><td>INTEGER   </td><td>NN                                    </td><td>identyfikator wersji (optimistic locking)              </td></tr>
+<tr><td>content       </td><td>TEXT      </td><td>NN                                    </td><td>zawartość wiadomości (treść)                           </td></tr>
+<tr><td>date          </td><td>INTEGER   </td><td>NN, TIMESTAMP                         </td><td>data otrzymania/wysłania wiadomości                    </td></tr>
+<tr><td>ip            </td><td>TEXT      </td><td><a href="./ipv6.html">IPv6</a>        </td><td>adres ip nadawcy wiadomosci (jesli przych.)            </td></tr>
+<tr><td>isOutgoing    </td><td>INTEGER   </td><td>NN, [01]                              </td><td>czy wiadomosc wychodzaca (1=tak). Brak bool w sqlite.  </td></tr>
+<tr><td>conferenceId  </td><td>INTEGER   </td><td>FK: conference.id                     </td><td>identyfikator konferencji (jesli wiadomosc konf.)      </td></tr>
+</table>
+
+### subscription ###
+<table>
+<tr><th>nazwa atrybutu</th><th>typ danych</th><th>ograniczenia                          </th><th>opis                                                   </th></tr>
+<tr><td>ip            </td><td>TEXT      </td><td>PK, NN, <a href="./ipv6.html">IPv6</a></td><td>adres ip powiązany z danym aliasem                     </td></tr>
+<tr><td>version       </td><td>INTEGER   </td><td>NN                                    </td><td>identyfikator wersji (optimistic locking)              </td></tr>
+<tr><td>state         </td><td>INTEGER   </td><td>NN, [01234]                           </td><td>obecny stan subskrypcji (patrz: types.hpp:SubPhase)    </td></tr>
+<tr><td>lastChangeDate</td><td>INTEGER   </td><td>NN, TIMESTAMP                         </td><td>data ostatniej zmiany stanu                            </td></tr>
+</table>
+
+### group ###
+<table>
+<tr><th>nazwa atrybutu</th><th>typ danych</th><th>ograniczenia                          </th><th>opis                                                   </th></tr>
+<tr><td>id            </td><td>INTEGER   </td><td>PK, NN, AUTO INCREAMENT               </td><td>unikalny identyfikator grupy                           </td></tr>
+<tr><td>version       </td><td>INTEGER   </td><td>NN                                    </td><td>identyfikator wersji (optimistic locking)              </td></tr>
+<tr><td>name          </td><td>TEXT      </td><td>NN                                    </td><td>nazwa grupy wybrana przez uzytkownika                  </td></tr>
+</table>
+
+### conference ###
+`UNIQUE: ownerIP, name`
+<table>
+<tr><th>nazwa atrybutu</th><th>typ danych</th><th>ograniczenia                          </th><th>opis                                                                           </th></tr>
+<tr><td>id            </td><td>INTEGER   </td><td>PK, NN, AUTO INCREAMENT               </td><td>unikalny identyfikator konferencji                                             </td></tr>
+<tr><td>version       </td><td>INTEGER   </td><td>NN                                    </td><td>identyfikator wersji (optimistic locking)                                      </td></tr>
+<tr><td>ownerIp       </td><td>TEXT      </td><td>NN, <a href="./ipv6.html">IPv6</a>    </td><td>adres IPv6 właściciela (założyciela) konferencji                               </td></tr>
+<tr><td>name          </td><td>TEXT      </td><td>NN                                    </td><td>nazwa konferencji wybrana przez użytkownika                                    </td></tr>
+<tr><td>createDate    </td><td>INTEGER   </td><td>NN, TIMESTAMP                         </td><td>data utworzenia (pierwsza odebrana wiadomość) konferencji u danego użytkownika </td></tr>
+</table>
+
+### conferenceMember ###
+<table>
+<tr><th>nazwa atrybutu</th><th>typ danych</th><th>ograniczenia                          </th><th>opis                                                                           </th></tr>
+<tr><td>id            </td><td>INTEGER   </td><td>PK, NN, AUTO INCREAMENT               </td><td>unikalny identyfikator powiązania                                              </td></tr>
+<tr><td>version       </td><td>INTEGER   </td><td>NN                                    </td><td>identyfikator wersji (optimistic locking)                                      </td></tr>
+<tr><td>ip            </td><td>TEXT      </td><td><a href="./ipv6.html">IPv6</a>        </td><td>adres ip przypisywanego użytkownika                                            </td></tr>
+<tr><td>conferenceId  </td><td>INTEGER   </td><td>FK: conference.id                     </td><td>identyfikator konferencji, do której przypisany jest użytkownik                </td></tr>
+</table>
+
+Etap 2 - projekt aplikacji
+==========================
+
+Etap 3 - implemetnacja
+======================
+</body>
