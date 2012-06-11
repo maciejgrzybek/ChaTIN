@@ -66,11 +66,11 @@ public:
     void persist(Act& a)
     {
         //dbo::field(a, id, "id");
-        dbo::field(a, ownerIp, "ownerIp");
-        dbo::field(a, name, "name");
-        dbo::field(a, date, "date");
-        dbo::hasMany(a, messages, dbo::ManyToOne, "conferenceId");
-        dbo::hasMany(a, members, dbo::ManyToOne, "conferenceId");
+        dbo::field(a, ownerIp_, "ownerIp");
+        dbo::field(a, name_, "name");
+        dbo::field(a, date_, "date");
+        dbo::hasMany(a, messages_, dbo::ManyToOne, "conferenceId");
+        dbo::hasMany(a, members_, dbo::ManyToOne, "conferenceId");
     }
 private:
     //int id;
