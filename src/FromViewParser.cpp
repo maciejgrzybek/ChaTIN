@@ -97,9 +97,9 @@ void FromViewParser::doCommand( const ChaTIN::ConferenceId& name, const Glib::us
         XMLPackageCreator xml("cmsg", text);
         xml["name"] = name.name;
         xml["ownerip"] = name.ownerip;
-        const std::vector< ChaTIN::IPv6 >& members = cm.getList( name );
-        for( auto& member : members )
-            xml["memberip"] = (Glib::ustring)member;
+        auto members = cm.getList(name);
+        for(auto& member : members)
+            xml["memberip"] = (Glib::ustring)member->getIp();
         std::cout << xml.getXML() << std::endl;
  
        dialogManager.sendTo(name, xml.getXML());

@@ -19,10 +19,10 @@ void DialogManager::sendTo(const ChaTIN::Alias& alias, const Glib::ustring& mess
 
 void DialogManager::sendTo(const ChaTIN::ConferenceId& conferenceId, const Glib::ustring& message) throw(Socket::SendFailureException)
 {
-    const std::vector<ChaTIN::IPv6> &IPs = conferenceManager.getList(conferenceId);
-    for(auto& ip : IPs)
+    std::vector<dbo::ptr<DB::Schema::ConferenceMember> > members = conferenceManager.getList(conferenceId);
+    for(auto& member : members)
     {
-        const Dialog& dialog = getDialog(ip);
+        const Dialog& dialog = getDialog(member->getIp());
         dialog.send(message);
     }
 }
