@@ -54,7 +54,7 @@ public:
     void persist(Act& a)
     {
         dbo::field(a, ip_, "ip");
-        dbo::belongsTo(a, conference_, "conferenceId");
+        dbo::belongsTo(a, conference_, "conference");
     }
 private:
     std::string ip_;

@@ -35,6 +35,11 @@ public:
         date_ = date;
     }
 
+    Conference(const Conference& toCopy) : ownerIp_(toCopy.ownerIp_),
+                                          name_(toCopy.name_),
+                                          date_(toCopy.date_)
+    {}
+
     std::string getOwnerIp() const
     {
         return ownerIp_;
@@ -75,6 +80,17 @@ public:
         date_ = date;
     }
 
+    void addConferenceMember(ConferenceMember& conferenceMember)
+    {
+        conferenceMember.setConference(this);
+//        members_.insert(conferenceMember);
+    }
+
+    void addMessage(dbo::ptr<Message> message)
+    {
+        messages_.insert(message);
+    }
+
     template<class Act>
     void persist(Act& a)
     {
@@ -82,8 +98,8 @@ public:
         dbo::field(a, ownerIp_, "ownerIp");
         dbo::field(a, name_, "name");
         dbo::field(a, date_, "date");
-        dbo::hasMany(a, messages_, dbo::ManyToOne, "conferenceId");
-        dbo::hasMany(a, members_, dbo::ManyToOne, "conferenceId");
+        dbo::hasMany(a, messages_, dbo::ManyToOne, "conference");
+        dbo::hasMany(a, members_, dbo::ManyToOne, "conference");
     }
 private:
     //int id;

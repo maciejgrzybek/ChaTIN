@@ -91,7 +91,7 @@ public:
         dbo::field(a, date_, "date");
         dbo::field(a, ip_, "ip");
         dbo::field(a, isOutgoing_, "isOutgoing");
-        dbo::belongsTo(a, conference_, "conferenceId");
+        dbo::belongsTo(a, conference_, "conference");
     }
 private:
 //    int id;
