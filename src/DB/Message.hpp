@@ -79,7 +79,8 @@ public:
 
     void setConference(Conference* conference)
     {
-        conference_ = conference;
+//        dbo::ptr<Conference> conf(conference);
+        conference_ = dbo::ptr<Conference>(conference);
     }
 
     template<class Act>
