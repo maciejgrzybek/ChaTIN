@@ -61,7 +61,7 @@ void ToViewParser::incomingConfMsg( ChaTIN::IPv6 ip, Glib::ustring msg, otherAtt
         members.push_back(ChaTIN::IPv6(i->second));
     }
     cm.registerIncomingConference( (ChaTIN::ConferenceId&)(*incomeId), members );
-    Glib::ustring alias = ChaTIN::Alias(ip);
+    Glib::ustring alias = am.getAlias(ip);
     aq.push( boost::bind(&ChatWindow::showIncomingMessage, _1, incomeId, 
                                     alias, msg, true ));
 }
