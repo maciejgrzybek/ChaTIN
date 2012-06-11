@@ -59,10 +59,18 @@ dbo::ptr<Schema::Subscription> DBDriver::store(Schema::Subscription* sub)
     return result;
 }
 
-dbo::ptr<Schema::Message> DBDriver::store(Schema::Message* sub)
+dbo::ptr<Schema::Message> DBDriver::store(Schema::Message* msg)
 {
     int transid = startTransaction();
-    auto result = session.add(sub);
+    auto result = session.add(msg);
+    endTransaction(transid);
+    return result;
+}
+
+dbo::ptr<Schema::Conference> DBDriver::store(Schema::Conference* conf)
+{
+    int transid = startTransaction();
+    auto result = session.add(conf);
     endTransaction(transid);
     return result;
 }
@@ -71,14 +79,14 @@ void DBDriver::deleteAlias(const ChaTIN::IPv6& ip)
 {
     const char* ip_c = ip.c_str();
     dbo::ptr<Schema::Alias> toRemove = session.find<Schema::Alias>().where("ip = ?").bind(ip_c);
-    // FIXME implement this
+    toRemove.remove();
 }
 
 void DBDriver::deleteAlias(const ChaTIN::Alias& alias)
 {
     const char* alias_c = alias.c_str();
     dbo::ptr<Schema::Alias> toRemove = session.find<Schema::Alias>().where("alias = ?").bind(alias_c);
-    // FIXME implement this
+    toRemove.remove();
 }
 
 dbo::ptr<Schema::Conference> DBDriver::getConference(std::string ownerIp, std::string conferenceName)

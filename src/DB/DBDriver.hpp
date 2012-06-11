@@ -65,6 +65,13 @@ public:
     dbo::ptr<Schema::Message> store(Schema::Message*);
 
     /**
+     * Stores given Conference in database.
+     * @param Schema::Conference* Pointer to Conference to store.
+     * @param dbo::ptr<Schema::Conference> dbo pointer for object stored in db
+     */
+    dbo::ptr<Schema::Conference> store(Schema::Conference*);
+
+    /**
      * Removes given alias from database.
      * @param const ChaTIN::IPv6& Reference to IPv6 of alias to be removed.
      */
