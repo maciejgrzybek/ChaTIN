@@ -22,7 +22,7 @@ obj/AliasException.o: src/AliasException.hpp
 	g++ src/AliasException.hpp -c $(GEN) $(GLIBI) -o $@
 obj/AliasManager.o: obj/AliasException.o obj/DBDriver.o src/AliasManager.cpp src/AliasManager.hpp
 	g++ src/AliasManager.cpp -c $(GEN) $(GTKI)  -o $@
-obj/ConferenceManager.o: src/ConferenceManager.cpp src/ConferenceManager.hpp
+obj/ConferenceManager.o: obj/SchemaConference.o src/ConferenceManager.cpp src/ConferenceManager.hpp
 	g++ src/ConferenceManager.cpp -c $(GEN) -o $@
 obj/Dialog.o: src/Dialog.cpp src/Dialog.hpp src/types.hpp obj/Socket.o
 	g++ src/Dialog.cpp -c $(GEN) $(GTKI) -o $@
