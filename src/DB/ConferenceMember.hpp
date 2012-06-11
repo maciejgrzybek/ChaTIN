@@ -18,15 +18,41 @@ class Conference;
 class ConferenceMember
 {
 public:
+
+    std::string getIp() const
+    {
+        return ip_;
+    }
+
+    dbo::ptr<Conference> getConference() const
+    {
+        return conference_;
+    }
+
+    void setIp(std::string ip)
+    {
+        ip_ = ip;
+    }
+
+    void setConference(dbo::ptr<Conference> conference)
+    {
+        conference_ = conference;
+    }
+
+    void setConference(Conference* conference)
+    {
+        conference_ = dbo::ptr<Conference>(conference);
+    }
+
     template<class Act>
     void persist(Act& a)
     {
-        dbo::field(a, ip, "ip");
-        dbo::belongsTo(a, conference, "conferenceId");
+        dbo::field(a, ip_, "ip");
+        dbo::belongsTo(a, conference_, "conferenceId");
     }
 private:
-    std::string ip;
-    dbo::ptr<Conference> conference;
+    std::string ip_;
+    dbo::ptr<Conference> conference_;
 
 };
 

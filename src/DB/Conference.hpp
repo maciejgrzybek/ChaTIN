@@ -22,6 +22,19 @@ class Conference
 {
 public:
 
+    Conference() : ownerIp_(), name_(), date_(0)
+    {}
+
+    Conference(std::string ownerIp, std::string name, int date = 0)
+    {
+        if(date == 0)
+            date = time(NULL);
+
+        ownerIp_ = ownerIp;
+        name_ = name;
+        date_ = date;
+    }
+
     std::string getOwnerIp() const
     {
         return ownerIp_;
