@@ -1,5 +1,5 @@
 <head>
-    <title>Dokumentacja koncowa TOrder</title>
+    <title>Dokumentacja koncowa ChaTIN: Bazy danych</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <link rel="Stylesheet" type="text/css" href="md.css">
 </head>
@@ -22,10 +22,10 @@ Etap 0 - opis słowny projektu
 W ramach projektu z przedmiotu Technologie Internetowe tworzona jest aplikacja pozwalająca przeprowadzać rozmowy p2p z wykorzystaniem protokołu IPv6, ze wsparciem konferencji.
 Zastosowanie bazy danych sqlite obejmuje:
 
-* Zapisywanie, przechowywanie i wczytywanie historii wiadomości z poszczególnymi użytkownikami
-* Zapisywanie i przechowywanie a także przetwarzanie i zmienianie aktualnego stanu subskrypcji między użytkownikami (protokół subskrypcji jest oparty na maszynie stanowej, której stan przechowywany jest w bazie danych).
-* Zapisywanie powiązania adresów IP z czytelnymi dla użytkownika aliasami (nick). Szybkie odnajdywanie zadanego adresu IP na podstawie aliasu i odwrotnie - aliasu na podstawie adresu IP (przydatne przy implementacji frontendu).
-* Zapisywanie i odtwarzanie informacji związanych z listą uczestników i rozmową konferencyjną, gdzie z - zgodnie ze specyfikacją projektu - rozmowa jest identyfikowana po nazwie i adresie IP jej założyciela.
+1. Zapisywanie, przechowywanie i wczytywanie historii wiadomości z poszczególnymi użytkownikami
+2. Zapisywanie i przechowywanie a także przetwarzanie i zmienianie aktualnego stanu subskrypcji między użytkownikami (protokół subskrypcji jest oparty na maszynie stanowej, której stan przechowywany jest w bazie danych).
+3. Zapisywanie powiązania adresów IP z czytelnymi dla użytkownika aliasami (nick). Szybkie odnajdywanie zadanego adresu IP na podstawie aliasu i odwrotnie - aliasu na podstawie adresu IP (przydatne przy implementacji frontendu).
+4. Zapisywanie i odtwarzanie informacji związanych z listą uczestników i rozmową konferencyjną, gdzie z - zgodnie ze specyfikacją projektu - rozmowa jest identyfikowana po nazwie i adresie IP jej założyciela.
 
 
 Etap 1 - projekt bazy danych
@@ -95,6 +95,48 @@ Opis encji
 <tr><td>ip            </td><td>TEXT      </td><td><a href="./ipv6.html">IPv6</a>        </td><td>adres ip przypisywanego użytkownika                                            </td></tr>
 <tr><td>conferenceId  </td><td>INTEGER   </td><td>FK: conference.id                     </td><td>identyfikator konferencji, do której przypisany jest użytkownik                </td></tr>
 </table>
+
+Analiza wymagań
+---------------
+
+### Wymagania funkcjonalne ###
+
+#### 1. Archiwum wiadomości ####
+
+1. Zapisywanie każdej wychodzącej i przychodzącej wiadomości w bazie danych
+2. Wczytywanie historycznych wiadomości przy otwieraniu karty z rozmową
+
+#### 2. Lista subskrypcji ####
+
+1. Zapisywanie w bazie zmian stanu subskrypcji po wprowadzeniu powiązanych komend użytkownika (*sub, subakc, subdec*)
+2. Zapisywanie w bazie zmian stanu subskrypcji wynikających z przychodzących pakietów (*iky, idky, ikya*)
+3. Odtworzenie pełnej listy subskrypcji przy starcie aplikacji (wyświetlanie w widoku)
+4. Bieżące aktualizowanie (odczytywanie) stanów subskrypcji w ramach wymagań konkretnego widoku
+
+#### 3. Aliasy ####
+
+1. Zapisywanie powiązania adresu IPv6 z dowolną wartością tekstową w ramach polecenia *addalias*
+2. Odtworzenie pełnej listy aliasów (samych nazw) przy starcie aplikacji (wyświetlanie w widoku)
+3. Odszukiwanie aliasu na podstawie danego adresu IP
+4. Odszukiwanie adresu ip na podstawie danego aliasu
+5. Zmiana własności aliasu (w szczególności nazwy) w ramach ograniczeń unikalności
+
+#### 4. Konferencje ####
+
+1. Zapisywanie nowo tworzonych konferencji w bazie danych 
+2. Zapisywanie przychodzących konferencji w bazie danych 
+3. Odtwarzanie listy uczestników konferencji na podstawie nazwy i adresu IPv6 właściciela
+4. Sprawdzanie możliwości tworzenia nowej konferencji w ramach ograniczeń unikalności
+
+### Wymagania niefunkcjonalne ###
+
+* W ramach części bazodanowej należy przedewszystkim dotrzymać zawartych w dokumentacji wstępnej aplikacji limitów na ilość aliasów i osób w konferencji (1024 aliasy, 64 konferencje). 
+  W przypadku sqlite takie ograniczenia są dość niską poprzeczką. 
+  W ramach tych ograniczeń aplikacja powinna działać bezawaryjnie (tj. powinna spełniać wszystkie wymagania funkcjonalne a w próbie 1000 kolejnych testów obejmującyh kolejne wymagania funkcjonalne może zdarzyć się nie więcej niż 1 błąd), a okres reakcji między akcją użytkownika / przychodzącym pakietem a powiązaną z nią reakcją widoku nie powinien w żadnym razie przekroczyć 0.5s (nie uwzględnia się tu czasu wędrówki pakietów, które mogą spowolnić niektore akcje - zwłaszcza przy łączu niskiej jakości).
+* W ramach tabel dotyczących aliasów należy zadbać o optymalność wyszukiwania zarówno po aliasie jak i po adresie IP. Wyszukiwanie to jest bowiem kluczowe dla spełnienia głównego ograniczenia czasowego.
+* Aplikacja powinna uruchamiać się i być gotowa do pracy w czasie nie dłuższym niż 3sek (dla zachowania w/w limitów).
+* Powyższe wymagania funkcjonalne i niefunkcjonalne spełnialne są dla środowisk uruchomieniowych wymienionych w specyfikacji tj. posiadających wsparcie dla wykorzystanych biliotek (patrz dokumentacja koncowa projektu).
+* Aplikacja spełniać musi w/w ograniczenia czasowe mając do dyspozycji (tj. na własny użytek średnio) następujące zasoby min. **100MHz** (dla architektury x86_64), min. **32MB RAM**
 
 Etap 2 - projekt aplikacji
 ==========================
