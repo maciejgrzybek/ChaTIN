@@ -19,6 +19,12 @@ class ConferenceMember
 {
 public:
 
+    ConferenceMember() : ip_()
+    {}
+
+    ConferenceMember(std::string ip) : ip_(ip)
+    {}
+
     std::string getIp() const
     {
         return ip_;

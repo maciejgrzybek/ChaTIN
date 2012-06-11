@@ -77,6 +77,14 @@ public:
     void deleteAlias(const ChaTIN::Alias&);
 
     /**
+     * Method returns conference by given owner IP and name.
+     * @param std::string ownerIp
+     * @param std::string Conference name
+     * @return dbo::ptr<Schema::Conference> Conference found.
+     */
+    dbo::ptr<Schema::Conference> getConference(std::string, std::string);
+
+    /**
      * Method returns aliases collection.
      * @return Aliases Collection of aliases stored in database.
      */

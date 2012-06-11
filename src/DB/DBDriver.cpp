@@ -71,12 +71,21 @@ void DBDriver::deleteAlias(const ChaTIN::IPv6& ip)
 {
     const char* ip_c = ip.c_str();
     dbo::ptr<Schema::Alias> toRemove = session.find<Schema::Alias>().where("ip = ?").bind(ip_c);
+    // FIXME implement this
 }
 
 void DBDriver::deleteAlias(const ChaTIN::Alias& alias)
 {
     const char* alias_c = alias.c_str();
     dbo::ptr<Schema::Alias> toRemove = session.find<Schema::Alias>().where("alias = ?").bind(alias_c);
+    // FIXME implement this
+}
+
+dbo::ptr<Schema::Conference> DBDriver::getConference(std::string ownerIp, std::string conferenceName)
+{
+    typedef dbo::collection<dbo::ptr<Schema::Conference> > dbCol;
+    dbo::ptr<Schema::Conference> conference = session.find<Schema::Conference>().where("ownerIp = ?").bind(ownerIp.c_str()).where("name = ?").bind(conferenceName.c_str());
+    return conference;
 }
 
 Aliases DBDriver::getAliases()
