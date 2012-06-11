@@ -15,39 +15,41 @@ namespace DB
 namespace Schema
 {
 
+class Group;
+
 class Alias
 {
 public:
-    Alias() : ip(), alias(), group()
+    Alias() : ip_(), alias_(), group_()
     {}
 
-    Alias(ChaTIN::Alias alias_, ChaTIN::IPv6 ipv6) : ip(ipv6), alias(alias_)
+    Alias(ChaTIN::Alias alias, ChaTIN::IPv6 ipv6) : ip_(ipv6), alias_(alias)
     {}
 
-    Alias(ChaTIN::Alias alias_, ChaTIN::IPv6 ipv6, Group group_) : ip(ipv6), alias(alias_), group(&group_)
+    Alias(ChaTIN::Alias alias, ChaTIN::IPv6 ipv6, Group* group) : ip_(ipv6), alias_(alias), group_(group)
     {}
 
     ChaTIN::Alias getAlias() const
     {
-        return ChaTIN::Alias((Glib::ustring)alias);
+        return ChaTIN::Alias((Glib::ustring)alias_);
     }
     
     ChaTIN::IPv6 getIP() const
     {
-        return ChaTIN::IPv6(ip);
+        return ChaTIN::IPv6(ip_);
     }
 
     template<class Act>
     void persist(Act& a)
     {
-        dbo::id(a, ip, "ip");
-        dbo::field(a, alias, "alias");
-        dbo::belongsTo(a, group, "groupId");
+        dbo::id(a, ip_, "ip");
+        dbo::field(a, alias_, "alias");
+        dbo::belongsTo(a, group_, "groupId");
     }
 private:
-    std::string ip;
-    std::string alias;
-    dbo::ptr<Group> group;
+    std::string ip_;
+    std::string alias_;
+    dbo::ptr<Group> group_;
 
 };
 
@@ -64,11 +66,12 @@ namespace Wt
         {
             typedef std::string IdType;
 
-            static IdType invalidId() {
+            static IdType invalidId()
+            {
                 return std::string();
             }
 
-            static const char *surrogateIdField() { return 0; }
+            static const char* surrogateIdField() { return 0; }
         };
 
     }

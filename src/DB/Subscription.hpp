@@ -16,8 +16,10 @@ class Subscription
 public:
     Subscription() : ip_(), state_(0)
     {}
+
     Subscription(std::string ip, int state) : ip_(ip), state_(state)
     {}
+
     std::string getIP() const
     {
         return ip_;
@@ -28,6 +30,11 @@ public:
         return state_;
     }
 
+    int getDate() const
+    {
+        return date_;
+    }
+
     void setIP(std::string& ip)
     {
         ip_ = ip;
@@ -36,6 +43,11 @@ public:
     void setState(int state)
     {
         state_ = state;
+    }
+
+    void setDate(int date)
+    {
+        date_ = date;
     }
 
     template<class Act>
