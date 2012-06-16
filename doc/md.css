@@ -27,12 +27,25 @@ h3
     font-size: 12px;
 }
 
+h4
+{
+    border-left: 10px solid gray;
+    padding-left: 10px;
+    margin-left: 70px;
+    font-size: 12px;
+}
+
 p
 {
     margin-left: 65px;
 }
 
 ul
+{
+    margin-left: 65px;
+}
+
+ol
 {
     margin-left: 65px;
 }
@@ -63,4 +76,11 @@ td
 {
     font-size: 12px;
     border: 1px dotted black;
+}
+
+pre
+{
+    border-left: 3px solid black;
+    padding-left: 8px;
+    margin-left: 40px;
 }

@@ -86,7 +86,7 @@ Zastosowanie bazy danych sqlite obejmuje:</p>
 
 <h3>conference</h3>
 
-<p><code>UNIQUE: ownerIP, name</code></p>
+<p><code>UNIQUE: (ownerIP, name)</code></p>
 
 <table>
 <tr><th>nazwa atrybutu</th><th>typ danych</th><th>ograniczenia                          </th><th>opis                                                                           </th></tr>
@@ -152,13 +152,221 @@ Zastosowanie bazy danych sqlite obejmuje:</p>
 <li>W ramach części bazodanowej należy przedewszystkim dotrzymać zawartych w dokumentacji wstępnej aplikacji limitów na ilość aliasów i osób w konferencji (1024 aliasy, 64 konferencje). 
 W przypadku sqlite takie ograniczenia są dość niską poprzeczką. 
 W ramach tych ograniczeń aplikacja powinna działać bezawaryjnie (tj. powinna spełniać wszystkie wymagania funkcjonalne a w próbie 1000 kolejnych testów obejmującyh kolejne wymagania funkcjonalne może zdarzyć się nie więcej niż 1 błąd), a okres reakcji między akcją użytkownika / przychodzącym pakietem a powiązaną z nią reakcją widoku nie powinien w żadnym razie przekroczyć 0.5s (nie uwzględnia się tu czasu wędrówki pakietów, które mogą spowolnić niektore akcje - zwłaszcza przy łączu niskiej jakości).</li>
-<li>W ramach tabel dotyczących aliasów należy zadbać o optymalność wyszukiwania zarówno po aliasie jak i po adresie IP. Wyszukiwanie to jest bowiem kluczowe dla spełnienia głównego ograniczenia czasowego.</li>
+<li>W rama ch tabel dotyczących aliasów należy zadbać o optymalność wyszukiwania zarówno po aliasie jak i po adresie IP. Wyszukiwanie to jest bowiem kluczowe dla spełnienia głównego ograniczenia czasowego.</li>
 <li>Aplikacja powinna uruchamiać się i być gotowa do pracy w czasie nie dłuższym niż 3sek (dla zachowania w/w limitów).</li>
 <li>Powyższe wymagania funkcjonalne i niefunkcjonalne spełnialne są dla środowisk uruchomieniowych wymienionych w specyfikacji tj. posiadających wsparcie dla wykorzystanych biliotek (patrz dokumentacja koncowa projektu).</li>
 <li>Aplikacja spełniać musi w/w ograniczenia czasowe mając do dyspozycji (tj. na własny użytek średnio) następujące zasoby min. <strong>100MHz</strong> (dla architektury x86_64), min. <strong>32MB RAM</strong></li>
 </ul>
 
+<h2>Skrypt DDL</h2>
+
+<pre>
+CREATE TABLE `group` ( `id` INTEGER NOT NULL, `name` TEXT NOT NULL, PRIMARY KEY(`id`), UNIQUE(`name`) );
+CREATE TABLE `alias` ( `ip` TEXT NOT NULL, `alias` TEXT NOT NULL, `groupId` INTEGER NOT NULL, PRIMARY KEY(`ip`), UNIQUE(`alias`), FOREIGN KEY(`groupId`) REFERENCES `group`(id) );
+CREATE TABLE `message` ( `id` INTEGER NOT NULL, `content` TEXT NOT NULL, `date` INTEGER NOT NULL, `ip` TEXT, `isOutgoing` INTEGER NOT NULL, `conferenceId` INTEGER,  PRIMARY KEY(`id`), FOREIGN KEY(`conferenceId`) REFERENCES `conference`(`id`) );
+CREATE TABLE `subscription` ( `ip` TEXT NOT NULL, `state` INTEGER NOT NULL, `date` INTEGER NOT NULL, PRIMARY KEY(`ip`) );
+CREATE TABLE `conference` ( `id` INTEGER NOT NULL, `ownerIp` TEXT NOT NULL, `name` TEXT NOT NULL, `date` INTEGER NOT NULL, PRIMARY KEY(`id`) );
+CREATE TABLE `conferenceMember` ( `id` INTEGER NOT NULL, `ip` TEXT NOT NULL, `conferenceId` INTEGER NOT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`conferenceId`) REFERENCES `conference`(`id`) );
+
+CREATE TRIGGER alias_unique BEFORE INSERT ON alias
+BEGIN
+SELECT CASE
+WHEN
+(
+    SELECT COUNT() as cnt FROM
+        (SELECT alias from alias WHERE alias = new.alias)
+        WHERE cnt > 0
+)
+THEN RAISE(FAIL,'Alias already exists')
+END;
+END;
+</pre>
+
+<p>Zobacz także jako <a href="../db/schema.sql">text/x-sql</a></p>
+
 <h1>Etap 2 - projekt aplikacji</h1>
+
+<h2>Hierarchia menu</h2>
+
+<p>Menu ma charakter jednopoziomowy.
+Menu realizowane jest na dwa sposoby.</p>
+
+<h3>Konsola interaktywna ###</h3>
+
+<p>Konsola interaktywna jest głównym elementem GUI pozwalającym na wykonywanie wszystkich dopuszczalnych przez aplikację akcji.
+Komunikacja z konsolą iteraktywną odbywa się przy użyciu komend tekstowych. Przy komunikacji z konsolą iteraktywną (w przypadku niektórych poleceń) ważny jest kontekst wykonania polecenia czyli stan aplikacji wyrażony przez aktualnie aktywną kartę. 
+W szczególności polecenia niepoprzedzone znakiem "/" mają sens wyłącznie w kontekściebieżącej karty i oznaczają:</p>
+
+<ul>
+<li>Dla karty z rozmową 1 &lt;-> 1 - wysłanie wiadomości do rozmówcy</li>
+<li>Dla karty z rozmową 1 &lt;-> n - wysłanie wiadomości do konferencji (wszystkich jej uczestników)</li>
+<li>Dla karty logów - brak akcji</li>
+</ul>
+
+<p>Polecenia poprzedzone znakiem "/" mogą mieć sens zarówno w konteście całości aplikacji jak i konkretnej karty, zgodnie z niżej nakreśloną semantyką:</p>
+
+<ul>
+<li>/open Alias/IP – otwiera kartę rozmowy z danym aliasem lub adresem IP, program automatycznie sprawdza czy karta już istnieje – w takim wypadku karta ta jest ustawiana jako aktywna. Ponadto wpisanie adresu IPv6 w przypadku gdy adres ten ma znany aplikacji alias, spowoduje otwarcie karty dla tego aliasu (by zapobiec problemowi dwóch kart dla jednego użytkownika).</li>
+<li>/confopen nazwa_konferencji Alias/IP{2+} - otwiera kartę rozmowy konferencyjnej. Wymaga podania minimum dwóch aliasów/adresów IP. Karta konferencyjna identyfikowana jest po podanej nazwie konferencji. W sieci mogą istnieć dwie konferencje o tej samiej nazwie ale innym właścicielu (użytkownik który wywoła /confopen staje się właścicielem konferencji).</li>
+<li>/addalias alias IP – powoduje dodanie aliasu o nazwie alias wskazującego na adres IP</li>
+<li>/close – zamyka bieżącą kartę, lub gdy zostanie wywołane na karcie logów – zamyka aplikację</li>
+<li>/sub alias/IP – wysyła prośbę o subskrypcję do użytkownika wskazanego przez alias/IP</li>
+<li>/subakc alias/IP – akceptuje prośbę wskazanego użytkownika </li>
+<li>/subdec alias/IP – odrzuca prośbę wskazanego użytkownika</li>
+</ul>
+
+<h3>Skróty w ramach GUI</h3>
+
+<p>W ramach GUI stworzono też kilka uproszczeń pozwalających na wykonanie pewnych często powtarzanych akcji przy użyciu myszki lub innego urządzenia wskazującego. W szczególności:</p>
+
+<ul>
+<li>Wybór karty może być realizowany przez kliknięcie na jedną z już otwartych kart</li>
+<li>Otworznie karty może być zrealizowane przez podwójne kliknięcie w jeden z dodanych do aplikacji aliasów (widocznych na liście).</li>
+</ul>
+
+<h2>Głowne moduły aplikacji</h2>
+
+<h3>DBDriver</h3>
+
+<p>Udostępnie obiektowy interfejs dla bazy danych mysql. Zarządza transakcjami. 
+Odpowiada za przekazywanie zapytań do podległych modułów modelu ORM.
+Stanowi bezpośredni łącznik miedzy modelem bazy danych a modelem aplikacji. 
+Podlegają mu moduły odpowiedzialne za zarządzanie poszczególnymi tabelami bazy danych:</p>
+
+<ul>
+<li>DB/Alias</li>
+<li>DB/Conference</li>
+<li>DB/ConferenceMember</li>
+<li>DB/Group</li>
+<li>DB/Message</li>
+<li>DB/Subscription</li>
+</ul>
+
+<h3>Socket</h3>
+
+<p>Biblioteka stanowiąca obiektową nakładkę (w zakresie wymaganym do realizacji aplikacji ChaTIN) na bibliotekę BSD Socktes.
+Wykorzystuje ona mechanizmy języka C++ by zapewnić możliwie prosty interfejs do komunikacji sieciowej pozwalający na wysyłanie i odbieranie wiadomości w formie obieków klasy std::string.</p>
+
+<h3>DialogManager</h3>
+
+<p>Element modelu aplikacji stanowiący swoiste przejście (proxy) między elementami kontrolera a bilioteką Socket.
+DialogManager zarządza otwartymi połączeniami sieciowymi oraz kontroluje ich stan. 
+Jego podstawową zaletą jest możliwość przyjmowania i odbierania wiadomości tekstowych w postaci zmiennej std::string do wskazanego adresu bez konieczności przejmowania się wywołującego o otwieranie/zamykanie/utrzymywanie połączeń. 
+DialogManager realizuje funkcje serwera chatu dla połczeń przychodzących oraz klienta dla połączeń wychodzących.</p>
+
+<h3>FromViewParser</h3>
+
+<p>Odbiera wiadmości od użytkownika (z widoku), parsuje ich znaczenie po czym wykonuje powiązane z nimi zadania odwołując się, w razie potrzeby zarówno do elementów modelu jak i uaktualniając widok.</p>
+
+<h3>ToViewParser</h3>
+
+<p>Odbiera wiadomości od DialogManagera w postaci obiektów typu std::string. Parsuje je zgodnie z przyjętym standardem (wiadomości XML) opisanym niżej. 
+Po czym wykonuje powiązane z danymi typami wiadomości XML akcje odwołując się zarówno do modelu jak i do widoku.</p>
+
+<h3>AliasManager</h3>
+
+<p>Zarząda zarówno listą aliasów pozwalając na ich rejestrację oraz translacją alias=>IP oraz IP=>alias, jak i listą subskrypcji oraz powiązanym z nim automatem stanowym opisującym stan każdej z nich. 
+Posiada metody pozwalające obsługiwać subskrypcję zarówno na podstawie sygnałów pochodzących od użytkownika jak i bezpośrednio z sieci.</p>
+
+<h3>ConferenceManager</h3>
+
+<p>Zarządza znanymi dla danego hosta konferencjami istniejącymi w sieci. 
+Zapisuje w bazie powiązania nazwy i właściciela z uczestnikami konferencji. 
+Wykorzystywany jest również w przypadku wysyłania wiadomości do konfrencji w celu ustalenia listy adresów, które powinny otrzymać daną wiadmość.</p>
+
+<h3>ChatWindow</h3>
+
+<p>Moduł widoku, odpowiada za renderowania okna.
+Otrzymuje od kontrolera komunikaty dotyczące aktualizacji stanu widoku, wyświetla przychodzące wiadomości, obsługuje interakcję z użytkownikiem itp.</p>
+
+<h3>XMLPackageCreator</h3>
+
+<p>Tworzy pakiety XML na podstawie zadanych informacji zgodnie z ustalonym standardem.</p>
+
+<p><strong>Więcej informacji na temat modułów aplikacji, sposobu ich implementacji i komunikacji można znaleźć w załączonej dokumentacji końcowje całości projektu.</strong></p>
+
+<h2>Podział klient-serwer</h2>
+
+<p>W przypadku zastosowania bazy sqlite stronę serwera przyjmuje część kodu wykonywalnego.
+W ramach aplikacji rolę serwera przyjmuje moduł DBDriver wraz z podległymi mu modułami.
+Rolę klienta natomiast przyjmują te moduły aplikacji, które komunikują się bezpośrednio z DBDriverem. 
+W szczególności są to moduły  związane z modelem i w pewnym stopniu z kontrolerem, ale nigdy z widokiem.</p>
+
+<h3>Rola serwera</h3>
+
+<ul>
+<li>Zapewnienie dostępu do operacji CRUD dla bazy danych</li>
+<li>Zapewnienie podstawowych warunków spójności (autoinkrementacja, not null itp)</li>
+<li>Zapewnienie transakcyjnego dostępu do bazy danych i zadbanie o spójność wykonywanych na bazie operacji.</li>
+</ul>
+
+<h3>Rola klienta</h3>
+
+<ul>
+<li>Zapewnienie komunikacji z użytkownikiem</li>
+<li>Przetwarzanie akcji użytkownika na konkretne zapytania do serwera</li>
+<li>Wykonywanie operacji CRUD w ramach zdarzeń użytkownika i zdarzeń sieciowych</li>
+<li>Zapewnienie komunikacji sieciowej</li>
+<li>Zapewnienie sprawdzenia złożonych warunków spójności (np. format IPv6)</li>
+</ul>
+
+<h2>Wymuszenie integralności</h2>
+
+<ul>
+<li>Ograniczenia NOT NULL - zrealizowane w definicji tabel ze względu na dobre wsparcie i wygodny sposób przekazywania błędów (wyjątki) przez ORM. Jest to jedno z najbardziej podstawowych ograniczeń.</li>
+<li>Ograniczenia FORIGN KEY - zrealizowane w definicji tabel ze względu na prostą realizację i wygodną obsługę błędów.</li>
+<li>Ograniczenia UNIQUE / PRIMARY KEY - zrealizowane w definicji tabel ponieważ zawierają one proste wsparcie i ich zdefiniowanie jest niezbędne do usprawdzenia procesów wyszukiwania.</li>
+<li>Ograniczenie IPv6 - zrealizowane programowo, ze względu na wsparcie biblioteki BSDSocket dla tego rodzaju sprawdzeń (brak konieczności definiowania złożonych wyrażeń regularnych, względna odporność na ewentualne zmiany standardu).</li>
+<li>Ograniczenia TIMESTAMP - ponieważ sqlite nie posiada typu odpowieedzialnego za przechowywanie daty dane są przechowywane jako liczby całkowitoliczbowe. Wszelkie dane wstawiane w te pola są kontrolowane programowo i są wynikiem wykonania funkcji time, która ze swojej natury zwraca poprawną dla takiego pola wartość.</li>
+<li>Ograniczenia AUTO INCREASMENT - realizowane w definicji bazy danych, ze względu na prostotę używania i brak konieczności zajmowania się tymi wartościami na poziomie aplikacji.</li>
+</ul>
+
+<h2>Indeksy w bazie danych</h2>
+
+<h3>alias</h3>
+
+<ul>
+<li>Alias - częsta operacja wyszukiwania ip wg. aliasu</li>
+<li>IP - częsta operacja wyszukiwania aliasu wg. ip</li>
+<li>groupId - mogą okazać się potrzebne operacje wybierania listy aliasów dla danej grupy a także obliczenia zbiorcze z nimi związane.</li>
+</ul>
+
+<h3>message</h3>
+
+<ul>
+<li>IP - konieczność wyszukiwania danych do załadowania dla danej karty (dla jednego autora)</li>
+<li>ConferenceId - konieczność wyszukiwania danych do załadowania dla danej karty konferencyjnej (dla danej konferencji)</li>
+</ul>
+
+<h3>subscription</h3>
+
+<ul>
+<li>IP - wyszukiwanie/aktualizowanie stanu subskrypcji odbywa się praktycznie wyłącznie nna podsfawie adresów IP</li>
+</ul>
+
+<h3>group</h3>
+
+<ul>
+<li>id - grupy wybierane są najczęściej w kontekście iteracji lub w kontekście wyboru użytkownika (złączenie groupId&lt;->id)</li>
+</ul>
+
+<h3>conference</h3>
+
+<ul>
+<li>(ownerIp, name) - jest to para identyfikująca grupę wg. której dokonywane będzie wyszukiwanie id by dokonać złączenia z listą użytkowników dla danej konferencji</li>
+</ul>
+
+<h3>conferenceMember</h3>
+
+<ul>
+<li>conferenceId - wyszukiwaie ma semantyczny sens tylko dla użytkowników należących do wskazanej przez id konferencji tj. przy złączeniu (conferenceId&lt;->conference.id)</li>
+</ul>
+
+<h2>Transakcje dla historii wiadomości</h2>
+
+<h2>Makieta GUI</h2>
+
+<p><img src="./ChaTIN2.png"></p>
 
 <h1>Etap 3 - implemetnacja</h1>
 
