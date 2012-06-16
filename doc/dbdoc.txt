@@ -308,6 +308,13 @@ Makieta GUI
 -----------
 <img src="./ChaTIN2.png">
 
+### Legenda ###
+* 1 - lista aliasów wraz ze stanem subskrypcji
+* 2 - głowne okno rozmowy (indywidualne dla każdej karty)
+* 3 - pasek zakładek - z wyróżnieniem aktywnej karty
+* 4 - linia wejścia - główna metoda komunikacji z użytkownikiem
+* 5 - przycisk zatwierdzenia, równoważny z naciśnięciem klawisza ENTER
+
 Etap 3 - implemetnacja
 ======================
 </body>
