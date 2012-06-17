@@ -80,10 +80,9 @@ public:
         date_ = date;
     }
 
-    void addConferenceMember(ConferenceMember& conferenceMember)
+    void addConferenceMember(dbo::ptr<ConferenceMember> conferenceMember)
     {
-        conferenceMember.setConference(this);
-//        members_.insert(conferenceMember);
+        members_.insert(conferenceMember);
     }
 
     void addMessage(dbo::ptr<Message> message)

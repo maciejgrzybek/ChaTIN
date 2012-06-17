@@ -74,8 +74,8 @@ dbo::ptr<DB::Schema::Conference> ConferenceManager::registerConference(const Cha
     {
         std::string ip = (Glib::ustring)(*iter);
         DB::Schema::ConferenceMember* cm = new DB::Schema::ConferenceMember(ip);
-        DB::DBDriver::getInstance()->store(cm);
-        conf->addConferenceMember(*cm);
+        conf->addConferenceMember(DB::DBDriver::getInstance()->store(cm));
+//        conf->addConferenceMember(*cm);
     }
     
     return DB::DBDriver::getInstance()->store(conf);

@@ -95,10 +95,10 @@ public:
     }
 private:
 //    int id;
-    std::string content_;
-    int date_;
     std::string ip_;
+    std::string content_;
     int isOutgoing_;
+    int date_;
     dbo::ptr<Conference> conference_;
 
 };
