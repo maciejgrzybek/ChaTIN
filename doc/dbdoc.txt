@@ -48,6 +48,13 @@ Opis encji
 </table>
 
 ### message ###
+Message jest typem nadrzędnym dla wiadomości prywatnej i wiadomości
+konferencyjnej. Po analizie wymagań projektowych, zdecydowano się na
+implementację podtypów w formie single table inheritance (generalizacja).
+Następująca decyzja nie pociąga za sobą zbyt dużych kosztów pamięciowych, a
+jednocześnie upraszcza implementację nieskomplikowanego (z natury)
+rozgałęzienia wiadomości.
+
 <table>
 <tr><th>nazwa atrybutu</th><th>typ danych</th><th>ograniczenia                          </th><th>opis                                                   </th></tr>
 <tr><td>id            </td><td>INTEGER   </td><td>PK, NN, AUTO INCREAMENT               </td><td>unikalny identyfikator wiadomości                      </td></tr>
@@ -133,7 +140,11 @@ Analiza wymagań
 * W ramach części bazodanowej należy przedewszystkim dotrzymać zawartych w dokumentacji wstępnej aplikacji limitów na ilość aliasów i osób w konferencji (1024 aliasy, 64 konferencje). 
   W przypadku sqlite takie ograniczenia są dość niską poprzeczką. 
   W ramach tych ograniczeń aplikacja powinna działać bezawaryjnie (tj. powinna spełniać wszystkie wymagania funkcjonalne a w próbie 1000 kolejnych testów obejmującyh kolejne wymagania funkcjonalne może zdarzyć się nie więcej niż 1 błąd), a okres reakcji między akcją użytkownika / przychodzącym pakietem a powiązaną z nią reakcją widoku nie powinien w żadnym razie przekroczyć 0.5s (nie uwzględnia się tu czasu wędrówki pakietów, które mogą spowolnić niektore akcje - zwłaszcza przy łączu niskiej jakości).
-* W rama ch tabel dotyczących aliasów należy zadbać o optymalność wyszukiwania zarówno po aliasie jak i po adresie IP. Wyszukiwanie to jest bowiem kluczowe dla spełnienia głównego ograniczenia czasowego.
+* W ramach tabel dotyczących aliasów należy zadbać o optymalność wyszukiwania
+* zarówno po aliasie jak i po adresie IP. Wyszukiwanie to jest bowiem kluczowe
+* dla spełnienia głównego ograniczenia czasowego. Przy spełnieniu założeń co
+ do ilości aliasów, pojedyncza operacja CRUD na aliasach nie powinna
+ przekroczyć czasu wykonania 0.5s, a odczyt pełnej bazy aliasów (przy starcie aplikacji) nie powinien trwać dłużej niż 1.5s.
 * Aplikacja powinna uruchamiać się i być gotowa do pracy w czasie nie dłuższym niż 3sek (dla zachowania w/w limitów).
 * Powyższe wymagania funkcjonalne i niefunkcjonalne spełnialne są dla środowisk uruchomieniowych wymienionych w specyfikacji tj. posiadających wsparcie dla wykorzystanych biliotek (patrz dokumentacja koncowa projektu).
 * Aplikacja spełniać musi w/w ograniczenia czasowe mając do dyspozycji (tj. na własny użytek średnio) następujące zasoby min. **100MHz** (dla architektury x86_64), min. **32MB RAM**
@@ -160,6 +171,16 @@ WHEN
 THEN RAISE(FAIL,'Alias already exists')
 END;
 END;
+
+CREATE INDEX alias_alias_idx ON alias(alias);
+CREATE INDEX alias_ip_idx ON alias(ip);
+CREATE INDEX alias_group_idx ON alias(groupId);
+CREATE INDEX message_ip_idx ON message(ip);
+CREATE INDEX message_conference_idx ON message(conferenceId);
+CREATE INDEX subscription_idx ON subscription(ip);
+CREATE INDEX group_idx ON `group`(id);
+CREATE INDEX conference_idx ON conference(ownerIp,name);
+CREATE INDEX conferenceMember_idx ON conferenceMember(conferenceId);
 </pre>
 
 Zobacz także jako <a href="../db/schema.sql">text/x-sql</a>
@@ -170,7 +191,7 @@ Etap 2 - projekt aplikacji
 Hierarchia menu
 ---------------
 Menu ma charakter jednopoziomowy.
-Menu realizowane jest na dwa sposoby.
+Realizowane jest na dwa sposoby.
 
 ### Konsola interaktywna ### 
 Konsola interaktywna jest głównym elementem GUI pozwalającym na wykonywanie wszystkich dopuszczalnych przez aplikację akcji.
@@ -271,11 +292,12 @@ Wymuszenie integralności
 ------------------------
 
 * Ograniczenia NOT NULL - zrealizowane w definicji tabel ze względu na dobre wsparcie i wygodny sposób przekazywania błędów (wyjątki) przez ORM. Jest to jedno z najbardziej podstawowych ograniczeń.
-* Ograniczenia FORIGN KEY - zrealizowane w definicji tabel ze względu na prostą realizację i wygodną obsługę błędów.
+* Ograniczenia FOREIGN KEY - zrealizowane w definicji tabel ze względu na prostą realizację i wygodną obsługę błędów.
 * Ograniczenia UNIQUE / PRIMARY KEY - zrealizowane w definicji tabel ponieważ zawierają one proste wsparcie i ich zdefiniowanie jest niezbędne do usprawdzenia procesów wyszukiwania.
 * Ograniczenie IPv6 - zrealizowane programowo, ze względu na wsparcie biblioteki BSDSocket dla tego rodzaju sprawdzeń (brak konieczności definiowania złożonych wyrażeń regularnych, względna odporność na ewentualne zmiany standardu).
-* Ograniczenia TIMESTAMP - ponieważ sqlite nie posiada typu odpowieedzialnego za przechowywanie daty dane są przechowywane jako liczby całkowitoliczbowe. Wszelkie dane wstawiane w te pola są kontrolowane programowo i są wynikiem wykonania funkcji time, która ze swojej natury zwraca poprawną dla takiego pola wartość.
-* Ograniczenia AUTO INCREASMENT - realizowane w definicji bazy danych, ze względu na prostotę używania i brak konieczności zajmowania się tymi wartościami na poziomie aplikacji.
+* Ograniczenia TIMESTAMP - ponieważ sqlite nie posiada typu odpowiedzialnego
+* za przechowywanie daty, dane są przechowywane jako liczby całkowitoliczbowe. Wszelkie dane wstawiane w te pola są kontrolowane programowo i są wynikiem wykonania funkcji time, która ze swojej natury zwraca poprawną dla takiego pola wartość.
+* Ograniczenia AUTO INCREMENT - realizowane w definicji bazy danych, ze względu na prostotę używania i brak konieczności zajmowania się tymi wartościami na poziomie aplikacji.
 
 Indeksy w bazie danych
 ----------------------
@@ -290,7 +312,8 @@ Indeksy w bazie danych
 * ConferenceId - konieczność wyszukiwania danych do załadowania dla danej karty konferencyjnej (dla danej konferencji)
 
 ### subscription ###
-* IP - wyszukiwanie/aktualizowanie stanu subskrypcji odbywa się praktycznie wyłącznie nna podsfawie adresów IP
+* IP - wyszukiwanie/aktualizowanie stanu subskrypcji odbywa się praktycznie
+* wyłącznie na podstawie adresów IP
 
 ### group ###
 * id - grupy wybierane są najczęściej w kontekście iteracji lub w kontekście wyboru użytkownika (złączenie groupId<->id)
@@ -299,10 +322,16 @@ Indeksy w bazie danych
 * (ownerIp, name) - jest to para identyfikująca grupę wg. której dokonywane będzie wyszukiwanie id by dokonać złączenia z listą użytkowników dla danej konferencji
 
 ### conferenceMember ###
-* conferenceId - wyszukiwaie ma semantyczny sens tylko dla użytkowników należących do wskazanej przez id konferencji tj. przy złączeniu (conferenceId<->conference.id)
+* conferenceId - wyszukiwanie ma semantyczny sens tylko dla użytkowników należących do wskazanej przez id konferencji tj. przy złączeniu (conferenceId<->conference.id)
 
 Transakcje dla historii wiadomości
 ----------------------------------
+* Pobieranie historii wiadomości dla danego kontaktu odbywa się wewnątrz
+transakcji, w celu zapewniania integralności danych. Dzięki temu każdy
+powołany do życia obiekt ORMowy (tworzony w pętli) pochodzi z tego samego
+stanu historii wiadomości danej rozmowy.
+Takie zachowanie gwarantuje, że pobieranie historii rozmów jest bezpieczne,
+niezależnie od tego czy klient jest połączony, czy nie.
 
 Makieta GUI
 -----------
@@ -317,4 +346,30 @@ Makieta GUI
 
 Etap 3 - implemetnacja
 ======================
+
+### Sztuczne klucze ###
+* W początkowej fazie implementacji okazało się, że pierwotny projekt bazy
+ danych należy zmodyfikować, tak by wygodnie implementowało się jego obsługę
+ za pośrednictwem wybranego narzędzia ORM (Wt::Dbo). Ze względu na trudność
+ implementacji złożonych kluczy głównych, zdecydowano się zrezygnować z
+ naturalnego klucza dla conferenceMember, którym jest trójka
+ (ip,conference_ownerip, conference_name). Wprowadzono sztuczny klucz główny,
+ w postaci pola całkowitoliczbowego automatycznie zwiększanego
+ (autoincrement).
+
+### Współbieżność ###
+* Zdecydowano się wykorzystać wsparcie ORM dla zabezpieczenia równoległego
+ dostępu do danych w bazie. Zastosowano strategię optimistic locking,
+ realizowaną przy wykorzystaniu pola version w każdej tabeli.
+
+### Transakcje ###
+* Operacje objęte transakcją:
+** Pobieranie aliasów do bimapy (alias<->ip) oraz mapy subskrypcji AliasManagera
+** Pobieranie historii wiadomości
+* Moduł bazy danych (DBDriver) udostępnia metody zarządzania transakcjami, co
+pozwala w prosty sposób rozpocząć, a następnie podjąć decyzję o formie
+zakończenia transakcji (commit/rollback) na poziomie modułów spoza namespace'u
+DB. DBDriver zarządza transakcjami, przechowując ich obiekty ORMowe w
+wektorze aktywnych transakcji.
+
 </body>
