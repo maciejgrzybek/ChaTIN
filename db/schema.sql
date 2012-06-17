@@ -17,3 +17,13 @@ WHEN
 THEN RAISE(FAIL,'Alias already exists')
 END;
 END;
+
+CREATE INDEX alias_alias_idx ON alias(alias);
+CREATE INDEX alias_ip_idx ON alias(ip);
+CREATE INDEX alias_group_idx ON alias(groupId);
+CREATE INDEX message_ip_idx ON message(ip);
+CREATE INDEX message_conference_idx ON message(conferenceId);
+CREATE INDEX subscription_idx ON subscription(ip);
+CREATE INDEX group_idx ON `group`(id);
+CREATE INDEX conference_idx ON conference(ownerIp,name);
+CREATE INDEX conferenceMember_idx ON conferenceMember(conferenceId);
