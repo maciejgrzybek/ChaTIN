@@ -36,6 +36,15 @@ DBDriver::DBDriver() : sqlite3("chatin.db")
   {
     session.createTables();
     session.execute("CREATE TRIGGER alias_unique BEFORE INSERT ON alias BEGIN SELECT CASE WHEN ( SELECT COUNT() as cnt FROM (SELECT alias from alias WHERE alias = new.alias) WHERE cnt > 0 ) THEN RAISE(FAIL,'Alias already exists') END; END;"); // Alias uniqueness trigger creation
+    session.execute("CREATE INDEX alias_alias_idx ON alias(alias);");
+    session.execute("CREATE INDEX alias_ip_idx ON alias(ip);");
+    session.execute("CREATE INDEX alias_group_idx ON alias(groupId);");
+    session.execute("CREATE INDEX message_ip_idx ON message(ip);");
+    session.execute("CREATE INDEX message_conference_idx ON message(conferenceId);");
+    session.execute("CREATE INDEX subscription_idx ON subscription(ip);");
+    session.execute("CREATE INDEX group_idx ON `group`(id);");
+    session.execute("CREATE INDEX conference_idx ON conference(ownerIp,name);");
+    session.execute("CREATE INDEX conferenceMember_idx ON conferenceMember(conferenceId);");
   }
   //catch(::dbo::backend::Sqlite3Exception& e)
   catch(Wt::Dbo::Exception&) // TODO should catch Wt::Dbo::backend::Sqlite3Exception
