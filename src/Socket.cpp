@@ -16,12 +16,12 @@
 namespace Socket
 {
 
-    Conversable::Conversable()
+    Conversable::Conversable(enum BlockingType bt) : Socket(bt)
     {
         signal(SIGPIPE, SIG_IGN);
     }
 
-    Conversable::Conversable(int sock) : Socket(sock)
+    Conversable::Conversable(int sock, enum BlockingType bt) : Socket(sock,bt)
     {
         signal(SIGPIPE, SIG_IGN);
     }
@@ -30,11 +30,11 @@ namespace Socket
     {
     }
 
-    Socket::Socket()
+    Socket::Socket(enum BlockingType bt) : blockingType_(bt)
     {
     }
 
-    Socket::Socket(int sock) : sockfd(sock)
+    Socket::Socket(int sock, enum BlockingType bt) : sockfd(sock), blockingType_(bt)
     {
         socklen_t len = sizeof hostAddress;
         if(getpeername(sock,(sockaddr*)&hostAddress,&len)!=0)
@@ -169,7 +169,7 @@ namespace Socket
             throw SendFailureException(errno);
     }
 
-    ServerSocket::ServerSocket(const std::string& address, const unsigned int port, const unsigned int backlog, enum BlockingType blockingType) throw(ResolveException, WrongPortException) : backlog(backlog)
+    ServerSocket::ServerSocket(const std::string& address, const unsigned int port, const unsigned int backlog, enum BlockingType blockingType) throw(ResolveException, WrongPortException) : Socket(blockingType), backlog(backlog)
     {
         getBindedSocket(address, port);
     //        hostAddress = static_cast<sockaddr_in6*>(result->ai_addr);
@@ -232,6 +232,25 @@ namespace Socket
     {
         char buffer[ServerSocket::ClientIncomeSocket::buffer_size + 1];
         memset(buffer,'\0',ServerSocket::ClientIncomeSocket::buffer_size + 1); // initialization of incomming messages buffer.
+
+        if(blockingType_ == SocketNonBlocking)
+        {
+            fd_set rfds;
+            timeval tv;
+            int retval;
+            FD_ZERO(&rfds);
+            FD_SET(sockfd,&rfds); // set our sockfd to be looked after anything to read from
+
+            tv.tv_sec = 2; // 2s delay
+            tv.tv_usec = 0;
+
+            retval = select(sockfd+1,&rfds,NULL,NULL,&tv);
+
+            if (retval == -1)
+                throw SelectFailureException(errno);
+            else if (!retval)
+                return "";
+        }
         int nread = ::recv(sockfd,buffer,sizeof(buffer),0);
         if(nread == -1)
             throw ReceiveFailureException(sockfd);
@@ -241,7 +260,7 @@ namespace Socket
     }
 
 
-    ClientSocket::ClientSocket(const std::string& address, const unsigned int port, enum BlockingType blockingType) throw(WrongAddressException, WrongPortException)
+    ClientSocket::ClientSocket(const std::string& address, const unsigned int port, enum BlockingType blockingType) throw(WrongAddressException, WrongPortException) : Conversable(blockingType)
     {
         getBindedSocket(address, port);
     }

@@ -55,14 +55,16 @@ public:
 protected:
     /**
      * Constructor for already not created socket.
+     * @param enum BlockingType type of behavior (blocking/nonblocking)
      */
-    Socket();
+    Socket(enum BlockingType = SocketNonBlocking);
     
     /**
      * Constructor for already created sockect file descriptor.
      * @param int Socket file descriptor, which is already created.
+     * @param enum BlockingType socket is blocking or non-blocking
      */
-    Socket(int);
+    Socket(int, enum BlockingType = SocketNonBlocking);
 
     /**
      * Method creates and binds correct socket, resolved with DNS resolver by given address and port.
@@ -82,6 +84,8 @@ protected:
     
     int sockfd;
     sockaddr_in6 hostAddress;
+
+    enum BlockingType blockingType_;
 
 private:
 protected://@TODO Implement properly getAddressStructure (should copy right structure and size and return them), than getResolvedAddrinfo should become private!
@@ -124,8 +128,8 @@ public:
     virtual std::string receive() const throw(ReceiveFailureException,NotConnectedException);
 
 protected:
-    Conversable();
-    Conversable(int);
+    Conversable(enum BlockingType = SocketNonBlocking);
+    Conversable(int, enum BlockingType = SocketNonBlocking);
 };
 
 class ServerSocket : public Socket
