@@ -83,4 +83,9 @@ pre
     border-left: 3px solid black;
     padding-left: 8px;
     margin-left: 40px;
+    width: 75%;
+    background: #DDDDDD;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    overflow: auto;
 }

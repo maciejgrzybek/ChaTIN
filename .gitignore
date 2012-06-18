@@ -3,6 +3,8 @@ doc/*
 !doc/dbdoc.txt
 !doc/dbdoc.html
 !doc/md.css
+!doc/ChaTIN2.png
+!doc/er.png
 bin/*
 !bin/.placeholder
 chatin.db
