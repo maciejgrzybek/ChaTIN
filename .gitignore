@@ -5,6 +5,7 @@ doc/*
 !doc/md.css
 !doc/ChaTIN2.png
 !doc/er.png
+!doc/ipv6.html
 bin/*
 !bin/.placeholder
 chatin.db
