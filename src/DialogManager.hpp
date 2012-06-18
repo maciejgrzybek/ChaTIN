@@ -119,7 +119,7 @@ protected:
      * Variable set to true, when server is in working state (listening and ready for incoming clients), or false when it should stop accepting clients.
      * boost thread_specific_ptr used because of possibility of multi-thread usage of startServer() which uses this.
      */
-    boost::thread_specific_ptr<bool> working;
+    bool/*boost::thread_specific_ptr<bool>*/ working;
 
     struct dispatcher
     {

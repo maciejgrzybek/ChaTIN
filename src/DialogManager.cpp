@@ -2,7 +2,8 @@
 
 DialogManager::DialogManager(ToViewParser& toViewParser, AliasManager& aliasManager, ConferenceManager& conferenceManager, const Config& config_) : toViewParser(toViewParser), aliasManager(aliasManager), conferenceManager(conferenceManager), config(config_), serverSocket(NULL)
 {
-    working.reset(new bool(false));
+    //working.reset(new bool(false));
+    working = false;
 }
 
 DialogManager::DialogManager( DialogManager& dm )
@@ -53,12 +54,13 @@ void DialogManager::startServer() throw(Socket::ResolveException,Socket::WrongPo
         std::string host = config.getValue<std::string>("serverHost");
         unsigned int port = config.getValue<int>("serverPort");
         unsigned int backlog = config.getValue<int>("backlog");
-        serverSocket = new Socket::ServerSocket(host,port,backlog);
+        serverSocket = new Socket::ServerSocket(host,port,backlog,Socket::Socket::BlockingType::SocketNonBlocking);
     }
     serverSocket->listen();
     Socket::ServerSocket::ClientIncomeSocket* incomeSocket = NULL;
-    working.reset(new bool(true));
-    while(*working)
+    //working.reset(new bool(true));
+    working = true;
+    while(working)
     {
         incomeSocket = serverSocket->pickClient(); // can hang up here when no client to pick is available
         assert("incomeSocket can not be NULL" && incomeSocket != NULL);
@@ -91,7 +93,7 @@ void DialogManager::dispatcher::operator()()//const Socket::ServerSocket::Client
         dialogManager.dialogMap[ip] = dialog;
     } // let others read data I already put in map
 
-    while(1)//*(dialogManager.working))
+    while(dialogManager.working)
     {
         try
         {
