@@ -33,12 +33,30 @@ Etap 1 - projekt bazy danych
 
 Diagram ER (wraz z opisem związków)
 -----------------------------------
-<img src="./er.png">
+### Diagram ###
+<img src="./er.png" alt="ER" />
 
-Opis encji
+### Opis encji ###
+*Alias - encja pozwalająca przechować informacje o przypisaniu do danego adresu IPv6 jego słownego odpowiednika (alias) na lokalnej maszynie.
+*PrivateMessage - wiadomość przesłana pomiędzy pojedynczymi użytkownikami (p2p).
+*ConferenceMessage - wiadomość w ramach konferencji.
+*Subscription - subskrypcja; cechuje ją stan (zaproponowana, jednostronna,
+odrzucona, pełna) oraz data ostatniej zmiany stanu
+*Group - pozwala na grupowanie użytkowników (z bazy "przyjaciół"), np.
+"rodzina", "praca" etc.
+*Conference - odpowiada za przechowywanie informacji o konferencji
+(założyciel, nazwa, identyfikator, data utworzenia)
+*conferenceMember - członek konferencji, identyfikowany po IPv6
+
+
+Diagram logiczny
 ----------
+### Diagram ###
+<img src="./ldm.png" alt="LDM" />
 
-### alias ###
+### Opis tabel ###
+
+*alias
 <table>
 <tr><th>nazwa atrybutu</th><th>typ danych</th><th>ograniczenia                          </th><th>opis                                                   </th></tr>
 <tr><td>ip            </td><td>TEXT      </td><td>PK, NN, <a href="./ipv6.html">IPv6</a></td><td>adres ip powiązany z danym aliasem                     </td></tr>
@@ -47,7 +65,7 @@ Opis encji
 <tr><td>groupId       </td><td>INTEGER   </td><td>FK: group.id                          </td><td>id grupy do której należy alias                        </td></tr>
 </table>
 
-### message ###
+*message
 Message jest typem nadrzędnym dla wiadomości prywatnej i wiadomości
 konferencyjnej. Po analizie wymagań projektowych, zdecydowano się na
 implementację podtypów w formie single table inheritance (generalizacja).
@@ -66,7 +84,7 @@ rozgałęzienia wiadomości.
 <tr><td>conferenceId  </td><td>INTEGER   </td><td>FK: conference.id                     </td><td>identyfikator konferencji (jesli wiadomosc konf.)      </td></tr>
 </table>
 
-### subscription ###
+*subscription
 <table>
 <tr><th>nazwa atrybutu</th><th>typ danych</th><th>ograniczenia                          </th><th>opis                                                   </th></tr>
 <tr><td>ip            </td><td>TEXT      </td><td>PK, NN, <a href="./ipv6.html">IPv6</a></td><td>adres ip powiązany z danym aliasem                     </td></tr>
@@ -75,7 +93,7 @@ rozgałęzienia wiadomości.
 <tr><td>lastChangeDate</td><td>INTEGER   </td><td>NN, TIMESTAMP                         </td><td>data ostatniej zmiany stanu                            </td></tr>
 </table>
 
-### group ###
+*group
 <table>
 <tr><th>nazwa atrybutu</th><th>typ danych</th><th>ograniczenia                          </th><th>opis                                                   </th></tr>
 <tr><td>id            </td><td>INTEGER   </td><td>PK, NN, AUTO INCREAMENT               </td><td>unikalny identyfikator grupy                           </td></tr>
@@ -83,7 +101,7 @@ rozgałęzienia wiadomości.
 <tr><td>name          </td><td>TEXT      </td><td>NN                                    </td><td>nazwa grupy wybrana przez uzytkownika                  </td></tr>
 </table>
 
-### conference ###
+*conference
 `UNIQUE: (ownerIP, name)`
 <table>
 <tr><th>nazwa atrybutu</th><th>typ danych</th><th>ograniczenia                          </th><th>opis                                                                           </th></tr>
@@ -94,7 +112,7 @@ rozgałęzienia wiadomości.
 <tr><td>createDate    </td><td>INTEGER   </td><td>NN, TIMESTAMP                         </td><td>data utworzenia (pierwsza odebrana wiadomość) konferencji u danego użytkownika </td></tr>
 </table>
 
-### conferenceMember ###
+*conferenceMember*
 <table>
 <tr><th>nazwa atrybutu</th><th>typ danych</th><th>ograniczenia                          </th><th>opis                                                                           </th></tr>
 <tr><td>id            </td><td>INTEGER   </td><td>PK, NN, AUTO INCREAMENT               </td><td>unikalny identyfikator powiązania                                              </td></tr>
