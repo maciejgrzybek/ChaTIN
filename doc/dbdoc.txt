@@ -222,7 +222,7 @@ Głowne moduły aplikacji
 -----------------------
 
 ### DBDriver ###
-Udostępnie obiektowy interfejs dla bazy danych mysql. Zarządza transakcjami. 
+Udostępnie obiektowy interfejs dla bazy danych sqlite. Zarządza transakcjami. 
 Odpowiada za przekazywanie zapytań do podległych modułów modelu ORM.
 Stanowi bezpośredni łącznik miedzy modelem bazy danych a modelem aplikacji. 
 Podlegają mu moduły odpowiedzialne za zarządzanie poszczególnymi tabelami bazy danych:
@@ -295,8 +295,7 @@ Wymuszenie integralności
 * Ograniczenia FOREIGN KEY - zrealizowane w definicji tabel ze względu na prostą realizację i wygodną obsługę błędów.
 * Ograniczenia UNIQUE / PRIMARY KEY - zrealizowane w definicji tabel ponieważ zawierają one proste wsparcie i ich zdefiniowanie jest niezbędne do usprawdzenia procesów wyszukiwania.
 * Ograniczenie IPv6 - zrealizowane programowo, ze względu na wsparcie biblioteki BSDSocket dla tego rodzaju sprawdzeń (brak konieczności definiowania złożonych wyrażeń regularnych, względna odporność na ewentualne zmiany standardu).
-* Ograniczenia TIMESTAMP - ponieważ sqlite nie posiada typu odpowiedzialnego
-* za przechowywanie daty, dane są przechowywane jako liczby całkowitoliczbowe. Wszelkie dane wstawiane w te pola są kontrolowane programowo i są wynikiem wykonania funkcji time, która ze swojej natury zwraca poprawną dla takiego pola wartość.
+* Ograniczenia TIMESTAMP - ponieważ sqlite nie posiada typu odpowiedzialnego za przechowywanie daty, dane są przechowywane jako liczby całkowitoliczbowe. Wszelkie dane wstawiane w te pola są kontrolowane programowo i są wynikiem wykonania funkcji time, która ze swojej natury zwraca poprawną dla takiego pola wartość.
 * Ograniczenia AUTO INCREMENT - realizowane w definicji bazy danych, ze względu na prostotę używania i brak konieczności zajmowania się tymi wartościami na poziomie aplikacji.
 
 Indeksy w bazie danych
@@ -344,7 +343,7 @@ Makieta GUI
 * 4 - linia wejścia - główna metoda komunikacji z użytkownikiem
 * 5 - przycisk zatwierdzenia, równoważny z naciśnięciem klawisza ENTER
 
-Etap 3 - implemetnacja
+Etap 3 - implementacja
 ======================
 
 Sztuczne klucze
