@@ -141,10 +141,10 @@ Analiza wymagań
   W przypadku sqlite takie ograniczenia są dość niską poprzeczką. 
   W ramach tych ograniczeń aplikacja powinna działać bezawaryjnie (tj. powinna spełniać wszystkie wymagania funkcjonalne a w próbie 1000 kolejnych testów obejmującyh kolejne wymagania funkcjonalne może zdarzyć się nie więcej niż 1 błąd), a okres reakcji między akcją użytkownika / przychodzącym pakietem a powiązaną z nią reakcją widoku nie powinien w żadnym razie przekroczyć 0.5s (nie uwzględnia się tu czasu wędrówki pakietów, które mogą spowolnić niektore akcje - zwłaszcza przy łączu niskiej jakości).
 * W ramach tabel dotyczących aliasów należy zadbać o optymalność wyszukiwania
-* zarówno po aliasie jak i po adresie IP. Wyszukiwanie to jest bowiem kluczowe
-* dla spełnienia głównego ograniczenia czasowego. Przy spełnieniu założeń co
+ zarówno po aliasie jak i po adresie IP. Wyszukiwanie to jest bowiem kluczowe
+ dla spełnienia głównego ograniczenia czasowego. Przy spełnieniu założeń co
  do ilości aliasów, pojedyncza operacja CRUD na aliasach nie powinna
- przekroczyć czasu wykonania 0.5s, a odczyt pełnej bazy aliasów (przy starcie aplikacji) nie powinien trwać dłużej niż 1.5s.
+ przekroczyć czasu wykonania 0.3s, a odczyt pełnej bazy aliasów (przy starcie aplikacji) nie powinien trwać dłużej niż 1.5s.
 * Aplikacja powinna uruchamiać się i być gotowa do pracy w czasie nie dłuższym niż 3sek (dla zachowania w/w limitów).
 * Powyższe wymagania funkcjonalne i niefunkcjonalne spełnialne są dla środowisk uruchomieniowych wymienionych w specyfikacji tj. posiadających wsparcie dla wykorzystanych biliotek (patrz dokumentacja koncowa projektu).
 * Aplikacja spełniać musi w/w ograniczenia czasowe mając do dyspozycji (tj. na własny użytek średnio) następujące zasoby min. **100MHz** (dla architektury x86_64), min. **32MB RAM**
@@ -347,22 +347,28 @@ Makieta GUI
 Etap 3 - implemetnacja
 ======================
 
-### Sztuczne klucze ###
-* W początkowej fazie implementacji okazało się, że pierwotny projekt bazy
- danych należy zmodyfikować, tak by wygodnie implementowało się jego obsługę
- za pośrednictwem wybranego narzędzia ORM (Wt::Dbo). Ze względu na trudność
- implementacji złożonych kluczy głównych, zdecydowano się zrezygnować z
- naturalnego klucza dla conferenceMember, którym jest trójka
- (ip,conference_ownerip, conference_name). Wprowadzono sztuczny klucz główny,
- w postaci pola całkowitoliczbowego automatycznie zwiększanego
- (autoincrement).
+Sztuczne klucze
+---------------
 
-### Współbieżność ###
-* Zdecydowano się wykorzystać wsparcie ORM dla zabezpieczenia równoległego
- dostępu do danych w bazie. Zastosowano strategię optimistic locking,
- realizowaną przy wykorzystaniu pola version w każdej tabeli.
+W początkowej fazie implementacji okazało się, że pierwotny projekt bazy
+danych należy zmodyfikować, tak by wygodnie implementowało się jego obsługę
+za pośrednictwem wybranego narzędzia ORM (Wt::Dbo). Ze względu na trudność
+implementacji złożonych kluczy głównych, zdecydowano się zrezygnować z
+naturalnego klucza dla conferenceMember, którym jest trójka
+(ip,conference_ownerip, conference_name). Wprowadzono sztuczny klucz główny,
+w postaci pola całkowitoliczbowego automatycznie zwiększanego
+(autoincrement).
 
-### Transakcje ###
+Współbieżność
+-------------
+
+Zdecydowano się wykorzystać wsparcie ORM dla zabezpieczenia równoległego
+dostępu do danych w bazie. Zastosowano strategię optimistic locking,
+realizowaną przy wykorzystaniu pola version w każdej tabeli.
+
+Transakcje
+----------
+
 * Operacje objęte transakcją:
 ** Pobieranie aliasów do bimapy (alias<->ip) oraz mapy subskrypcji AliasManagera
 ** Pobieranie historii wiadomości
